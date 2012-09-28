@@ -157,7 +157,7 @@ public class GameScreen extends GLScreen {
 	        	}
 	        }
 	        else if(event.type == TouchEvent.TOUCH_UP){
-	        	world.player.state = Player.PLAYER_STATE_FALLING;
+	        	world.player.state = Player.PLAYER_STATE_IDLE;
 	        	moveJoystickFirstTouch = true;
 	        	actionJoystickFirstTouch = true;	
 	        } 
@@ -320,7 +320,7 @@ public class GameScreen extends GLScreen {
     	Log.d("1- Dpad base at: ","X: "+moveJoystick.basePosition.x+" Y:"+moveJoystick.basePosition.y);
     	Log.d("1- Dpad stick at: ","X: "+moveJoystick.stickPosition.x+" Y:"+moveJoystick.stickPosition.y);
 
-    	world.player.state = Player.PLAYER_STATE_FLYING;
+    	world.player.state = Player.PLAYER_STATE_MOVING;
     }
     
     // Handle a full pass through the action joystick possible events
@@ -355,7 +355,6 @@ public class GameScreen extends GLScreen {
     	Log.d("2- Dpad base at: ","X: "+actionJoystick.basePosition.x+" Y:"+actionJoystick.basePosition.y);
     	Log.d("2- Dpad stick at: ","X: "+actionJoystick.stickPosition.x+" Y:"+actionJoystick.stickPosition.y);
 
-    	world.player.state = Player.PLAYER_STATE_FLYING;
     }
 }
 

@@ -17,15 +17,14 @@ public class World {
     }
 
     // World's size
-    public static final float WORLD_WIDTH 			= 16;
-    public static final float WORLD_HEIGHT 			= 9;
+    public static final float WORLD_WIDTH 			= 40;
+    public static final float WORLD_HEIGHT 			= 22;
     
     // World's states
     public static final int WORLD_STATE_RUNNING 	= 0;
     public static final int WORLD_STATE_NEXT_LEVEL 	= 1;
     public static final int WORLD_STATE_GAME_OVER 	= 2;
     
-    public static final Vector2 gravity = new Vector2(0, -14);
     public static final Vector2 friction = new Vector2(-12, 0);
 
     public final Player player;

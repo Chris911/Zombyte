@@ -4,12 +4,11 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.bag.lib.gl.Camera2D;
 import com.bag.lib.gl.SpriteBatcher;
-import com.bag.lib.gl.TextureRegion;
 import com.bag.lib.impl.GLGraphics;
 
 public class WorldRenderer {
-    static final float FRUSTUM_WIDTH = 16;
-    static final float FRUSTUM_HEIGHT = 9;
+    static final float FRUSTUM_WIDTH = 20;
+    static final float FRUSTUM_HEIGHT = 11;
 	
     GLGraphics 		glGraphics;
     World 			world;
@@ -74,8 +73,8 @@ public class WorldRenderer {
     	batcher.beginBatch(Assets.playerItems);
     	
     	// Assign correct camera position to follow the player.  Don't overlap out of bounds
-    		//cam.position.x = world.player.position.x;
-    		//cam.position.y = world.player.position.y;
+    		cam.position.x = world.player.position.x;
+    		cam.position.y = world.player.position.y;
        
     	// Draw the player sprite
         batcher.drawSprite(world.player.position.x, world.player.position.y , Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, Assets.player);

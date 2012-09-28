@@ -10,81 +10,85 @@ public class Player extends DynamicGameObject {
     public static final float PLAYER_MAX_VELOCITY	= 12.0f;
     
     public static final int PLAYER_STATE_IDLE 		= 0;
-    public static final int PLAYER_STATE_RUNNING 	= 1;
-    public static final int PLAYER_STATE_FLYING 	= 2;
-    public static final int PLAYER_STATE_FALLING 	= 3;
-    public static final int PLAYER_STATE_HIT_WALL 	= 9;
+    public static final int PLAYER_STATE_MOVING 	= 1;
+    //public static final int PLAYER_STATE_RUNNING 	= 2;
+    public static final int PLAYER_STATE_DAMAGE 	= 3;
+    public static final int PLAYER_STATE_HIT_WALL 	= 4;
+    public static final int PLAYER_STATE_DEAD 		= 5;
 
-    
-    public static final float JETPACK_ACCELERATION	= 5.0f;
-
-    float moveX = 15.0f; // Test value that makes the pacman move in X
     public int state;
     public int previousState;
     
-    private float jetpackVelocity;
+    // Number of life remaining
+    private float life;
+    // Speed of the player (walking / running)
+    private float speed;
+    private boolean isRunning;
     
 	public Player(float x, float y) {
 		super(x, y, PLAYER_WIDTH, PLAYER_HEIGHT);
 		
 		this.state = PLAYER_STATE_IDLE;
-		this.jetpackVelocity = 0.0f;
+		this.life = 6;
+		this.speed = 1;
+		this.isRunning = false;
 	}
 	
 	public void update(float deltaTime) {
-		//velocity.x = moveX;
-		
 		// Check current State
-		if(this.state == PLAYER_STATE_FLYING) {
-			jetpackVelocity += JETPACK_ACCELERATION*deltaTime;
-			
-			if(jetpackVelocity >= 2) {
-				jetpackVelocity = 2;
+		if(this.state == PLAYER_STATE_IDLE)
+		{
+			this.speed = 0;
+		}
+		else if(this.state == PLAYER_STATE_MOVING)
+		{
+			if(isRunning)
+				this.speed = 1.2f;
+			else
+				this.speed = 1;
+		}
+		else if(this.state == PLAYER_STATE_DAMAGE)
+		{
+			this.life--;
+			if(life <= 0)
+			{
+				this.state = PLAYER_STATE_DEAD;
 			}
 		}
-		else if (this.state == PLAYER_STATE_FALLING) {
-			jetpackVelocity = 0;
-		}
-		else if (this.state == PLAYER_STATE_IDLE) {
-			jetpackVelocity = 0;
+		else if(this.state == PLAYER_STATE_HIT_WALL)
+		{
+			
 		}
 		
 		// Modify velocity
-		velocity.y += jetpackVelocity;
-		velocity.add(0, World.gravity.y * deltaTime);
-		if(velocity.y >= PLAYER_MAX_VELOCITY){
-			velocity.y = PLAYER_MAX_VELOCITY;
-		}
+		//velocity.add(0, World.gravity.y * deltaTime);
 		
 		// Modify position
-		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+		position.add(velocity.x * deltaTime * speed, velocity.y * deltaTime * speed);
 		
 		// Check if out of floor bounds 
 		if(position.y < PLAYER_FLOOR_POSITION)
 		{
 			position.y = PLAYER_FLOOR_POSITION;
 			velocity.y = 0;
-			
+
 			// Add the floor's friction to the movement
 			applyFloorFriction(deltaTime);
-
 		}
 		
 		// Out of World's bounds
 		if(position.x > World.WORLD_WIDTH - PLAYER_WIDTH/2) {
 			position.x = World.WORLD_WIDTH - PLAYER_WIDTH/2;
-			reverse();
 			
 		} else if (position.x < 0 + PLAYER_WIDTH/2) {
 			position.x = PLAYER_WIDTH/2;
-			reverse();
 		}
-	}
-	
-	private void reverse(){
-		velocity.x *=-0.8;
-		previousState = state;
-		state = PLAYER_STATE_HIT_WALL;
+		else if(position.y > World.WORLD_HEIGHT - PLAYER_HEIGHT/2) {
+			position.y = World.WORLD_HEIGHT - PLAYER_HEIGHT/2;
+			
+		} else if (position.y < 0 + PLAYER_HEIGHT/2) {
+			position.y = PLAYER_HEIGHT/2;
+		}
 	}
 	
 	private void applyFloorFriction(float dt){
