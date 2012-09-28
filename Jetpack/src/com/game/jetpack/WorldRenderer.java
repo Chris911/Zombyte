@@ -73,8 +73,10 @@ public class WorldRenderer {
     	batcher.beginBatch(Assets.playerItems);
     	
     	// Assign correct camera position to follow the player.  Don't overlap out of bounds
-    		cam.position.x = world.player.position.x;
-    		cam.position.y = world.player.position.y;
+		if(world.player.position.x < World.WORLD_WIDTH * 0.75)
+			cam.position.x = world.player.position.x;
+		if(world.player.position.y < World.WORLD_HEIGHT * 0.75)
+			cam.position.y = world.player.position.y;
        
     	// Draw the player sprite
         batcher.drawSprite(world.player.position.x, world.player.position.y , Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, Assets.player);
