@@ -16,8 +16,8 @@ public class PowerUp extends DynamicGameObject {
 	
 	public float rotationAngle; 
 	
-	public static final float BASIC_HEIGHT = 3.0f;
-	public static final float BASIC_WIDTH  = 3.0f;
+	public static final float BASIC_HEIGHT = 2.5f;
+	public static final float BASIC_WIDTH  = 2.5f;
 	
 	public PowerUp(float x, float y, int type) {
 		super(x, y, BASIC_WIDTH, BASIC_HEIGHT);
