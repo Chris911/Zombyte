@@ -67,6 +67,7 @@ public class WorldRenderer {
         renderPlayer();
         renderEnemies();
         renderAmmo();
+        renderPowerUp();
         
         gl.glDisable(GL10.GL_BLEND);
     }
@@ -159,6 +160,32 @@ public class WorldRenderer {
             batcher.endBatch();
             
 		} catch (Exception e) {}
+    }
+    
+    private void renderPowerUp() {
+    	try {
+	    	batcher.beginBatch(Assets.weaponsMap);
+	    	
+	        int len = world.PowerUpArray.size();
+	        for(int i = 0; i < len; i++) {
+	            PowerUp powerup = world.PowerUpArray.get(i);  
+	            
+	            if(powerup.type == PowerUp.POWERUP_TYPE_SHOTGUN)
+	            {
+	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
+	            	batcher.drawSprite(powerup.position.x, powerup.position.y, 3.0f, 3.0f,(powerup.rotationAngle - 90)*180/3.146f, Assets.shotgun);
+	            	
+	            } 
+	            else if (powerup.type == PowerUp.POWERUP_TYPE_ROCKET) 
+	            {
+	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
+	            	batcher.drawSprite(powerup.position.x, powerup.position.y, 3.0f, 3.0f, (powerup.rotationAngle - 90)*180/3.146f, Assets.rocket);
+	            }
+	        }
+	       
+	        batcher.endBatch();
+    	}
+    	catch(Exception e) { }
     }
 }
 

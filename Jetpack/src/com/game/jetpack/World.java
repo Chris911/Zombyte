@@ -33,10 +33,9 @@ public class World {
     public static final Vector2 friction = new Vector2(-12, 0);
 
     public final Player player;
-    //public final Tank tank;
     public final List<Bullet> bulletArray;
     public final List<Enemy> EnemyArray;
-    //public final List<PowerUp> PowerUpArray;
+    public final List<PowerUp> PowerUpArray;
     public Explosion explosion;
     public final WorldListener listener;
     public final Random rand;
@@ -51,7 +50,7 @@ public class World {
     public World(WorldListener listener) {
         this.bulletArray = new ArrayList<Bullet>();
         this.EnemyArray = new ArrayList<Enemy>();
-        //this.PowerUpArray = new ArrayList<PowerUp>();
+        this.PowerUpArray = new ArrayList<PowerUp>();
     	player = new Player(WORLD_WIDTH/2, 10);
         
     	this.listener = listener;
@@ -100,7 +99,7 @@ public class World {
 		updatePlayer(deltaTime, speed);
 		updateBullet(deltaTime);
 		updateEnemies(deltaTime);
-		//updatePowerUp(deltaTime);
+		updatePowerUp(deltaTime);
 		updateExplosions(deltaTime);
 		checkCollisions();
 		//checkGameOver();
@@ -125,16 +124,16 @@ public class World {
 			}
 		}
 	}
-//	
-//	private void updatePowerUp(float deltaTime) {
-////		synchronized (PowerUpArray) {
-////			for(int i = 0; i < PowerUpArray.size(); i ++){
-////				PowerUpArray.get(i).update(deltaTime);
-////			}
-////		}
-//	}
-//	
-//	
+	
+	private void updatePowerUp(float deltaTime) {
+		synchronized (PowerUpArray) {
+			for(int i = 0; i < PowerUpArray.size(); i ++){
+				PowerUpArray.get(i).update(deltaTime);
+			}
+		}
+	}
+	
+	
 	private void updateEnemies(float deltaTime) {
 	    int len = EnemyArray.size();
 	    
@@ -157,8 +156,20 @@ public class World {
 	        enemy.update(deltaTime);
 	        
 	        if(enemy.state == Enemy.ENEMY_STATE_DEAD){
+	        	float xPos = enemy.position.x;
+	        	float yPos = enemy.position.y; 
 	        	EnemyArray.remove(enemy);
 	        	i = EnemyArray.size();	
+	        	int genPowerUp = rand.nextInt(100);
+	        	if(genPowerUp > 95)
+	        	{
+	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_SHOTGUN);
+	        	}
+	        	else if(genPowerUp > 85 && genPowerUp < 90)
+	        	{
+	        		//CHANGE TO ROCKET!! 
+	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_ROCKET);
+	        	}
 	        }
 	    }
 	}
@@ -172,7 +183,7 @@ public class World {
 		checkEnemyBulletCollisions();
 		checkPlayerEnemyCollisions();
 	    //checkAmmoCollisions();
-	    //checkPowerUpCollisions();
+	    checkPowerUpCollisions();
 	}
 	
 	// Enemy - Player collision
@@ -217,6 +228,24 @@ public class World {
 				} 
 		    }
 		}
+	}
+	
+	// Powerup - Player collision
+	private void checkPowerUpCollisions() {
+	    int len = PowerUpArray.size();
+	    synchronized (PowerUpArray) {
+	    	for (int i = 0; i < len; i++) {
+		        PowerUp pup = PowerUpArray.get(i);
+		        if (OverlapTester.overlapRectangles(pup.bounds, player.bounds))
+		        {
+		        	player.weapon.setType(pup.type);
+		        	//score += pup.score;
+		        	PowerUpArray.remove(pup);
+		        	len = PowerUpArray.size();
+		            //listener.pickUpPup();
+		        }
+		    }
+		}   
 	}
 //	
 //	private void checkGameOver() {  	  	
@@ -282,8 +311,12 @@ public class World {
 		}
 	}
 	
-	public void addPowerUp(int type){
-		// add powerup
+	public void addPowerUp(float xPos, float yPos, int type){
+		// Max of 5 powerups at the same time
+		if(PowerUpArray.size() < 5)
+		{
+			PowerUpArray.add(new PowerUp(xPos, yPos, type));
+		}
 	}
 }
 
