@@ -146,15 +146,34 @@ public class WorldRenderer {
             for(int i = 0; i < len; i++) {
                 Bullet bullet = world.bulletArray.get(i);         
                      
-               // if(world.player.weapon == Tank.TYPE_BASIC_BULLET || world.player.weapon == Tank.TYPE_THREESHOT)
+               if(world.player.weapon.getType() == Weapon.WEAPON_PISTOL)        		  
                 	batcher.drawSprite(bullet.position.x, bullet.position.y, 
                 					   Bullet.BASIC_HEIGHT, Bullet.BASIC_WIDTH, 
                 					   bullet.rotationAngle + 90, Assets.bullet);
                 
-//                else if(world.player.weapon == Tank.TYPE_FLAMETHROWER)
-//                	batcher.drawSprite(bullet.position.x, bullet.position.y, 
-//                				       5.0f, 1.0f, 
-//                				       bullet.rotationAngle, Assets.laserAmmo);
+                else if(world.player.weapon.getType() == Weapon.WEAPON_SHOTGUN)
+                	batcher.drawSprite(bullet.position.x, bullet.position.y, 
+                					   Bullet.BASIC_HEIGHT, Bullet.BASIC_WIDTH, 
+                				       bullet.rotationAngle + 90, Assets.bulletRed);
+               
+                else if(world.player.weapon.getType() == Weapon.WEAPON_RIFLE)
+                {
+                	batcher.drawSprite(bullet.position.x, bullet.position.y, 
+     					   Bullet.BASIC_HEIGHT, Bullet.BASIC_WIDTH, 
+     				       bullet.rotationAngle + 90, Assets.bulletYellow);
+                }
+               
+                else if(world.player.weapon.getType() == Weapon.WEAPON_ROCKET)
+                {
+                	// WE NEED TO DEAL WITH THIS - CHRIS
+                	batcher.endBatch();
+                	batcher.beginBatch(Assets.weaponsMap);
+                	batcher.drawSprite(bullet.position.x, bullet.position.y, 
+     					   Bullet.BASIC_HEIGHT, Bullet.BASIC_WIDTH, 
+     				       bullet.rotationAngle + 90, Assets.rocketBullet);
+                	batcher.endBatch();
+                	batcher.beginBatch(Assets.spritesMap);
+                }
             }
             
             batcher.endBatch();
@@ -180,6 +199,11 @@ public class WorldRenderer {
 	            {
 	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
 	            	batcher.drawSprite(powerup.position.x, powerup.position.y, 3.0f, 3.0f, (powerup.rotationAngle - 90)*180/3.146f, Assets.rocket);
+	            }
+	            else if (powerup.type == PowerUp.POWERUP_TYPE_RIFLE) 
+	            {
+	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
+	            	batcher.drawSprite(powerup.position.x, powerup.position.y, 3.0f, 3.0f, (powerup.rotationAngle - 90)*180/3.146f, Assets.rifle);
 	            }
 	        }
 	       

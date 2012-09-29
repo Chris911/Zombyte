@@ -24,7 +24,6 @@ public class Enemy extends DynamicGameObject {
     public int state;
     public int life;
     
-    private Random random;
     private float speed;
     private int   difficulty;
     public float rotationAngle;
@@ -33,7 +32,6 @@ public class Enemy extends DynamicGameObject {
 	public Enemy(float x, float y, int type, int difficulty) {
 		super(x, y, ENEMY_BASIC_WIDTH, ENEMY_BASIC_HEIGHT); 
 		
-		this.random = new Random();
 		this.state = ENEMY_STATE_ALIVE;
 		this.rotationAngle = 0;
 		this.life = 1;
