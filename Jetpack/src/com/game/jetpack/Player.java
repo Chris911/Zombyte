@@ -1,7 +1,5 @@
 package com.game.jetpack;
 
-import android.util.Log;
-
 import com.bag.lib.DynamicGameObject;
 
 public class Player extends DynamicGameObject {

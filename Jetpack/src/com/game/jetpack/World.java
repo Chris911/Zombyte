@@ -165,8 +165,11 @@ public class World {
 	        	}
 	        	else if(genPowerUp > 85 && genPowerUp < 90)
 	        	{
-	        		//CHANGE TO ROCKET!! 
 	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_ROCKET);
+	        	}
+	        	else if(genPowerUp > 80 && genPowerUp < 85)
+	        	{
+	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_RIFLE);
 	        	}
 	        }
 	    }
@@ -278,7 +281,9 @@ public class World {
 		synchronized (bulletArray) {	
 			if(lastBulletFiredTime > player.weapon.getFireRate()) {	
 				// Condition to regulate the bullets being fired
-					if(player.weapon.getType() == Weapon.WEAPON_PISTOL )
+					if(player.weapon.getType() == Weapon.WEAPON_PISTOL ||
+					   player.weapon.getType() == Weapon.WEAPON_RIFLE  || 
+					   player.weapon.getType() == Weapon.WEAPON_ROCKET )
 					{
 						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
 													   player.position.y + (float)(Math.sin(angle/180*3.146)),
@@ -301,7 +306,9 @@ public class World {
 								   player.weapon.getBulletSpeed()));
 						
 					}
-					lastBulletFiredTime = 0.0f; 
+					lastBulletFiredTime = 0.0f;
+					//Decrement ammo
+					player.weapon.fire(); 
 			}
 			else {
 				lastBulletFiredTime += 0.1f;

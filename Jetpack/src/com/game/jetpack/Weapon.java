@@ -7,14 +7,20 @@ public class Weapon {
 	private int type;
 	private float bulletSpeed;
 	
-	public static int WEAPON_PISTOL = 0;
+	public static int WEAPON_PISTOL  = 0;
 	public static int WEAPON_SHOTGUN = 1;
-	public static int WEAPON_RIFLE = 2;
+	public static int WEAPON_RIFLE   = 2;
+	public static int WEAPON_ROCKET  = 3;
 	
 	public Weapon(int type) {
 		super();
 		this.type = type;
 		
+		assignWeaponProperties(type);
+	}
+
+	private void assignWeaponProperties(int type)
+	{
 		if(type == WEAPON_PISTOL)
 		{
 			this.bulletsRemaining = 1;
@@ -26,17 +32,25 @@ public class Weapon {
 		{
 			this.bulletsRemaining = 25;
 			this.damage = 15;
-			this.fireRate = 1.5f;
+			this.fireRate = 2.0f;
 			this.bulletSpeed = 17;
 		}
 		else if(type == WEAPON_RIFLE)
 		{
-			this.bulletsRemaining = 50;
-			this.damage = 0.2f;
-			this.fireRate = 13;
+			this.bulletsRemaining = 50; 
+			this.damage = 8.0f;
+			this.fireRate = 0.1f;
+			this.bulletSpeed = 30;
+		}
+		else if(type == WEAPON_ROCKET)
+		{
+			this.bulletsRemaining = 15;
+			this.damage = 25f;
+			this.fireRate = 2.5f;
+			this.bulletSpeed = 17;
 		}
 	}
-
+	
 	public void fire() {
 		if(type != WEAPON_PISTOL) 
 		{
@@ -45,7 +59,7 @@ public class Weapon {
 		
 		if(bulletsRemaining <= 0)
 		{
-			this.type = WEAPON_PISTOL;
+			setType(WEAPON_PISTOL);
 		}
 	}
 
@@ -71,6 +85,8 @@ public class Weapon {
 
 	public void setType(int type) {
 		this.type = type;
+		
+		assignWeaponProperties(type);
 	}
 
 	public float getBulletSpeed() {
