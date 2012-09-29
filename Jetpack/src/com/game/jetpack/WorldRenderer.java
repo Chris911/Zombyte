@@ -4,12 +4,11 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.bag.lib.gl.Camera2D;
 import com.bag.lib.gl.SpriteBatcher;
-import com.bag.lib.gl.TextureRegion;
 import com.bag.lib.impl.GLGraphics;
 
 public class WorldRenderer {
-    static final float FRUSTUM_WIDTH = 80;
-    static final float FRUSTUM_HEIGHT = 44;
+    static final float FRUSTUM_WIDTH = 20;
+    static final float FRUSTUM_HEIGHT = 11;
 	
     GLGraphics 		glGraphics;
     World 			world;
@@ -114,7 +113,7 @@ public class WorldRenderer {
     
     private void renderEnemies() {
     	try {
-	    	batcher.beginBatch(Assets.tileMapItems);
+	    	batcher.beginBatch(Assets.spritesMap);
 	    	
 	        int len = world.EnemyArray.size();
 	        for(int i = 0; i < len; i++) {
@@ -123,13 +122,13 @@ public class WorldRenderer {
 	            if(enemy.type == Enemy.ENEMY_TYPE_ZOMBIE)
 	            {
 	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
-	            	batcher.drawSprite(enemy.position.x, enemy.position.y, 1.4f, 1.4f,enemy.rotationAngle - 90, Assets.player);
+	            	batcher.drawSprite(enemy.position.x, enemy.position.y, 1.4f, 1.4f,(enemy.rotationAngle - 90)*180/3.146f, Assets.zombieIdle);
 	            	
 	            } 
 	            else if ( enemy.type == Enemy.ENEMY_TYPE_BOSS ) 
 	            {
 	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
-	            	batcher.drawSprite(enemy.position.x, enemy.position.y, 5, 5, enemy.rotationAngle - 90, Assets.blueTile);
+	            	batcher.drawSprite(enemy.position.x, enemy.position.y, 5, 5, (enemy.rotationAngle - 90)*180/3.146f, Assets.zombieIdle);
 	            }
 	        }
 	       
@@ -140,7 +139,7 @@ public class WorldRenderer {
     
     private void renderAmmo() {
     	try {
-    		batcher.beginBatch(Assets.tileMapItems);
+    		batcher.beginBatch(Assets.spritesMap);
         	
             int len = world.bulletArray.size();
             for(int i = 0; i < len; i++) {
@@ -149,7 +148,7 @@ public class WorldRenderer {
                // if(world.player.weapon == Tank.TYPE_BASIC_BULLET || world.player.weapon == Tank.TYPE_THREESHOT)
                 	batcher.drawSprite(bullet.position.x, bullet.position.y, 
                 					   Bullet.BASIC_HEIGHT, Bullet.BASIC_WIDTH, 
-                					   bullet.rotationAngle + 90, Assets.redTile);
+                					   bullet.rotationAngle + 90, Assets.bullet);
                 
 //                else if(world.player.weapon == Tank.TYPE_FLAMETHROWER)
 //                	batcher.drawSprite(bullet.position.x, bullet.position.y, 

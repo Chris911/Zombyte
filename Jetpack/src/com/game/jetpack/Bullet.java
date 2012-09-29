@@ -12,8 +12,8 @@ public class Bullet extends DynamicGameObject {
 	
 	public int state;
 	
-	public static final float BASIC_HEIGHT = 0.3f;
-	public static final float BASIC_WIDTH = 0.3f;
+	public static final float BASIC_HEIGHT = 1.0f;
+	public static final float BASIC_WIDTH = 1.0f;
 	
 	public Bullet(float x, float y, float rotationAngle, float bulletSpeed) {
 		super(x, y, BASIC_HEIGHT, BASIC_WIDTH);

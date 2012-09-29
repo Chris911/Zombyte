@@ -36,7 +36,7 @@ public class Player extends DynamicGameObject {
 		this.life = 6;
 		this.speed = 1;
 		this.isRunning = false;
-		this.weapon = new Weapon(Weapon.WEAPON_PISTOL);
+		this.weapon = new Weapon(Weapon.WEAPON_SHOTGUN);
 		this.angle = 0;
 	}
 	

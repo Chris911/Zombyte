@@ -24,12 +24,20 @@ public class Assets {
     public static TextureRegion blueTile;
     public static TextureRegion redTile;
 
+    // Sprites
+    public static Texture 		spritesMap;
+    public static TextureRegion zombieIdle;
+    public static TextureRegion zombieLeft;
+    public static TextureRegion zombieRight;
+    public static TextureRegion bullet;
+    
+
     
     public static void load(GLGame game) {
        	
     	// Main Menu (UI)
-    	mainMenuItems = new Texture(game, "mapPack1.png");
-    	mainMenuBackground = new TextureRegion(mainMenuItems, 0, 0, 800, 480);
+    	mainMenuItems = new Texture(game, "bg.png");
+    	mainMenuBackground = new TextureRegion(mainMenuItems, 0, 0, 1024, 512);
     	
     	// Game Screen 
     	tileMapItems = new Texture(game, "tilemap.png");
@@ -39,6 +47,11 @@ public class Assets {
     	// Game Objects
     	playerItems = new Texture(game, "pacman.png");
     	player = new TextureRegion(playerItems, 0, 0, 64, 64);
+    	
+    	// Sprites
+    	spritesMap = new Texture(game, "sprites.png");
+    	zombieIdle = new TextureRegion(spritesMap, 0, 0, 128, 128);
+    	bullet     = new TextureRegion(spritesMap, 128, 128, 128, 128);
 
     }       
     

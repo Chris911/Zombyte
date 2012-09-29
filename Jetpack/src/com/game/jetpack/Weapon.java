@@ -26,7 +26,7 @@ public class Weapon {
 		{
 			this.bulletsRemaining = 25;
 			this.damage = 15;
-			this.fireRate = 0.9f;
+			this.fireRate = 1.5f;
 			this.bulletSpeed = 17;
 		}
 		else if(type == WEAPON_RIFLE)
