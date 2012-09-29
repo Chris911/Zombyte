@@ -37,7 +37,6 @@ public class Assets {
     public static TextureRegion bulletYellow;
     
     // Weapons
-    public static Texture 		weaponsMap;
     public static TextureRegion shotgun;
     public static TextureRegion rocket;
     public static TextureRegion rocketBullet;
@@ -133,9 +132,9 @@ public class Assets {
         // LevelObjects
         tree = new TextureRegion(spritesMap, 128, 0, 128, 128);
     	explosionAnimation  = new Animation(0.07f, explosionFr1,explosionFr2,explosionFr3,explosionFr4,
-								    			  explosionFr5,explosionFr6,explosionFr7,explosionFr8,
-								    			  explosionFr9,explosionFr10,explosionFr11,explosionFr12,
-								    			  explosionFr13,explosionFr14,explosionFr15,explosionFr16);
+								    			   explosionFr5,explosionFr6,explosionFr7,explosionFr8,
+								    			   explosionFr9,explosionFr10,explosionFr11,explosionFr12,
+								    			   explosionFr13,explosionFr14,explosionFr15,explosionFr16);
     	
     }       
     
@@ -144,7 +143,6 @@ public class Assets {
     	playerItems.reload();
     	mainMenuItems.reload();
     	spritesMap.reload();
-    	weaponsMap.reload();
 
     	//if(Settings.soundEnabled )
            // music.play();
@@ -155,5 +153,4 @@ public class Assets {
          //   sound.play(0.4f);
     }
 }
-
 

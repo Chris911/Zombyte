@@ -32,6 +32,7 @@ public class WorldRenderer {
         renderBackground();
         renderObjects();
         renderExplosions();
+        renderRocketExplosion();
     }
     
     public void renderBackground() {
@@ -141,6 +142,23 @@ public class WorldRenderer {
     	catch(Exception e) { }
     }
     
+    private void renderRocketExplosion() {
+    	try {
+	    	batcher.beginBatch(Assets.explosionMap);
+	    	
+	        int len = world.rocketExplosionArray.size();
+	        for(int i = 0; i < len; i++) {
+	            RocketExplosion exp = world.rocketExplosionArray.get(i);  
+            	
+	            TextureRegion keyFrame = Assets.explosionAnimation.getKeyFrame(exp.stateTime, Animation.ANIMATION_LOOPING);
+            	batcher.drawSprite(exp.position.x, exp.position.y, 1.5f, 1.5f, keyFrame);
+	        }
+	       
+	        batcher.endBatch();
+    	}
+    	catch(Exception e) { }
+    }
+    
     private void renderAmmo() {
     	try {
     		batcher.beginBatch(Assets.spritesMap);
@@ -168,14 +186,9 @@ public class WorldRenderer {
                
                 else if(world.player.weapon.getType() == Weapon.WEAPON_ROCKET)
                 {
-                	// WE NEED TO DEAL WITH THIS - CHRIS
-                	batcher.endBatch();
-                	batcher.beginBatch(Assets.weaponsMap);
                 	batcher.drawSprite(bullet.position.x, bullet.position.y, 
-     					   Bullet.BASIC_HEIGHT, Bullet.BASIC_WIDTH, 
+     					   0.5f, 0.5f, 
      				       bullet.rotationAngle + 90, Assets.rocketBullet);
-                	batcher.endBatch();
-                	batcher.beginBatch(Assets.spritesMap);
                 }
             }
             
@@ -186,7 +199,7 @@ public class WorldRenderer {
     
     private void renderPowerUp() {
     	try {
-	    	batcher.beginBatch(Assets.weaponsMap);
+	    	batcher.beginBatch(Assets.spritesMap);
 	    	
 	        int len = world.PowerUpArray.size();
 	        for(int i = 0; i < len; i++) {
@@ -195,18 +208,21 @@ public class WorldRenderer {
 	            if(powerup.type == PowerUp.POWERUP_TYPE_SHOTGUN)
 	            {
 	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
-	            	batcher.drawSprite(powerup.position.x, powerup.position.y, 3.0f, 3.0f,(powerup.rotationAngle - 90)*180/3.146f, Assets.shotgun);
+	            	batcher.drawSprite(powerup.position.x, powerup.position.y, (float)(PowerUp.BASIC_WIDTH*1.5), (float)(PowerUp.BASIC_HEIGHT*1.5),
+	            					  (powerup.rotationAngle - 90)*180/3.146f, Assets.shotgun);
 	            	
 	            } 
 	            else if (powerup.type == PowerUp.POWERUP_TYPE_ROCKET) 
 	            {
 	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
-	            	batcher.drawSprite(powerup.position.x, powerup.position.y, 3.0f, 3.0f, (powerup.rotationAngle - 90)*180/3.146f, Assets.rocket);
+	            	batcher.drawSprite(powerup.position.x, powerup.position.y, (float)(PowerUp.BASIC_WIDTH*1.5), (float)(PowerUp.BASIC_HEIGHT*1.5), 
+	            					  (powerup.rotationAngle - 90)*180/3.146f, Assets.rocket);
 	            }
 	            else if (powerup.type == PowerUp.POWERUP_TYPE_RIFLE) 
 	            {
 	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
-	            	batcher.drawSprite(powerup.position.x, powerup.position.y, 3.0f, 3.0f, (powerup.rotationAngle - 90)*180/3.146f, Assets.rifle);
+	            	batcher.drawSprite(powerup.position.x, powerup.position.y, PowerUp.BASIC_WIDTH, PowerUp.BASIC_HEIGHT, 
+	            			          (powerup.rotationAngle - 90)*180/3.146f, Assets.rifle);
 	            }
 	        }
 	       
@@ -224,9 +240,7 @@ public class WorldRenderer {
 	        for(int i = 0; i < len; i++) {
 	            LevelObject lev = world.levelObjectsArray.get(i);  
 	            batcher.drawSprite(lev.position.x, lev.position.y, LevelObject.TREE_SIZE, LevelObject.TREE_SIZE,lev.asset);
-
 	        }
-	       
 	        batcher.endBatch();
     	}
     	catch(Exception e) { }	
