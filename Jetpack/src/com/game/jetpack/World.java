@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import android.util.Log;
+
 import com.bag.lib.math.OverlapTester;
 import com.bag.lib.math.Vector2;
 
@@ -179,12 +181,12 @@ public class World {
 	    synchronized (EnemyArray) {
 	    	for (int i = 0; i < len; i++) {
 		        Enemy enemy = EnemyArray.get(i);
+
 		        if (OverlapTester.overlapRectangles(enemy.bounds, player.bounds)) {
 		        	
 		        	len = EnemyArray.size();
-		        	player.state = Player.PLAYER_STATE_DAMAGE;
+		        	player.state = Player.PLAYER_STATE_HIT;
 		            //listener.hit();
-		        	enemy.life -= 100;
 		        }
 		    }
 		}   

@@ -320,14 +320,10 @@ public class GameScreen extends GLScreen {
     	// If X or Y stick position has moved, get the distance which acts as
     	// a speed delimiter and assign it as the player's velocity
     	if(moveStickIsMoving){
-    		world.player.velocity.x = moveJoystick.getStickBaseDistance().x/5;
+    		world.player.velocity.x = moveJoystick.getStickBaseDistance().x/10;
     		world.player.velocity.y = moveJoystick.getStickBaseDistance().y/10;
     		moveStickIsMoving = false;
     	}
-    		
-    	Log.d("1- Touch at: ","X: "+moveTouchPoint.x+" Y:"+moveTouchPoint.y);
-    	Log.d("1- Dpad base at: ","X: "+moveJoystick.basePosition.x+" Y:"+moveJoystick.basePosition.y);
-    	Log.d("1- Dpad stick at: ","X: "+moveJoystick.stickPosition.x+" Y:"+moveJoystick.stickPosition.y);
 
     	world.player.state = Player.PLAYER_STATE_MOVING;
     }
@@ -358,11 +354,6 @@ public class GameScreen extends GLScreen {
     		world.addBullet(actionJoystick.getAngle());
     		actionStickIsMoving = false;
     	}
-    		
-    	//Log.d("2- Touch at: ","X: "+touchPoint.x+" Y:"+touchPoint.y);
-    	//Log.d("2- Dpad base at: ","X: "+actionJoystick.basePosition.x+" Y:"+actionJoystick.basePosition.y);
-    	//Log.d("2- Dpad stick at: ","X: "+actionJoystick.stickPosition.x+" Y:"+actionJoystick.stickPosition.y);
-
     }
 }
 
