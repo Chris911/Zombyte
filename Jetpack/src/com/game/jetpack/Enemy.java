@@ -29,6 +29,8 @@ public class Enemy extends DynamicGameObject {
     private int   difficulty;
     public float rotationAngle;
     public int   score;
+    
+    public float stateTime;
 	
 	public Enemy(float x, float y, int type, int difficulty) {
 		super(x, y, ENEMY_BASIC_WIDTH, ENEMY_BASIC_HEIGHT); 
@@ -39,6 +41,7 @@ public class Enemy extends DynamicGameObject {
 		this.life = 1;
 		this.difficulty = difficulty;
 		this.type = type;
+		this.stateTime = 0.0f;
 		
 		initialize();
 	}
@@ -63,6 +66,7 @@ public class Enemy extends DynamicGameObject {
     
     public void update(float deltaTime) {    
     	bounds.lowerLeft.set(position).sub(bounds.width / 2, bounds.height / 2);
+    	stateTime += deltaTime;
     	
     	updateVelocity(); 
          

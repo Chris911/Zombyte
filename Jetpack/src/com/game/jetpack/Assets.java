@@ -31,13 +31,13 @@ public class Assets {
     public static TextureRegion zombieRight;
     public static TextureRegion bullet;
     
+    public static Animation zombieMoveAnimation;
+
+    
     // Weapons
     public static Texture weaponsMap;
     public static TextureRegion shotgun;
     public static TextureRegion rocket;
-    
-    
-
     
     public static void load(GLGame game) {
        	
@@ -57,7 +57,14 @@ public class Assets {
     	// Sprites
     	spritesMap = new Texture(game, "sprites.png");
     	zombieIdle = new TextureRegion(spritesMap, 0, 0, 128, 128);
+    	zombieLeft = new TextureRegion(spritesMap, 0, 128, 128, 128);
+    	zombieRight = new TextureRegion(spritesMap, 0, 256, 128, 128);
     	bullet     = new TextureRegion(spritesMap, 128, 128, 128, 128);
+    	
+    	zombieMoveAnimation = new Animation(0.30f,
+    								zombieLeft, 
+    								zombieIdle,
+    								zombieRight);
     	
     	//Weapons - Add them to to sprites map?
     	weaponsMap = new Texture(game, "weapons.png");

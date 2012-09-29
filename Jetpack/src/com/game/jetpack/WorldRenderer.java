@@ -2,8 +2,10 @@ package com.game.jetpack;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import com.bag.lib.gl.Animation;
 import com.bag.lib.gl.Camera2D;
 import com.bag.lib.gl.SpriteBatcher;
+import com.bag.lib.gl.TextureRegion;
 import com.bag.lib.impl.GLGraphics;
 
 public class WorldRenderer {
@@ -122,8 +124,8 @@ public class WorldRenderer {
 	            
 	            if(enemy.type == Enemy.ENEMY_TYPE_ZOMBIE)
 	            {
-	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
-	            	batcher.drawSprite(enemy.position.x, enemy.position.y, 1.4f, 1.4f,(enemy.rotationAngle - 90)*180/3.146f, Assets.zombieIdle);
+	            	TextureRegion keyFrame = Assets.zombieMoveAnimation.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
+	            	batcher.drawSprite(enemy.position.x, enemy.position.y, 1.4f, 1.4f,(enemy.rotationAngle - 90)*180/3.146f, keyFrame);
 	            	
 	            } 
 	            else if ( enemy.type == Enemy.ENEMY_TYPE_BOSS ) 
