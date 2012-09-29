@@ -34,6 +34,7 @@ public class World {
     public final List<PowerUp> PowerUpArray;
     public final List<LevelObject> levelObjectsArray;
 
+    public final List<RocketExplosion> rocketExplosionArray;
     public Explosion explosion;
     public final WorldListener listener;
     public final Random rand;
@@ -49,6 +50,8 @@ public class World {
         this.EnemyArray = new ArrayList<Enemy>();
         this.PowerUpArray = new ArrayList<PowerUp>();
         this.levelObjectsArray = new ArrayList<LevelObject>();
+        this.rocketExplosionArray = new ArrayList<RocketExplosion>();
+        
     	player = new Player(WORLD_WIDTH/2, 10);
         
     	this.listener = listener;
@@ -79,6 +82,7 @@ public class World {
 		updatePowerUp(deltaTime);
 		updateExplosions(deltaTime);
 		updateLevelObjects(deltaTime);
+		updateRocketExplosions(deltaTime);
 		checkCollisions();
 		checkGameOver();
 	}
@@ -168,6 +172,23 @@ public class World {
 		} catch(Exception e){}
 	}
 //	
+	
+	private void updateRocketExplosions(float deltaTime) {
+		try{
+			for (int i = 0; i < rocketExplosionArray.size(); i++) {
+				RocketExplosion exp = rocketExplosionArray.get(i);
+				if(exp.state == RocketExplosion.ROCKETEXP_STATE_ACTIVE)
+				{
+					exp.update(deltaTime);
+				}
+				else
+				{
+					rocketExplosionArray.remove(i);
+				}
+			}
+		} catch(Exception e){}
+	}
+	
 	private void checkCollisions() {
 		checkEnemyBulletCollisions();
 		checkPlayerEnemyCollisions();
@@ -204,6 +225,13 @@ public class World {
 		        	for (int j = 0; j < alen; j++){
 			        	Bullet bul = bulletArray.get(j);
 				        if (OverlapTester.overlapRectangles(bul.bounds, enemy.bounds)) {
+				        	if(player.weapon.getType() == Weapon.WEAPON_ROCKET)
+				        	{
+					        	float xPos = bul.position.x;
+					        	float yPos = bul.position.y;
+					        	rocketExplosionArray.add(new RocketExplosion(xPos, yPos));
+				        	}
+				        	
 				        	bulletArray.remove(bul);
 				            alen = bulletArray.size();
 				            
