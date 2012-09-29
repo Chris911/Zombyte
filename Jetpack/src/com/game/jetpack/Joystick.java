@@ -10,6 +10,7 @@ public class Joystick {
 	public Vector2 stickPosition;
 	public Vector2 xyDistance;
 	public float size;
+	public float lastAngle;
 	
 	public Joystick(float baseX, float baseY, float jsize){
 		basePosition = new Vector2(baseX,baseY);
@@ -45,7 +46,7 @@ public class Joystick {
 	
 	// Returns the distance between the stick and the base,
 	// In X and Y (in a vector) separately
-	public Vector2 getStickBaseDistance(){
+	public Vector2 getStickBaseDistance() {
 		
 		xyDistance.x = (stickPosition.x - basePosition.x);
 		xyDistance.y =  (stickPosition.y - basePosition.y);
@@ -56,9 +57,14 @@ public class Joystick {
 	public float getAngle() {
 		//Log.d("posy", "Stick diff Y: " + (stickPosition.y - basePosition.y));
 		//Log.d("posx", "Stick diff X: " + (stickPosition.x - basePosition.x));
-		float val = (float) Math.atan2(stickPosition.y - basePosition.y, stickPosition.x - basePosition.x) * (180/3.1416f);
-		Log.d("Angle", "Val: " +val);
-
+		float val = 0;
+		
+		if(stickPosition.y != basePosition.y && basePosition.x != stickPosition.x)
+			val = (float) Math.atan2(stickPosition.y - basePosition.y, stickPosition.x - basePosition.x) * (180/3.1416f);
+		else
+			val = lastAngle;
+		
+		lastAngle = val;
 		return val;
 	}
 }

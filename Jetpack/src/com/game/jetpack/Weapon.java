@@ -19,20 +19,20 @@ public class Weapon {
 		{
 			this.bulletsRemaining = 1;
 			this.damage = 10;
-			this.fireRate = 10;
+			this.fireRate = 0.5f;
 			this.bulletSpeed = 30;
 		}
 		else if(type == WEAPON_SHOTGUN)
 		{
 			this.bulletsRemaining = 25;
 			this.damage = 15;
-			this.fireRate = 7;
+			this.fireRate = 0.9f;
 			this.bulletSpeed = 17;
 		}
 		else if(type == WEAPON_RIFLE)
 		{
 			this.bulletsRemaining = 50;
-			this.damage = 12;
+			this.damage = 0.2f;
 			this.fireRate = 13;
 		}
 	}

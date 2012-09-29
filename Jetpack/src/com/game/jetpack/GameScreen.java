@@ -35,7 +35,8 @@ public class GameScreen extends GLScreen {
 
     int 			state;
     Camera2D 		guiCam;
-    Vector2 		touchPoint;
+    Vector2 		moveTouchPoint;
+    Vector2 		actionTouchPoint;
     float 			velocity;
     float 			angle;
     SpriteBatcher 	batcher;  
@@ -60,7 +61,7 @@ public class GameScreen extends GLScreen {
 	boolean 		actionJoystickFirstTouch = true;
 	boolean 		actionStickIsMoving 	 = false;
 	
-
+	boolean			shootTouchDown			= false;
     
     public GameScreen(Game game) {
         super(game);
@@ -72,8 +73,9 @@ public class GameScreen extends GLScreen {
         guiCam = new Camera2D(glGraphics, SCREEN_WIDTH, SCREEN_HEIGHT);
         
         // Prepare the first touch point
-        touchPoint = new Vector2();
-        
+        moveTouchPoint = new Vector2();
+        actionTouchPoint = new Vector2();
+
         // Create a sprite batcher capable of holding 5000 sprites
         batcher = new SpriteBatcher(glGraphics, 5000);
         
@@ -101,7 +103,6 @@ public class GameScreen extends GLScreen {
 
         moveJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
         actionJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
-
 
     }
 
@@ -142,26 +143,34 @@ public class GameScreen extends GLScreen {
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {
 	        TouchEvent event = touchEvents.get(i);
-	        touchPoint.set(event.x, event.y);
-	        guiCam.touchToWorld(touchPoint);
 	        	        
 	        if(event.type == TouchEvent.TOUCH_DRAGGED ||event.type == TouchEvent.TOUCH_DOWN){     
 	        	
 	        	// Touched in the left part of the screen
-	        	if(touchPoint.x < SCREEN_WIDTH/2){ // First 1/3 (starting from left)
+	        	if(event.x < SCREEN_WIDTH/2 - 30){ // First 1/2 (starting from left)
+	        		moveTouchPoint.set(event.x, event.y);
+	    	        guiCam.touchToWorld(moveTouchPoint);
 	        		handlePlayerMoveJoystickEvents();
-	        	} //else if (touchPoint.x < SCREEN_WIDTH/3*2 && touchPoint.x >= SCREEN_WIDTH/3 ) { // between 1/3 and 2/3
-	        		
-	        	 else { // last 1/3
-	        		handlePlayerActionJoystickEvents();
-	        	}
+	        	}	
+	        	 else if(event.x > SCREEN_WIDTH/2 + 30) { // last 1/2
+	        		shootTouchDown = true;
+	        		actionTouchPoint.set(event.x, event.y);
+	    	        guiCam.touchToWorld(actionTouchPoint);
+	        	 }
 	        }
 	        else if(event.type == TouchEvent.TOUCH_UP){
 	        	world.player.state = Player.PLAYER_STATE_IDLE;
 	        	moveJoystickFirstTouch = true;
-	        	actionJoystickFirstTouch = true;	
+	        	actionJoystickFirstTouch = true;
+	        	
+	        	if(event.x > SCREEN_WIDTH/2 + 30){ // First 1/2 (starting from left)
+	        		shootTouchDown = false;
+	        	}
 	        } 
 	    }    
+	    if(shootTouchDown)
+	    	handlePlayerActionJoystickEvents();
+	    
 	    elapsedTime += deltaTime;
 	    world.update(deltaTime, velocity);
 	}
@@ -175,8 +184,8 @@ public class GameScreen extends GLScreen {
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {      
 	        TouchEvent event = touchEvents.get(i);
-	        touchPoint.set(event.x, event.y);
-	        guiCam.touchToWorld(touchPoint);
+	        moveTouchPoint.set(event.x, event.y);
+	        guiCam.touchToWorld(moveTouchPoint);
 	    }
 	}
 
@@ -293,18 +302,18 @@ public class GameScreen extends GLScreen {
     	
     	// Place the Joystick's base at the first touch location
     	if(moveJoystickFirstTouch) {
-    		moveJoystick.setBasePosition(touchPoint);
+    		moveJoystick.setBasePosition(moveTouchPoint);
     		moveJoystickFirstTouch = false;
     	}
     	
     	// Test if the touchpoint is inside the X bounds of the joystick 
     	// and Move the stick position if so
-    	if(moveJoystick.moveStick_X(touchPoint)){
+    	if(moveJoystick.moveStick_X(moveTouchPoint)){
     		moveStickIsMoving = true;
     	}
     	
     	// Same in Y
-    	if(moveJoystick.moveStick_Y(touchPoint)){
+    	if(moveJoystick.moveStick_Y(moveTouchPoint)){
     		moveStickIsMoving = true;
     	}
     	
@@ -316,7 +325,7 @@ public class GameScreen extends GLScreen {
     		moveStickIsMoving = false;
     	}
     		
-    	Log.d("1- Touch at: ","X: "+touchPoint.x+" Y:"+touchPoint.y);
+    	Log.d("1- Touch at: ","X: "+moveTouchPoint.x+" Y:"+moveTouchPoint.y);
     	Log.d("1- Dpad base at: ","X: "+moveJoystick.basePosition.x+" Y:"+moveJoystick.basePosition.y);
     	Log.d("1- Dpad stick at: ","X: "+moveJoystick.stickPosition.x+" Y:"+moveJoystick.stickPosition.y);
 
@@ -328,18 +337,18 @@ public class GameScreen extends GLScreen {
     	
     	// Place the Joystick's base at the first touch location
     	if(actionJoystickFirstTouch) {
-    		actionJoystick.setBasePosition(touchPoint);
+    		actionJoystick.setBasePosition(actionTouchPoint);
     		actionJoystickFirstTouch = false;
     	}
     	
     	// Test if the touchpoint is inside the X bounds of the joystick 
     	// and Move the stick position if so
-    	if(actionJoystick.moveStick_X(touchPoint)){
+    	if(actionJoystick.moveStick_X(actionTouchPoint)){
     		actionStickIsMoving = true;
     	}
     	
     	// Same in Y
-    	if(actionJoystick.moveStick_Y(touchPoint)){
+    	if(actionJoystick.moveStick_Y(actionTouchPoint)){
     		actionStickIsMoving = true;
     	}
     	

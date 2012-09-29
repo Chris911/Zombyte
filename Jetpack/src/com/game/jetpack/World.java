@@ -38,6 +38,8 @@ public class World {
     public final WorldListener listener;
     public final Random rand;
     
+    public float lastBulletFiredTime;
+    
     public int state;
     
     // Tiles map
@@ -55,6 +57,7 @@ public class World {
        
         level = new int[(int) WORLD_WIDTH][(int) WORLD_HEIGHT];
         this.state = WORLD_STATE_RUNNING;
+        lastBulletFiredTime = 0.0f;
         
         // Initialize tiles map
         for(int i = 0; i < WORLD_WIDTH; i++)
@@ -199,31 +202,36 @@ public class World {
 	}
 	
 	public void addBullet(float angle){
-		synchronized (bulletArray) {
-			
-		// Condition to regulate the bullets being fired
-			if(player.weapon.getType() == Weapon.WEAPON_PISTOL )
-			{
-				bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
-											   player.position.y + (float)(Math.sin(angle/180*3.146)),
-											   angle, player.weapon.getBulletSpeed()));
-			
+		synchronized (bulletArray) {	
+			if(lastBulletFiredTime > player.weapon.getFireRate()) {	
+				// Condition to regulate the bullets being fired
+					if(player.weapon.getType() == Weapon.WEAPON_PISTOL )
+					{
+						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
+													   player.position.y + (float)(Math.sin(angle/180*3.146)),
+													   angle, player.weapon.getBulletSpeed()));
+					
+					}
+					else if (player.weapon.getType() == Weapon.WEAPON_SHOTGUN) 
+					{
+						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
+								   player.position.y + (float)(Math.sin(angle/180*3.146)),
+								   angle + 5,
+								   player.weapon.getBulletSpeed()));
+						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos((angle)/180*3.146)), 
+								   player.position.y + (float)(Math.sin(angle/180*3.146)),
+								   angle,
+								   player.weapon.getBulletSpeed()));
+						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle)/180*3.146), 
+								   player.position.y + (float)(Math.sin(angle/180*3.146)),
+								   angle - 5,
+								   player.weapon.getBulletSpeed()));
+						
+					}
+					lastBulletFiredTime = 0.0f; 
 			}
-			else if (player.weapon.getType() == Weapon.WEAPON_SHOTGUN) 
-			{
-				bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
-						   player.position.y + (float)(Math.sin(angle/180*3.146)),
-						   angle + 5,
-						   player.weapon.getBulletSpeed()));
-				bulletArray.add(new Bullet(player.position.x + (float)(Math.cos((angle)/180*3.146)), 
-						   player.position.y + (float)(Math.sin(angle/180*3.146)),
-						   angle,
-						   player.weapon.getBulletSpeed()));
-				bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle)/180*3.146), 
-						   player.position.y + (float)(Math.sin(angle/180*3.146)),
-						   angle - 5,
-						   player.weapon.getBulletSpeed()));
-				
+			else {
+				lastBulletFiredTime += 0.1f;
 			}
 		}
 	}
