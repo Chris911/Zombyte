@@ -1,7 +1,5 @@
 package com.game.jetpack;
 
-import java.util.Random;
-
 import com.bag.lib.DynamicGameObject;
 
 public class Enemy extends DynamicGameObject {

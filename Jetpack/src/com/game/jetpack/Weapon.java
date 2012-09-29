@@ -37,9 +37,9 @@ public class Weapon {
 		}
 		else if(type == WEAPON_RIFLE)
 		{
-			this.bulletsRemaining = 50; 
-			this.damage = 8.0f;
-			this.fireRate = 0.1f;
+			this.bulletsRemaining = 150; 
+			this.damage = 3.0f;
+			this.fireRate = 0.15f;
 			this.bulletSpeed = 30;
 		}
 		else if(type == WEAPON_ROCKET)
