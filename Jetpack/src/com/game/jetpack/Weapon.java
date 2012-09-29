@@ -20,7 +20,7 @@ public class Weapon {
 			this.bulletsRemaining = 1;
 			this.damage = 10;
 			this.fireRate = 10;
-			this.bulletSpeed = 10;
+			this.bulletSpeed = 30;
 		}
 		else if(type == WEAPON_SHOTGUN)
 		{

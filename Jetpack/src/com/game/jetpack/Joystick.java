@@ -54,8 +54,11 @@ public class Joystick {
 	}
 	
 	public float getAngle() {
-		Log.d("posy", "Stick diff Y: " + (stickPosition.y - basePosition.y));
-		Log.d("posx", "Stick diff X: " + (stickPosition.x - basePosition.x));
-		return (float) Math.atan2(stickPosition.y - basePosition.y, stickPosition.x - basePosition.x);
+		//Log.d("posy", "Stick diff Y: " + (stickPosition.y - basePosition.y));
+		//Log.d("posx", "Stick diff X: " + (stickPosition.x - basePosition.x));
+		float val = (float) Math.atan2(stickPosition.y - basePosition.y, stickPosition.x - basePosition.x) * (180/3.1416f);
+		Log.d("Angle", "Val: " +val);
+
+		return val;
 	}
 }

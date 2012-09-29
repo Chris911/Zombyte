@@ -350,9 +350,9 @@ public class GameScreen extends GLScreen {
     		actionStickIsMoving = false;
     	}
     		
-    	Log.d("2- Touch at: ","X: "+touchPoint.x+" Y:"+touchPoint.y);
-    	Log.d("2- Dpad base at: ","X: "+actionJoystick.basePosition.x+" Y:"+actionJoystick.basePosition.y);
-    	Log.d("2- Dpad stick at: ","X: "+actionJoystick.stickPosition.x+" Y:"+actionJoystick.stickPosition.y);
+    	//Log.d("2- Touch at: ","X: "+touchPoint.x+" Y:"+touchPoint.y);
+    	//Log.d("2- Dpad base at: ","X: "+actionJoystick.basePosition.x+" Y:"+actionJoystick.basePosition.y);
+    	//Log.d("2- Dpad stick at: ","X: "+actionJoystick.stickPosition.x+" Y:"+actionJoystick.stickPosition.y);
 
     }
 }
