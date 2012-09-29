@@ -133,9 +133,9 @@ public class GameScreen extends GLScreen {
 	// Update when state is READY
 	private void updateReady() {
 		// First touch 
-	    //if(game.getInput().getTouchEvents().size() > 0) {
+	    if(game.getInput().getTouchEvents().size() > 0) {
 	        state = GAME_RUNNING;
-	    //}
+	    }
 	}
 	
 	// Update when state is RUNNING
@@ -178,6 +178,9 @@ public class GameScreen extends GLScreen {
 	    
 	    elapsedTime += deltaTime;
 	    world.update(deltaTime, velocity);
+	    
+	    if(world.state == World.WORLD_STATE_GAME_OVER)
+	    	this.state = GAME_OVER;
 	}
 	
 	private void updatePaused() {
@@ -191,6 +194,10 @@ public class GameScreen extends GLScreen {
 	        TouchEvent event = touchEvents.get(i);
 	        moveTouchPoint.set(event.x, event.y);
 	        guiCam.touchToWorld(moveTouchPoint);
+	        
+	        if(event.type == TouchEvent.TOUCH_UP) {
+	        	game.setScreen(new MainMenuScreen(game));
+	        }
 	    }
 	}
 
@@ -240,12 +247,17 @@ public class GameScreen extends GLScreen {
 	
 	private void presentReady() {
          // Draw here
-		drawUI();
+		GL10 gl = glGraphics.getGL();
+		gl.glColor4f(1, 1, 1, 1);
+	    batcher.beginBatch(Assets.fontTex);
+	    Assets.font.drawText(batcher, "PRESS TO START!", 300, 300);
+	    batcher.endBatch();
 	}
 	
 	private void presentRunning() {
 		// Draw here
 		drawUI();
+
 	}
 	
 	private void presentPaused() { 
@@ -258,6 +270,11 @@ public class GameScreen extends GLScreen {
 	
 	private void presentGameOver() {
 		// Draw here
+		GL10 gl = glGraphics.getGL();
+		gl.glColor4f(1, 1, 1, 1);
+	    batcher.beginBatch(Assets.fontTex);
+	    Assets.font.drawText(batcher, "GAME OVER", 300, 300);
+	    batcher.endBatch();
 	}
 	
 	private void drawUI()
@@ -276,6 +293,12 @@ public class GameScreen extends GLScreen {
 		batcher.drawSprite(actionJoystick.stickPosition.x, actionJoystick.stickPosition.y, JOYSTICK_SIZE*0.8f, JOYSTICK_SIZE*0.8f, Assets.blueTile);
 		
 		batcher.endBatch();
+		
+	    batcher.beginBatch(Assets.fontTex);
+	    Assets.font.drawText(batcher, "SCORE: "+world.score, 30, 450);
+	    Assets.font.drawText(batcher, "LIVES: "+world.player.life, 30, 430);
+	    batcher.endBatch();
+		
 		} catch(Exception e){
 			
 		}

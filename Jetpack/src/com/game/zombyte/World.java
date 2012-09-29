@@ -28,8 +28,6 @@ public class World {
     public static final int WORLD_STATE_NEXT_LEVEL 	= 1;
     public static final int WORLD_STATE_GAME_OVER 	= 2;
     
-    public static final Vector2 friction = new Vector2(-12, 0);
-
     public final Player player;
     public final List<Bullet> bulletArray;
     public final List<Enemy> EnemyArray;
@@ -43,6 +41,7 @@ public class World {
     public float lastBulletFiredTime;
     
     public int state;
+    public int score;
     
 
     public World(WorldListener listener) {
@@ -58,8 +57,10 @@ public class World {
        
         this.state = WORLD_STATE_RUNNING;
         lastBulletFiredTime = 0.0f;
+        score = 0;
         
         explosion = null;
+        
         initEnemies();
         LevelModifier.addTreesToMap(this);
     }
@@ -79,7 +80,7 @@ public class World {
 		updateExplosions(deltaTime);
 		updateLevelObjects(deltaTime);
 		checkCollisions();
-		//checkGameOver();
+		checkGameOver();
 	}
 
 	private void updatePlayer(float deltaTime, float speed) {
@@ -105,7 +106,7 @@ public class World {
 	private void updatePowerUp(float deltaTime) {
 		synchronized (PowerUpArray) {
 			for(int i = 0; i < PowerUpArray.size(); i ++){
-				PowerUpArray.get(i).update(deltaTime);
+				PowerUpArray.get(i).update(deltaTime); 
 			}
 		}
 	}
@@ -183,7 +184,7 @@ public class World {
 		        Enemy enemy = EnemyArray.get(i);
 
 		        if (OverlapTester.overlapRectangles(enemy.bounds, player.bounds)) {
-		        	
+		        	player.life -= 1;
 		        	len = EnemyArray.size();
 		        	player.state = Player.PLAYER_STATE_HIT;
 		            //listener.hit();
@@ -207,7 +208,7 @@ public class World {
 				            alen = bulletArray.size();
 				            
 				            enemy.life -= 1; 
-				            
+				            score += enemy.score;
 				            // Add particle effect 
 					    	explosion = new Explosion(20, (int)enemy.position.x, (int)enemy.position.y);
 				            //enemy.life -= bul.weaponDamage; 
@@ -252,12 +253,12 @@ public class World {
 		}   
 	}
 //	
-//	private void checkGameOver() {  	  	
-////    	if (tank.life <=  0) {
-////            state = WORLD_STATE_GAME_OVER;
-////            listener.gameOver();
-////        }
-//	}
+	private void checkGameOver() {  	  	
+    	if (player.life <=  0) {
+            state = WORLD_STATE_GAME_OVER;
+            //listener.gameOver();
+        }
+	}
 	
 	private void addEnemy(){
 		int pos  = rand.nextInt(4);

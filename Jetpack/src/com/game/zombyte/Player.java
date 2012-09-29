@@ -25,7 +25,7 @@ public class Player extends DynamicGameObject {
     public int previousState;
     
     // Number of life remaining
-    private float life;
+    public int life;
     
     // Speed of the player (walking / running)
     private float speed;
