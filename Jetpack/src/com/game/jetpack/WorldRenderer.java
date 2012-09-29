@@ -4,11 +4,12 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.bag.lib.gl.Camera2D;
 import com.bag.lib.gl.SpriteBatcher;
+import com.bag.lib.gl.TextureRegion;
 import com.bag.lib.impl.GLGraphics;
 
 public class WorldRenderer {
-    static final float FRUSTUM_WIDTH = 20;
-    static final float FRUSTUM_HEIGHT = 11;
+    static final float FRUSTUM_WIDTH = 80;
+    static final float FRUSTUM_HEIGHT = 44;
 	
     GLGraphics 		glGraphics;
     World 			world;
@@ -65,6 +66,7 @@ public class WorldRenderer {
         gl.glColor4f(1, 1, 1, 1);
         
         renderPlayer();
+        renderEnemies();
         renderAmmo();
         
         gl.glDisable(GL10.GL_BLEND);
@@ -110,9 +112,34 @@ public class WorldRenderer {
 	    gl.glColor4f(1, 1, 1, 1);
     }
     
+    private void renderEnemies() {
+    	try {
+	    	batcher.beginBatch(Assets.tileMapItems);
+	    	
+	        int len = world.EnemyArray.size();
+	        for(int i = 0; i < len; i++) {
+	            Enemy enemy = world.EnemyArray.get(i);  
+	            
+	            if(enemy.type == Enemy.ENEMY_TYPE_ZOMBIE)
+	            {
+	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
+	            	batcher.drawSprite(enemy.position.x, enemy.position.y, 1.4f, 1.4f,enemy.rotationAngle - 90, Assets.player);
+	            	
+	            } 
+	            else if ( enemy.type == Enemy.ENEMY_TYPE_BOSS ) 
+	            {
+	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
+	            	batcher.drawSprite(enemy.position.x, enemy.position.y, 5, 5, enemy.rotationAngle - 90, Assets.blueTile);
+	            }
+	        }
+	       
+	        batcher.endBatch();
+    	}
+    	catch(Exception e) { }
+    }
+    
     private void renderAmmo() {
     	try {
-    		
     		batcher.beginBatch(Assets.tileMapItems);
         	
             int len = world.bulletArray.size();

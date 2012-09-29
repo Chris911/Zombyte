@@ -32,7 +32,7 @@ public class World {
     public final Player player;
     //public final Tank tank;
     public final List<Bullet> bulletArray;
-    //public final List<Enemy> EnemyArray;
+    public final List<Enemy> EnemyArray;
     //public final List<PowerUp> PowerUpArray;
     public Explosion explosion;
     public final WorldListener listener;
@@ -47,7 +47,7 @@ public class World {
 
     public World(WorldListener listener) {
         this.bulletArray = new ArrayList<Bullet>();
-        //this.EnemyArray = new ArrayList<Enemy>();
+        this.EnemyArray = new ArrayList<Enemy>();
         //this.PowerUpArray = new ArrayList<PowerUp>();
     	player = new Player(WORLD_WIDTH/2, 10);
         
@@ -66,8 +66,17 @@ public class World {
         
         explosion = null;
         generateLevel();
+        initEnemies();
     }
-
+    
+    private void initEnemies()
+    {
+    	for (int i = 0; i < 20
+    			; i++) {
+			addEnemy(); 
+		}
+    }
+    
     //Populate the level (tiles map) and adds enemies
 	private void generateLevel() {
 			
@@ -87,7 +96,7 @@ public class World {
 	public void update(float deltaTime, float speed) {
 		updatePlayer(deltaTime, speed);
 		updateBullet(deltaTime);
-		//updateEnemies(deltaTime);
+		updateEnemies(deltaTime);
 		//updatePowerUp(deltaTime);
 		updateExplosions(deltaTime);
 		//checkCollisions();
@@ -124,14 +133,25 @@ public class World {
 //	}
 //	
 //	
-//	private void updateEnemies(float deltaTime) {
-////	    int len = EnemyArray.size();
-////	    for (int i = 0; i < len; i++) {
-////	        Enemy enemy = EnemyArray.get(i);
-////	        enemy.update(deltaTime);
-////	        
-////	    }
-//	}
+	private void updateEnemies(float deltaTime) {
+	    int len = EnemyArray.size();
+	    if(len <= 2)
+	    {
+	    	for(int i=0; i<10; i++)
+	    	{
+	    		addEnemy();
+	    	}
+	    }
+	    for (int i = 0; i < len; i++) {
+	        Enemy enemy = EnemyArray.get(i);
+	        float distX = player.position.x - enemy.position.x;
+	        float distY = player.position.y - enemy.position.y;
+	        float angle = (float) Math.atan2(distY, distX);
+	        enemy.rotationAngle = angle;
+	        enemy.update(deltaTime);
+	        
+	    }
+	}
 	private void updateExplosions(float deltaTime) {
 		try{	
 			explosion.update(deltaTime);
@@ -196,9 +216,25 @@ public class World {
 ////        }
 //	}
 	
-	@SuppressWarnings("unused")
 	private void addEnemy(){
-		// add enemy here
+		int pos  = rand.nextInt(4);
+		int diff = rand.nextInt(5) + 2;
+		if(pos == 0)
+		{
+			EnemyArray.add(new Enemy(WORLD_WIDTH/2+rand.nextInt(5) - 5, -10, Enemy.ENEMY_TYPE_ZOMBIE, diff));
+		}
+		else if(pos == 1)
+		{
+			EnemyArray.add(new Enemy(-10, WORLD_HEIGHT/2+rand.nextInt(5) - 5, Enemy.ENEMY_TYPE_ZOMBIE, diff));
+		}
+		else if(pos == 2)
+		{
+			EnemyArray.add(new Enemy(WORLD_WIDTH/2+rand.nextInt(5) - 5, WORLD_HEIGHT + 10, Enemy.ENEMY_TYPE_ZOMBIE, diff));
+		}
+		else
+		{
+			EnemyArray.add(new Enemy(WORLD_WIDTH + 10, WORLD_HEIGHT/2+rand.nextInt(5) - 5, Enemy.ENEMY_TYPE_ZOMBIE, diff));
+		}
 	}
 	
 	public void addBullet(float angle){
