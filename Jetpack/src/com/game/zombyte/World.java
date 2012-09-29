@@ -160,6 +160,13 @@ public class World {
 	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_RIFLE);
 	        	}
 	        }
+	        if(player.state == Player.PLAYER_STATE_HIDDEN)
+	        {
+	        	enemy.state = Enemy.ENEMY_STATE_RETARDED;
+	        }
+	        else{
+	        	enemy.state = Enemy.ENEMY_STATE_ALIVE;
+	        }
 	    }
 	}
 	private void updateExplosions(float deltaTime) {
@@ -184,7 +191,6 @@ public class World {
 		        Enemy enemy = EnemyArray.get(i);
 
 		        if (OverlapTester.overlapRectangles(enemy.bounds, player.bounds)) {
-		        	player.life -= 1;
 		        	len = EnemyArray.size();
 		        	player.state = Player.PLAYER_STATE_HIT;
 		            //listener.hit();

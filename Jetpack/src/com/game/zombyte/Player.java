@@ -1,5 +1,7 @@
 package com.game.zombyte;
 
+import android.util.Log;
+
 import com.bag.lib.DynamicGameObject;
 
 public class Player extends DynamicGameObject {
@@ -8,7 +10,7 @@ public class Player extends DynamicGameObject {
     public static final float PLAYER_HEIGHT 		= 1.4f;
     public static final float PLAYER_FLOOR_POSITION = 0.5f + PLAYER_HEIGHT/2;
     public static final float PLAYER_MAX_VELOCITY	= 12.0f;
-    public static final float PLAYER_DAMAGE_TIME	= 3.0f;
+    public static final float PLAYER_DAMAGE_TIME	= 1.0f;
     public static final float PLAYER_BASE_SPEED		= 1.2f;
     public static final float PLAYER_MAX_SPEED		= 1.8f;
 
@@ -18,7 +20,7 @@ public class Player extends DynamicGameObject {
     public static final int PLAYER_STATE_HIT_WALL 	= 3;
     public static final int PLAYER_STATE_DEAD 		= 4;
     public static final int PLAYER_STATE_HIT 		= 5;
-
+    public static final int PLAYER_STATE_HIDDEN		= 6;
 
     public int state;
     
@@ -30,7 +32,8 @@ public class Player extends DynamicGameObject {
     // Speed of the player (walking / running)
     private float speed;
     
-    private boolean isImmuneToDamge;
+    private boolean isImmuneToDamage;
+    private boolean isTakingDamage;
     
     // Current weapon
     public Weapon weapon;
@@ -47,7 +50,8 @@ public class Player extends DynamicGameObject {
 		this.state = PLAYER_STATE_IDLE;
 		this.life = 6;
 		this.speed = 0.8f;
-		this.isImmuneToDamge = false;
+		this.isImmuneToDamage = false;
+		this.isTakingDamage = false;
 		this.weapon = new Weapon(Weapon.WEAPON_PISTOL);
 		this.angle = 0;
 		this.inDamageStateTime = 0;
@@ -56,15 +60,23 @@ public class Player extends DynamicGameObject {
 	public void update(float deltaTime) {
     	bounds.lowerLeft.set(position).sub(bounds.width / 2, bounds.height / 2);
 		
+    	
+		if (isTakingDamage){
+			life --;
+			isTakingDamage = false;
+			isImmuneToDamage = true;
+		}
+    	
     	// Check if the player is currently immune to damage
-		if(isImmuneToDamge) 
+		if(isImmuneToDamage) 
 		{
 			speed = PLAYER_MAX_SPEED;
 			inDamageStateTime += deltaTime;
+			Log.d("Time","t: "+inDamageStateTime);
 			if(inDamageStateTime >= PLAYER_DAMAGE_TIME)
 			{
 				inDamageStateTime = 0; 
-				isImmuneToDamge = false;
+				isImmuneToDamage = false;
 				speed = PLAYER_BASE_SPEED;
 			}
 		}
@@ -83,17 +95,12 @@ public class Player extends DynamicGameObject {
 			
 		}
 		else if(state == PLAYER_STATE_HIT)
-		{			
-			previousState = state;
-			this.life--;
-			
-			isImmuneToDamge = true;
-			
-			if(life <= 0)
-			{
-				this.state = PLAYER_STATE_DEAD;
-			}
+		{	
+			if(!isImmuneToDamage)
+				isTakingDamage = true;
 		}
+		
+
 		
 		// Modify position
 		position.add(velocity.x * deltaTime * speed, velocity.y * deltaTime * speed);
