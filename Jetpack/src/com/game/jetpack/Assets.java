@@ -39,6 +39,9 @@ public class Assets {
     public static TextureRegion rocket;
     public static TextureRegion rocketBullet;
     public static TextureRegion rifle;
+    
+    // Animations
+    public static Animation		zombieMoveAnimation;
 
     
     public static void load(GLGame game) {
@@ -59,6 +62,8 @@ public class Assets {
     	// Sprites
     	spritesMap = new Texture(game, "sprites.png");
     	zombieIdle = new TextureRegion(spritesMap, 0, 0, 128, 128);
+    	zombieLeft = new TextureRegion(spritesMap, 0, 128, 128, 128);
+    	zombieRight = new TextureRegion(spritesMap, 0, 256, 128, 128);
     	bullet     = new TextureRegion(spritesMap, 128, 128, 128, 128);
     	bulletRed  = new TextureRegion(spritesMap, 128, 256, 128, 128);
     	bulletYellow  = new TextureRegion(spritesMap, 128, 384, 128, 128);
@@ -69,6 +74,9 @@ public class Assets {
     	rocket     = new TextureRegion(weaponsMap, 64, 0, 64, 64);
     	rocketBullet = new TextureRegion(weaponsMap, 0, 64, 64, 64);
     	rifle 	   = new TextureRegion(weaponsMap, 64, 64, 64, 64);
+    	
+    	// Animation
+    	zombieMoveAnimation = new Animation(0.2f, zombieLeft, zombieIdle, zombieRight );
     }       
     
     public static void reload() {
