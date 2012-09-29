@@ -22,6 +22,12 @@ public class Joystick {
 	public void setBasePosition(Vector2 newPos){
 		basePosition.x = newPos.x;
 		basePosition.y = newPos.y;
+		resetStickPosition();
+	}
+	
+	public void resetStickPosition(){
+		stickPosition.x = basePosition.x;
+		stickPosition.y = basePosition.y;	
 	}
 	
 	// Returns true if the touch was in bounds and the stick position was 

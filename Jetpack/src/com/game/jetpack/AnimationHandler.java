@@ -45,9 +45,9 @@ public class AnimationHandler {
         	UIButton but = buttons.get(idx);
         	
         	if(but.state == UIButton.STATE_IDLE){
-                batcher.drawSprite(but.position.x, but.position.y,but.R_width , but.R_height, 2.5f*sceneAngle, but.idleState);
+                batcher.drawSprite(but.position.x, but.position.y,but.R_width, but.R_height, sceneAngle, but.idleState);
         	} else if (but.state == UIButton.STATE_PRESSED){
-                batcher.drawSprite(but.position.x, but.position.y,but.R_width , but.R_height, 2.5f*sceneAngle, but.pressedState);
+                batcher.drawSprite(but.position.x, but.position.y,but.R_width, but.R_height, sceneAngle, but.pressedState);
         	}
         }
         

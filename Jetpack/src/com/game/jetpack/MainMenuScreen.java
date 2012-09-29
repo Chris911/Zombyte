@@ -27,9 +27,10 @@ public class MainMenuScreen extends GLScreen {
     Screen screen;
     
     ArrayList<UIButton> buttonsAssets;
-    UIButton playButton;
+    UIButton singlePlayButton;
+    UIButton coopPlayButton;
     UIButton highScoresButton;
-
+    UIButton tutorialButton;
 
     public MainMenuScreen(Game game) {
         super(game);
@@ -47,11 +48,17 @@ public class MainMenuScreen extends GLScreen {
         Assets.load((GLGame) game);
         
         // UI Buttons and the array with all of their assets
-        playButton = new UIButton(500,200,200,200,Assets.blueTile,Assets.redTile);
-        highScoresButton = new UIButton(200,200,200,200,Assets.blueTile,Assets.redTile);
+        singlePlayButton = new UIButton(160, 100, 120, 100, Assets.blueTile, Assets.redTile);
+        coopPlayButton 	 = new UIButton(320, 100, 120, 100, Assets.blueTile, Assets.redTile);
+        highScoresButton = new UIButton(480, 100, 120, 100, Assets.blueTile, Assets.redTile);
+        tutorialButton   = new UIButton(640, 100, 120, 100, Assets.blueTile, Assets.redTile);
+        
         buttonsAssets = new ArrayList<UIButton>();
-        buttonsAssets.add(playButton);
-        buttonsAssets.add(highScoresButton);  
+        buttonsAssets.add(singlePlayButton);
+        buttonsAssets.add(highScoresButton);
+        buttonsAssets.add(coopPlayButton);
+        buttonsAssets.add(tutorialButton);
+
         
         animationHandler = new AnimationHandler(game, buttonsAssets);
         changeScreen = false;
@@ -79,17 +86,17 @@ public class MainMenuScreen extends GLScreen {
             guiCam.touchToWorld(touchPoint);
             
             if(event.type == TouchEvent.TOUCH_DOWN){
-                if(OverlapTester.pointInRectangle(playButton.bounds, touchPoint)) {
-                	playButton.state = UIButton.STATE_PRESSED;
+                if(OverlapTester.pointInRectangle(singlePlayButton.bounds, touchPoint)) {
+                	singlePlayButton.state = UIButton.STATE_PRESSED;
                 }	
             }
             
             // Detect touch on specific bounding rects
             if(event.type == TouchEvent.TOUCH_UP) { 
-                if(playButton.state == UIButton.STATE_PRESSED) {
+                if(singlePlayButton.state == UIButton.STATE_PRESSED) {
                 	changeScreen = true;
                 	screen = new GameScreen(game); 
-                	playButton.state = UIButton.STATE_IDLE;
+                	singlePlayButton.state = UIButton.STATE_IDLE;
                 }
             }
         }

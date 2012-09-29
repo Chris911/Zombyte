@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import android.util.Log;
-
 import com.bag.lib.math.OverlapTester;
 import com.bag.lib.math.Vector2;
 

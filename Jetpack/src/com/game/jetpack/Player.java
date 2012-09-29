@@ -50,7 +50,7 @@ public class Player extends DynamicGameObject {
 		this.life = 6;
 		this.speed = 0.8f;
 		this.isImmuneToDamge = false;
-		this.weapon = new Weapon(Weapon.WEAPON_SHOTGUN);
+		this.weapon = new Weapon(Weapon.WEAPON_PISTOL);
 		this.angle = 0;
 		this.inDamageStateTime = 0;
 	}

@@ -27,7 +27,7 @@ public class GameScreen extends GLScreen {
     static final int GAME_OVER 		= 4;
     
     // Dpad's positions
-    static final int JOYSTICK_SIZE	= 128;
+    static final int JOYSTICK_SIZE	= 90;
     
     // Screen size
     static final int SCREEN_WIDTH	= 800;
@@ -102,8 +102,9 @@ public class GameScreen extends GLScreen {
         elapsedTime = 0;
 
         moveJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
+        moveJoystick.setBasePosition(new Vector2(120,100));
         actionJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
-
+        actionJoystick.setBasePosition(new Vector2(680,100));
     }
 
 	@Override
@@ -163,8 +164,12 @@ public class GameScreen extends GLScreen {
 	        	moveJoystickFirstTouch = true;
 	        	actionJoystickFirstTouch = true;
 	        	
+	        	if(event.x < SCREEN_WIDTH/2 - 30){ // First 1/2 (starting from left)
+	                moveJoystick.resetStickPosition();
+	        	}
 	        	if(event.x > SCREEN_WIDTH/2 + 30){ // First 1/2 (starting from left)
 	        		shootTouchDown = false;
+	                actionJoystick.resetStickPosition();
 	        	}
 	        } 
 	    }    
@@ -206,7 +211,7 @@ public class GameScreen extends GLScreen {
 	    guiCam.setViewportAndMatrices();
 	    gl.glEnable(GL10.GL_BLEND);
 	    gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-	    gl.glColor4f(1, 1, 1, 0.8f);
+	    gl.glColor4f(1, 1, 1, 0.6f);
 	    
 	    //batcher.beginBatch(Assets.gameScreenItems);
 	    
@@ -259,24 +264,16 @@ public class GameScreen extends GLScreen {
 	{
 		try{
 		batcher.beginBatch(Assets.tileMapItems);
-		// Draw Move Joystick 
-		if(!moveJoystickFirstTouch){
-			
-			// Base
-			batcher.drawSprite(moveJoystick.basePosition.x, moveJoystick.basePosition.y, moveJoystick.size*2, moveJoystick.size*2, Assets.redTile);
-			// Stick
-			batcher.drawSprite(moveJoystick.stickPosition.x, moveJoystick.stickPosition.y, 100, 100, Assets.blueTile);
-			
-		}
 		
-		if(!actionJoystickFirstTouch){
-			
-			// Base
-			batcher.drawSprite(actionJoystick.basePosition.x, actionJoystick.basePosition.y, actionJoystick.size*2, actionJoystick.size*2, Assets.redTile);
-			// Stick
-			batcher.drawSprite(actionJoystick.stickPosition.x, actionJoystick.stickPosition.y, 100, 100, Assets.blueTile);
-			
-		}
+		// Base
+		batcher.drawSprite(moveJoystick.basePosition.x, moveJoystick.basePosition.y, moveJoystick.size*2, moveJoystick.size*2, Assets.redTile);
+		// Stick
+		batcher.drawSprite(moveJoystick.stickPosition.x, moveJoystick.stickPosition.y, JOYSTICK_SIZE*0.8f, JOYSTICK_SIZE*0.8f, Assets.blueTile);
+	
+		// Base
+		batcher.drawSprite(actionJoystick.basePosition.x, actionJoystick.basePosition.y, actionJoystick.size*2, actionJoystick.size*2, Assets.redTile);
+		// Stick
+		batcher.drawSprite(actionJoystick.stickPosition.x, actionJoystick.stickPosition.y, JOYSTICK_SIZE*0.8f, JOYSTICK_SIZE*0.8f, Assets.blueTile);
 		
 		batcher.endBatch();
 		} catch(Exception e){
@@ -299,12 +296,6 @@ public class GameScreen extends GLScreen {
     
     // Handle a full pass through the move joystick possible events
     public void handlePlayerMoveJoystickEvents() {
-    	
-    	// Place the Joystick's base at the first touch location
-    	if(moveJoystickFirstTouch) {
-    		moveJoystick.setBasePosition(moveTouchPoint);
-    		moveJoystickFirstTouch = false;
-    	}
     	
     	// Test if the touchpoint is inside the X bounds of the joystick 
     	// and Move the stick position if so
@@ -330,12 +321,6 @@ public class GameScreen extends GLScreen {
     
     // Handle a full pass through the action joystick possible events
     public void handlePlayerActionJoystickEvents() {
-    	
-    	// Place the Joystick's base at the first touch location
-    	if(actionJoystickFirstTouch) {
-    		actionJoystick.setBasePosition(actionTouchPoint);
-    		actionJoystickFirstTouch = false;
-    	}
     	
     	// Test if the touchpoint is inside the X bounds of the joystick 
     	// and Move the stick position if so
