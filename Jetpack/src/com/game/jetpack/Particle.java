@@ -5,7 +5,6 @@ public class Particle {
 	public static final int STATE_ALIVE = 0;	// particle is alive
 	public static final int STATE_DEAD = 1;		// particle is dead
 
-	public static final int DEFAULT_LIFETIME 	= 200;	// play with this
 	public static final int MAX_DIMENSION		= 5;	// the maximum width or height
 	public static final int MAX_SPEED			= 10;	// maximum speed (per update)
 
@@ -24,13 +23,12 @@ public class Particle {
 		this.state = Particle.STATE_ALIVE;
 		this.width = rndInt(1, MAX_DIMENSION);
 		this.height = this.width;
-		this.lifetime = 1.0f;
+		this.lifetime = 0.5f;
 		this.age = 0;
 		this.xv = (rndDbl(0, MAX_SPEED * 2) - MAX_SPEED);
 		this.yv = (rndDbl(0, MAX_SPEED * 2) - MAX_SPEED);
 		this.alpha = 1.0f;
 		
-		// smoothing out the diagonal speed
 		if (xv * xv + yv * yv > MAX_SPEED * MAX_SPEED) {
 			xv *= 0.7;
 			yv *= 0.7;
@@ -42,7 +40,7 @@ public class Particle {
 			this.x += this.xv*deltaTime;
 			this.y += this.yv*deltaTime;
 
-			alpha -= 0.02; 
+			alpha -= 0.04; 
 
 			this.age+= deltaTime; // increase the age of the particle
 			

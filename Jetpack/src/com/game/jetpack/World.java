@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.bag.lib.math.OverlapTester;
 import com.bag.lib.math.Vector2;
 
 /*
@@ -99,7 +100,7 @@ public class World {
 		updateEnemies(deltaTime);
 		//updatePowerUp(deltaTime);
 		updateExplosions(deltaTime);
-		//checkCollisions();
+		checkCollisions();
 		//checkGameOver();
 	}
 
@@ -108,7 +109,6 @@ public class World {
 	    //	player.state = Player.PLAYER_STATE_IDLE;
 	    player.update(deltaTime);
 	    if(player.state == Player.PLAYER_STATE_HIT_WALL) {
-	    	explosion = new Explosion(50, (int)player.position.x, (int)player.position.y);
 	    	player.state = player.previousState;
 	    }
 	}
@@ -135,6 +135,8 @@ public class World {
 //	
 	private void updateEnemies(float deltaTime) {
 	    int len = EnemyArray.size();
+	    
+	    // Add enemies if 2 enemies remaining
 	    if(len <= 2)
 	    {
 	    	for(int i=0; i<10; i++)
@@ -142,6 +144,8 @@ public class World {
 	    		addEnemy();
 	    	}
 	    }
+	    
+	    // Update the enemies
 	    for (int i = 0; i < len; i++) {
 	        Enemy enemy = EnemyArray.get(i);
 	        float distX = player.position.x - enemy.position.x;
@@ -150,6 +154,10 @@ public class World {
 	        enemy.rotationAngle = angle;
 	        enemy.update(deltaTime);
 	        
+	        if(enemy.state == Enemy.ENEMY_STATE_DEAD){
+	        	EnemyArray.remove(enemy);
+	        	i = EnemyArray.size();	
+	        }
 	    }
 	}
 	private void updateExplosions(float deltaTime) {
@@ -158,56 +166,56 @@ public class World {
 		} catch(Exception e){}
 	}
 //	
-//	private void checkCollisions() {
-//	    checkEnemyCollisions();
-//	    checkAmmoCollisions();
-//	    checkPowerUpCollisions();
-//	}
+	private void checkCollisions() {
+		checkEnemyBulletCollisions();
+		checkPlayerEnemyCollisions();
+	    //checkAmmoCollisions();
+	    //checkPowerUpCollisions();
+	}
 	
-//	// Enemy - Tank collision
-//	private void checkEnemyCollisions() {
-////	    int len = EnemyArray.size();
-////	    synchronized (EnemyArray) {
-////	    	for (int i = 0; i < len; i++) {
-////		        Enemy enemy = EnemyArray.get(i);
-////		        if (OverlapTester.overlapRectangles(enemy.bounds, tank.bounds)) {
-////		        	
-////		        	if(enemy.enemyType != Enemy.Enemy_TYPE_BOSS)
-////		        		EnemyArray.remove(enemy);
-////		        	
-////		        	len = EnemyArray.size();
-////		        	tank.life -= enemy.damage;
-////		            tank.hitEnemy();
-////		            listener.hit();
-////		            addEnemy();
-////		        }
-////		    }
-////		}   
-//	}
-//	
-//	// Enemy - Ammo collision
-//	private void checkAmmoCollisions() {
-////	    int elen = EnemyArray.size();
-////	    int alen = AmmoArray.size();
-////	    synchronized (EnemyArray) {
-////		    for (int i = 0; i < elen; i++) {
-////		        Enemy enemy = EnemyArray.get(i);
-////		        synchronized (enemy) {
-////		        	for (int j = 0; j < alen; j++){
-////			        	Ammo ammo = AmmoArray.get(j);
-////				        if (OverlapTester.overlapRectangles(ammo.bounds, enemy.bounds)) {
-////				            AmmoArray.remove(ammo);
-////				            alen = AmmoArray.size();
-////				            score += enemy.score;
-////				            enemy.life -= ammo.weaponDamage; 
-////				            listener.enemyHit();
-////				            enemiesKilled++;
-////				        }
-////			        }
-////				} 
-////		    }
-////		}
-//	}
+	// Enemy - Player collision
+	private void checkPlayerEnemyCollisions() {
+	    int len = EnemyArray.size();
+	    synchronized (EnemyArray) {
+	    	for (int i = 0; i < len; i++) {
+		        Enemy enemy = EnemyArray.get(i);
+		        if (OverlapTester.overlapRectangles(enemy.bounds, player.bounds)) {
+		        	
+		        	len = EnemyArray.size();
+		        	player.state = Player.PLAYER_STATE_DAMAGE;
+		            //listener.hit();
+		        	enemy.life -= 100;
+		        }
+		    }
+		}   
+	}
+	
+	// Enemy - Ammo collision
+	private void checkEnemyBulletCollisions() {
+	    int elen = EnemyArray.size();
+	    int alen = bulletArray.size();
+	    synchronized (EnemyArray) {
+		    for (int i = 0; i < elen; i++) {
+		        Enemy enemy = EnemyArray.get(i);
+		        synchronized (enemy) {
+		        	for (int j = 0; j < alen; j++){
+			        	Bullet bul = bulletArray.get(j);
+				        if (OverlapTester.overlapRectangles(bul.bounds, enemy.bounds)) {
+				        	bulletArray.remove(bul);
+				            alen = bulletArray.size();
+				            
+				            enemy.life -= 1; 
+				            
+				            // Add particle effect 
+					    	explosion = new Explosion(20, (int)enemy.position.x, (int)enemy.position.y);
+				            //enemy.life -= bul.weaponDamage; 
+				            //listener.enemyHit();
+				        }
+			        }
+				} 
+		    }
+		}
+	}
 //	
 //	private void checkGameOver() {  	  	
 ////    	if (tank.life <=  0) {

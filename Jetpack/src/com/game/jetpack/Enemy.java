@@ -6,25 +6,25 @@ import com.bag.lib.DynamicGameObject;
 
 public class Enemy extends DynamicGameObject {
 
-	public static final int ENEMY_TYPE_ZOMBIE = 0;
-	public static final int ENEMY_TYPE_BOSS = 1;
+	public static final int ENEMY_TYPE_ZOMBIE 		= 0;
+	public static final int ENEMY_TYPE_BOSS 		= 1;
 
-	public static final int ENEMY_STATE_ALIVE = 2;
-	public static final int ENEMY_STATE_DEAD = 3;
+	public static final int ENEMY_STATE_ALIVE 		= 2;
+	public static final int ENEMY_STATE_DEAD 		= 3;
 	
-    public static final float ENEMY_MOVE_VELOCITY = 3.2f;
-    public static final float ENEMY_BASIC_WIDTH = 1.0f;
-    public static final float ENEMY_BASIC_HEIGHT = 1.0f;
-    public static final float ENEMY_BOSS_WIDTH = 4.0f;
-    public static final float ENEMY_BOSS_HEIGHT = 4.0f;
+    public static final float ENEMY_MOVE_VELOCITY 	= 3.2f;
+    public static final float ENEMY_BASIC_WIDTH 	= 1.0f;
+    public static final float ENEMY_BASIC_HEIGHT 	= 1.0f;
+    public static final float ENEMY_BOSS_WIDTH 		= 4.0f;
+    public static final float ENEMY_BOSS_HEIGHT 	= 4.0f;
     
     public static final int ENEMY_SCORE = 50;
     
     public int type;
     public int state;
+    public int life;
     
     private Random random;
-    private float life;
     private float speed;
     private int   difficulty;
     public float rotationAngle;
@@ -36,7 +36,7 @@ public class Enemy extends DynamicGameObject {
 		this.random = new Random();
 		this.state = ENEMY_STATE_ALIVE;
 		this.rotationAngle = 0;
-		this.life = 100;
+		this.life = 1;
 		this.difficulty = difficulty;
 		this.type = type;
 		
