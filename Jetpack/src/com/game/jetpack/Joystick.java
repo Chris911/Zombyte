@@ -1,5 +1,7 @@
 package com.game.jetpack;
 
+import android.util.Log;
+
 import com.bag.lib.math.Vector2;
 
 public class Joystick {
@@ -49,5 +51,11 @@ public class Joystick {
 		xyDistance.y =  (stickPosition.y - basePosition.y);
 			
 		return xyDistance;
+	}
+	
+	public float getAngle() {
+		Log.d("posy", "Stick diff Y: " + (stickPosition.y - basePosition.y));
+		Log.d("posx", "Stick diff X: " + (stickPosition.x - basePosition.x));
+		return (float) Math.atan2(stickPosition.y - basePosition.y, stickPosition.x - basePosition.x);
 	}
 }

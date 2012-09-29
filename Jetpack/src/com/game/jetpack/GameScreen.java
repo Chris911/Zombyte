@@ -346,8 +346,7 @@ public class GameScreen extends GLScreen {
     	// If X or Y stick position has moved, get the distance which acts as
     	// a speed delimiter and assign it as the player's velocity
     	if(actionStickIsMoving){
-    		world.player.velocity.x = actionJoystick.getStickBaseDistance().x/5;
-    		world.player.velocity.y = actionJoystick.getStickBaseDistance().y/10;
+    		world.addBullet(actionJoystick.getAngle());
     		actionStickIsMoving = false;
     	}
     		

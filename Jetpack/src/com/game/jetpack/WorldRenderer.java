@@ -65,6 +65,7 @@ public class WorldRenderer {
         gl.glColor4f(1, 1, 1, 1);
         
         renderPlayer();
+        renderAmmo();
         
         gl.glDisable(GL10.GL_BLEND);
     }
@@ -73,9 +74,9 @@ public class WorldRenderer {
     	batcher.beginBatch(Assets.playerItems);
     	
     	// Assign correct camera position to follow the player.  Don't overlap out of bounds
-		if(world.player.position.x < World.WORLD_WIDTH * 0.75)
+		if(world.player.position.x < World.WORLD_WIDTH * 0.75 && world.player.position.x > World.WORLD_WIDTH * 0.25)
 			cam.position.x = world.player.position.x;
-		if(world.player.position.y < World.WORLD_HEIGHT * 0.75)
+		if(world.player.position.y < World.WORLD_HEIGHT * 0.75 && world.player.position.y > World.WORLD_HEIGHT * 0.25)
 			cam.position.y = world.player.position.y;
        
     	// Draw the player sprite
@@ -107,6 +108,31 @@ public class WorldRenderer {
 	        
 		} catch (Exception e) {}
 	    gl.glColor4f(1, 1, 1, 1);
+    }
+    
+    private void renderAmmo() {
+    	try {
+    		
+    		batcher.beginBatch(Assets.tileMapItems);
+        	
+            int len = world.bulletArray.size();
+            for(int i = 0; i < len; i++) {
+                Bullet bullet = world.bulletArray.get(i);         
+                     
+               // if(world.player.weapon == Tank.TYPE_BASIC_BULLET || world.player.weapon == Tank.TYPE_THREESHOT)
+                	batcher.drawSprite(bullet.position.x, bullet.position.y, 
+                					   Bullet.BASIC_HEIGHT, Bullet.BASIC_WIDTH, 
+                					   bullet.rotationAngle + 90, Assets.redTile);
+                
+//                else if(world.player.weapon == Tank.TYPE_FLAMETHROWER)
+//                	batcher.drawSprite(bullet.position.x, bullet.position.y, 
+//                				       5.0f, 1.0f, 
+//                				       bullet.rotationAngle, Assets.laserAmmo);
+            }
+            
+            batcher.endBatch();
+            
+		} catch (Exception e) {}
     }
 }
 

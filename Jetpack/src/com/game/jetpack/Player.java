@@ -24,6 +24,10 @@ public class Player extends DynamicGameObject {
     // Speed of the player (walking / running)
     private float speed;
     private boolean isRunning;
+    // Current weapon
+    public Weapon weapon;
+    
+    private float angle;
     
 	public Player(float x, float y) {
 		super(x, y, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -32,6 +36,8 @@ public class Player extends DynamicGameObject {
 		this.life = 6;
 		this.speed = 1;
 		this.isRunning = false;
+		this.weapon = new Weapon(Weapon.WEAPON_PISTOL);
+		this.angle = 0;
 	}
 	
 	public void update(float deltaTime) {

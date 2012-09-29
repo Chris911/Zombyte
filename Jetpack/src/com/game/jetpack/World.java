@@ -1,5 +1,7 @@
 package com.game.jetpack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.bag.lib.math.Vector2;
@@ -29,7 +31,7 @@ public class World {
 
     public final Player player;
     //public final Tank tank;
-    //public final List<Ammo> AmmoArray;
+    public final List<Bullet> bulletArray;
     //public final List<Enemy> EnemyArray;
     //public final List<PowerUp> PowerUpArray;
     public Explosion explosion;
@@ -42,7 +44,7 @@ public class World {
     public int[][] level;
 
     public World(WorldListener listener) {
-        //this.AmmoArray = new ArrayList<Ammo>();
+        this.bulletArray = new ArrayList<Bullet>();
         //this.EnemyArray = new ArrayList<Enemy>();
         //this.PowerUpArray = new ArrayList<PowerUp>();
     	player = new Player(WORLD_WIDTH/2, 10);
@@ -81,7 +83,7 @@ public class World {
 	
 	public void update(float deltaTime, float speed) {
 		updatePlayer(deltaTime, speed);
-		//updateAmmo(deltaTime);
+		updateBullet(deltaTime);
 		//updateEnemies(deltaTime);
 		//updatePowerUp(deltaTime);
 		updateExplosions(deltaTime);
@@ -99,16 +101,16 @@ public class World {
 	    }
 	}
 	
-//	private void updateAmmo(float deltaTime) {
-////		synchronized (AmmoArray) {
-////			for(int i = 0; i < AmmoArray.size(); i ++){
-////				AmmoArray.get(i).update(deltaTime);
-////				
-////				if( AmmoArray.get(i).state == 0 )
-////					AmmoArray.remove(i);
-////			}
-////		}
-//	}
+	private void updateBullet(float deltaTime) {
+		synchronized (bulletArray) {
+			for(int i = 0; i < bulletArray.size(); i ++){
+				bulletArray.get(i).update(deltaTime);
+				
+				if( bulletArray.get(i).state == Bullet.NOT_ACTIVE )
+					bulletArray.remove(i);
+			}
+		}
+	}
 //	
 //	private void updatePowerUp(float deltaTime) {
 ////		synchronized (PowerUpArray) {
@@ -197,7 +199,33 @@ public class World {
 	}
 	
 	public void addBullet(float angle){
-		// add bullets
+		synchronized (bulletArray) {
+			
+		// Condition to regulate the bullets being fired
+			if(player.weapon.getType() == Weapon.WEAPON_PISTOL )
+			{
+				bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
+											   player.position.y + (float)(Math.sin(angle/180*3.146)),
+											   angle, player.weapon.getBulletSpeed()));
+			
+			}
+			else if (player.weapon.getType() == Weapon.WEAPON_SHOTGUN) 
+			{
+				bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
+						   player.position.y + (float)(Math.sin(angle/180*3.146)),
+						   angle + 5,
+						   player.weapon.getBulletSpeed()));
+				bulletArray.add(new Bullet(player.position.x + (float)(Math.cos((angle)/180*3.146)), 
+						   player.position.y + (float)(Math.sin(angle/180*3.146)),
+						   angle,
+						   player.weapon.getBulletSpeed()));
+				bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle)/180*3.146), 
+						   player.position.y + (float)(Math.sin(angle/180*3.146)),
+						   angle - 5,
+						   player.weapon.getBulletSpeed()));
+				
+			}
+		}
 	}
 	
 	public void addPowerUp(int type){
