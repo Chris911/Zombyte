@@ -79,7 +79,7 @@ public class World {
 			addEnemy(); 
 		}
     }
-	
+	 
 	public void update(float deltaTime, float speed) {
 		gameTime += deltaTime;
 		updatePlayer(deltaTime, speed);
@@ -184,7 +184,6 @@ public class World {
 			explosion.update(deltaTime);
 		} catch(Exception e){}
 	}
-//	
 	
 	private void updateRocketExplosions(float deltaTime) {
 		try{
@@ -317,7 +316,7 @@ public class World {
 		    }
 		}   
 	}
-//	
+	
 	private void checkGameOver() {  	  	
     	if (player.life <=  0) {
             state = WORLD_STATE_GAME_OVER;
@@ -383,7 +382,7 @@ public class World {
 						listener.playBulletHit();
 						
 					}
-					lastBulletFiredTime = 0.0f;
+					lastBulletFiredTime = 0.0f; 
 					//Decrement ammo
 					player.weapon.fire(); 
 			}

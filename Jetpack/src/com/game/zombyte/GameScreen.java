@@ -312,15 +312,45 @@ public class GameScreen extends GLScreen {
 		batcher.drawSprite(actionJoystick.stickPosition.x, actionJoystick.stickPosition.y, JOYSTICK_SIZE*0.8f, JOYSTICK_SIZE*0.8f, Assets.blueTile);
 		
 		batcher.endBatch();
+	    
+		GL10 gl = glGraphics.getGL();
+		gl.glColor4f(1, 1, 1, 1);
+		batcher.beginBatch(Assets.hubMap);
+		batcher.drawSprite(128, 435, 256, 100, Assets.hub);		
+		batcher.endBatch();
+		
+		batcher.beginBatch(Assets.hearts);
+		
+		if(world.player.life >= 2)
+			batcher.drawSprite(65,  440, 32, 32, Assets.heartFull);
+		else if(world.player.life >= 1)
+			batcher.drawSprite(65,  440, 32, 32, Assets.heartHalf);
+		else
+			batcher.drawSprite(65,  440, 32, 32, Assets.heartEmpty);
+		
+		if(world.player.life >= 4)
+			batcher.drawSprite(105,  440, 32, 32, Assets.heartFull);
+		else if(world.player.life >= 3)
+			batcher.drawSprite(105,  440, 32, 32, Assets.heartHalf);
+		else
+			batcher.drawSprite(105,  440, 32, 32, Assets.heartEmpty);
+		
+		if(world.player.life >= 6)
+			batcher.drawSprite(145,  440, 32, 32, Assets.heartFull);
+		else if(world.player.life >= 5)
+			batcher.drawSprite(145,  440, 32, 32, Assets.heartHalf);
+		else
+			batcher.drawSprite(145,  440, 32, 32, Assets.heartEmpty);
+
+		batcher.endBatch();
 		
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, "SCORE: "+world.score, 30, 450);
-	    Assets.font.drawText(batcher, "LIVES: "+world.player.life, 30, 430);
+	    Assets.font.drawText(batcher, "SCORE:" + world.score, 25, 465);
+	    //Assets.font.drawText(batcher, "LIVES: "+world.player.life, 30, 430);
 	    batcher.endBatch();
-		
 		} catch(Exception e){
 			
-		}
+		} 
 	}
 
     @Override

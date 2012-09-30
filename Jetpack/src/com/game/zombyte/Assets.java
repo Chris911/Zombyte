@@ -17,6 +17,15 @@ public class Assets {
     public static Texture mapItems;
     public static TextureRegion MapBackground;
     
+    // HUB
+    public static Texture hubMap;
+    public static TextureRegion hub;
+    // HUB - HEARTS
+    public static Texture hearts;
+    public static TextureRegion heartFull;
+    public static TextureRegion heartHalf;
+    public static TextureRegion heartEmpty;
+    
     // Main Menu Buttons
     public static Texture mainMenuButtons;
     public static TextureRegion menuStartBtn;
@@ -99,6 +108,15 @@ public class Assets {
     	menuItems = new Texture(game, "menuBg.png"); 
     	menuBackground = new TextureRegion(menuItems, 0, 0, 800, 480);
     	
+    	// HUB
+    	hubMap = new Texture(game, "hub.png");
+    	hub = new TextureRegion(hubMap, 0, 0, 256, 64);
+    	// HUB - Hearts
+    	hearts = new Texture(game, "hearts.png");
+    	heartFull  = new TextureRegion(hearts, 0, 0, 32, 32);
+    	heartHalf  = new TextureRegion(hearts, 32, 0, 32, 32);
+    	heartEmpty = new TextureRegion(hearts, 64, 0, 32, 32);
+    	 
     	// Main Menu Buttons
     	mainMenuButtons = new Texture(game, "menuButtons.png");
     	menuStartBtn 	= new TextureRegion(mainMenuButtons, 0, 0, 120, 45);
