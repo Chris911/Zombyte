@@ -1,5 +1,4 @@
 package com.game.network;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,7 +24,18 @@ public class server extends Thread {
 	private String[] playerArray;
 	private String[] bulletsArray;
 	private String[] gameArray;
-	private String[] ennemiesArray;
+	private String[] ennemies;
+	private String[] ennemiesArrayA;
+	private String[] ennemiesArrayB;
+	private String[] ennemiesArrayC;
+	private String[] ennemiesArrayD;
+	private String[] ennemiesArrayE;
+	private String[] ennemiesArrayF;
+	private String[] ennemiesArrayG;
+	private String[] ennemiesArrayH;
+	private String[] ennemiesArrayI;
+	private String[] ennemiesArrayJ;
+	
 
 	// Send data
 	private JSONObject obj;
@@ -51,20 +61,18 @@ public class server extends Thread {
 		try {
 			echoSocket = new Socket("kepler.step.polymtl.ca", 8012);
 			out = new PrintWriter(echoSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(
-					echoSocket.getInputStream()));
+			in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 		} catch (UnknownHostException e) {
-			System.err.println("Don't know about host: taranis.");
-			System.exit(1);
+			//System.err.println("Don't know about host: taranis.");
+			//System.exit(1);
 		} catch (IOException e) {
-			System.err.println("Couldn't get I/O for "
-					+ "the connection to: taranis.");
-			System.exit(1);
+			//System.err.println("Couldn't get I/O for " + "the connection to: taranis.");
+			//System.exit(1);
 		}
 
-		System.out.println("Connected.");
+		//System.out.println("Connected.");
 
-		System.out.println("Fetching");
+		///System.out.println("Fetching");
 		String input = "";
 
 		obj = new JSONObject();
@@ -73,37 +81,38 @@ public class server extends Thread {
 			while ((input = in.readLine()) != null) {
 				Object obj = (JSONObject) parser.parse(input);
 				jsonObject = (JSONObject) obj;
-				System.out.println("Fetching123");
+				//System.out.println("Fetching123");
 				/*
 				 * - PLAYER x y angle score
 				 */
 
 				playerArray = new String[4];
-
-				JSONArray player = (JSONArray) jsonObject.get("player");
-				Iterator<String> iterator = player.iterator();
-
-				for (int i = 0; iterator.hasNext(); i++) {
-					playerArray[i] = String.valueOf(iterator.next());
+				
+				try {
+					JSONArray player = (JSONArray) jsonObject.get("player");
+					Iterator<String> iterator = player.iterator();
+	
+					for (int i = 0; iterator.hasNext(); i++) {
+						playerArray[i] = String.valueOf(iterator.next());
+					}
+				}catch (Exception e){
+					
 				}
-
 				/*
 				 * - Bullets x y angle type avail
 				 */
 
 				bulletsArray = new String[5];
-				try {
+				try{
 					JSONArray bullets = (JSONArray) jsonObject.get("bullets");
 					Iterator<String> iteratorBullets = bullets.iterator();
-
+	
 					for (int i = 0; iteratorBullets.hasNext(); i++) {
-						bulletsArray[i] = String
-								.valueOf(iteratorBullets.next());
+						bulletsArray[i] = String.valueOf(iteratorBullets.next());
 					}
-				} catch (Exception e) {
-					// throw up
+				}catch (Exception e){
+				
 				}
-
 				/*
 				 * - Game score1
 				 */
@@ -125,36 +134,61 @@ public class server extends Thread {
 				 * - Ennemies x y angle type
 				 */
 
-				ennemiesArray = new String[5];
+				ennemiesArrayA = new String[2];
+				ennemiesArrayB = new String[2];
+				ennemiesArrayC = new String[2];
+				ennemiesArrayD = new String[2];
+				ennemiesArrayE = new String[2];
+				ennemiesArrayF = new String[2];
+				ennemiesArrayG = new String[2];
+				ennemiesArrayH = new String[2];
+				ennemiesArrayI = new String[2];
+				ennemiesArrayJ = new String[2];
+				
 
 				try {
-					JSONArray ennemies = (JSONArray) jsonObject.get("ennemies");
-					Iterator<String> iteratorEnnemies = ennemies.iterator();
+					JSONArray ennemiesA = (JSONArray) jsonObject.get("a");
+					JSONArray ennemiesB = (JSONArray) jsonObject.get("b");
+					JSONArray ennemiesC = (JSONArray) jsonObject.get("c");
+					JSONArray ennemiesD = (JSONArray) jsonObject.get("d");
 
-					for (int i = 0; iteratorEnnemies.hasNext(); i++) {
-						ennemiesArray[i] = String.valueOf(iteratorEnnemies
-								.next());
-					}
+					
+					ennemiesArrayA[0] = String.valueOf(ennemiesA.get(0));
+					ennemiesArrayA[1] = String.valueOf(ennemiesA.get(1));
+					
+					ennemiesArrayB[0] = String.valueOf(ennemiesB.get(0));
+					ennemiesArrayB[1] = String.valueOf(ennemiesB.get(1));
+					
+					ennemiesArrayC[0] = String.valueOf(ennemiesC.get(0));
+					ennemiesArrayC[1] = String.valueOf(ennemiesC.get(1));
+					
+					ennemiesArrayD[0] = String.valueOf(ennemiesD.get(0));
+					ennemiesArrayD[1] = String.valueOf(ennemiesD.get(1));
+					
+					//System.out.println(ennemiesArrayA[0]);
+					//System.out.println(ennemiesArrayB[0]);
+					//System.out.println(ennemiesArrayC[0]);
+					//System.out.println(ennemiesArrayD[0]);					
+					
 				} catch (Exception e) {
 					// throw up
 				}
-
-				// // /-------------- TO BE DELETED ---------
-				// // Test Player
-				// System.out.println("PlayerX: " + getPlayerInfo("x"));
-				// System.out.println("PlayerY: " + getPlayerInfo("y"));
-				// System.out.println("PlayerAngle: " + getPlayerInfo("angle"));
-				// System.out.println("PlayerType: " + getPlayerInfo("type"));
-				//
-				// // Test Bullets
-				// System.out.println("BulletX: " + getBulletInfo("x"));
-				// System.out.println("BulletY: " + getBulletInfo("y"));
-				// System.out.println("BulletAngle: " + getBulletInfo("angle"));
-				// System.out.println("BulletType: " + getBulletInfo("type"));
-				//
-				// setPlayerData("2", "2", "2", "2");
-				// setBulletData("1", "1", "1", "1", "1");
-				// sendData();
+//				// /-------------- TO BE DELETED ---------
+//				// Test Player
+//				System.out.println("PlayerX: " + getPlayerInfo("x"));
+//				System.out.println("PlayerY: " + getPlayerInfo("y"));
+//				System.out.println("PlayerAngle: " + getPlayerInfo("angle"));
+//				System.out.println("PlayerType: " + getPlayerInfo("type"));
+//
+//				// Test Bullets
+//				System.out.println("BulletX: " + getBulletInfo("x"));
+//				System.out.println("BulletY: " + getBulletInfo("y"));
+//				System.out.println("BulletAngle: " + getBulletInfo("angle"));
+//				System.out.println("BulletType: " + getBulletInfo("type"));
+//
+//				setPlayerData("2", "2", "2", "2");
+//				setBulletData("1", "1", "1", "1", "1");
+//				sendData();
 
 			}
 
@@ -234,16 +268,23 @@ public class server extends Thread {
 	 * available, returns NULL
 	 */
 
-	public String getEnnemiesInfo(String key) {
-		int caseValue = 0;
+	public String getEnnemiesInfo(int key, String val) {
+		int caseValue;
+		
+		if(key == 0 && val.equals("x")) return ennemiesArrayA[0];
+		else if(key == 0 && val.equals("y")) return ennemiesArrayA[1];
+		
+		else if(key == 1 && val.equals("x")) return ennemiesArrayB[0];
+		else if(key == 1 && val.equals("y")) return ennemiesArrayB[1];
 
-		// if(key.equals("x")) caseValue = 0;
-		// else if(key.equals("y")) caseValue = 1;
-		// else return "null";
-
-		return ennemiesArray[caseValue];
+		else if(key == 2 && val.equals("x")) return ennemiesArrayC[0];
+		else if(key == 2 && val.equals("y")) return ennemiesArrayC[1];
+		
+		else if(key == 3 && val.equals("x")) return ennemiesArrayD[0];
+		else if(key == 3 && val.equals("y")) return ennemiesArrayD[1];
+		
+		else return null;
 	}
-
 	/*
 	 * 
 	 * ----------- SETTERS ----------------
@@ -260,8 +301,7 @@ public class server extends Thread {
 		obj.put("player", listPlayer);
 	}
 
-	public void setBulletData(String x, String y, String angle, String type,
-			String avail) {
+	public void setBulletData(String x, String y, String angle, String type, String avail) {
 		listBullets = new JSONArray();
 
 		listBullets.add(x);
@@ -274,7 +314,7 @@ public class server extends Thread {
 	}
 
 	public void setGameData(String p1Score, String p2Score) {
-
+		
 	}
 
 	// Reste null a moins que dead

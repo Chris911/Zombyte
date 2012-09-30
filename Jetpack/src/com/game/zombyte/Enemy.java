@@ -56,7 +56,7 @@ public class Enemy extends DynamicGameObject {
     	if(type == ENEMY_TYPE_ZOMBIE)
     	{
     		this.score = ENEMY_SCORE;
-    		this.speed = ENEMY_MOVE_VELOCITY + (difficulty + randDiff)/5;
+    		this.speed = ENEMY_MOVE_VELOCITY + (difficulty + randDiff)/8;
 	        
     	} 
     	else if (type == ENEMY_TYPE_BOSS)

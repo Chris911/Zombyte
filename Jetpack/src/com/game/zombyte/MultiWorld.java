@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.net.NetworkInfo.DetailedState;
+import android.util.Log;
 
 import com.bag.lib.math.OverlapTester;
 import com.game.network.*;
@@ -72,20 +73,26 @@ public class MultiWorld {
         
         explosion = null;
         
-        initEnemies();
         LevelModifier.addTreesToMap(this);
         
         // Network time
         server = new server();
         server.initConnection();
+        initEnemies();
 
     }
     
     private void initEnemies()
     {
-//    	for (int i = 0; i < 10; i++) {
-//			addEnemy(); 
-//		}
+    	try{
+			for(int i=0; i < 1; i++){
+					EnemyArray.add(new Enemy(
+					Float.parseFloat(server.getEnnemiesInfo(i, "x")),
+					Float.parseFloat(server.getEnnemiesInfo(i, "y")),
+					Enemy.ENEMY_TYPE_ZOMBIE, 2));
+					Log.d("XXX",":"+Float.parseFloat(server.getEnnemiesInfo(i, "x")));
+				}
+    	} catch (Exception e){}
     }
     
 	public void update(float deltaTime, float speed) {
@@ -99,9 +106,10 @@ public class MultiWorld {
 		checkCollisions();
 		checkGameOver();
 	}
-
+	public boolean enemySpawn = false;
 	private void updatePlayer(float deltaTime, float speed) {
 	   
+		// Get Data 
 		try{
 			player2.position.x = Float.parseFloat(server.getPlayerInfo("x"));
 			player2.position.y = Float.parseFloat(server.getPlayerInfo("y"));
@@ -109,9 +117,27 @@ public class MultiWorld {
 			if(server.getBulletInfo("avail").equals("true")){
 				bulletArray.add(new Bullet(player2.position.x, player2.position.y, Float.parseFloat(server.getBulletInfo("angle")), 20));
 			}
+
 		} 
 		catch(Exception e){}
 		
+    	try{
+    		if(!enemySpawn){
+			for(int i=0; i < 4; i++){
+					EnemyArray.add(new Enemy(
+					Float.parseFloat(server.getEnnemiesInfo(i, "x")),
+					Float.parseFloat(server.getEnnemiesInfo(i, "y")),
+					Enemy.ENEMY_TYPE_ZOMBIE, 2));
+					Log.d("XXX",":"+Float.parseFloat(server.getEnnemiesInfo(i, "x")));
+					Log.d("YYY",":"+Float.parseFloat(server.getEnnemiesInfo(i, "y")));
+					
+				}
+			enemySpawn = true;
+    		}
+    	} catch (Exception e){}
+    	
+		
+		// Send Data
 		try{
 			server.setPlayerData(String.valueOf(player.position.x), String.valueOf(player.position.y), "5", "4");
 			server.sendData();
@@ -168,11 +194,19 @@ public class MultiWorld {
 	    // Update the enemies
 	    for (int i = 0; i < len; i++) {
 	        Enemy enemy = EnemyArray.get(i);
-	        float distX = player.position.x - enemy.position.x;
-	        float distY = player.position.y - enemy.position.y;
-	        float angle = (float) Math.atan2(distY, distX);
-	        enemy.rotationAngle = angle;
-	        enemy.update(deltaTime);
+//	        float distX = player.position.x - enemy.position.x;
+//	        float distY = player.position.y - enemy.position.y;
+//	        float angle = (float) Math.atan2(distY, distX);
+	        //enemy.rotationAngle = angle;
+
+	        try{
+	        	float x = Float.parseFloat(server.getEnnemiesInfo(i, "x"));
+	        	float y = Float.parseFloat(server.getEnnemiesInfo(i, "y"));
+	        	enemy.position.set(x,y);
+	        	Log.d("XY","x:"+x+" y:"+y);
+	        } catch(Exception e){}
+	        
+	        //enemy.update(deltaTime);
 	        
 	        if(enemy.state == Enemy.ENEMY_STATE_DEAD){
 	        	float xPos = enemy.position.x;
