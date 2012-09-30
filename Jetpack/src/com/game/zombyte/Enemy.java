@@ -11,6 +11,8 @@ public class Enemy extends DynamicGameObject {
 
 	public static final int ENEMY_STATE_ALIVE 		= 2;
 	public static final int ENEMY_STATE_DEAD 		= 3;
+	public static final int ENEMY_STATE_COLLIDE 	= 4;
+
 	public static final int ENEMY_STATE_RETARDED	= 9000;
 	
     public static final float ENEMY_MOVE_VELOCITY 	= 3.2f;
@@ -39,14 +41,13 @@ public class Enemy extends DynamicGameObject {
 		
 		this.state = ENEMY_STATE_ALIVE;
 		this.rotationAngle = 0;
-		this.life = 1;
+		this.life = 20;
 		this.difficulty = difficulty;
 		this.type = type;
 		this.stateTime = 0.0f;
 		this.randomAngleX = randInRangeInc(0, 360);
 		this.randomAngleY = randInRangeInc(0, 360);
 
-		
 		initialize();
 	}
 	
@@ -61,8 +62,8 @@ public class Enemy extends DynamicGameObject {
     	else if (type == ENEMY_TYPE_BOSS)
     	{
     		this.score = (int) (500 * (difficulty * 2));
-    		this.life = (int) (100 + (difficulty * 50));
-    		this.speed = ENEMY_MOVE_VELOCITY + 2 + (difficulty / 3) ; 
+    		this.life = (int) (100 + (difficulty * 25));
+    		this.speed = ENEMY_MOVE_VELOCITY *difficulty ; 
     		this.bounds.width += ENEMY_BOSS_WIDTH/2;
     		this.bounds.height += ENEMY_BOSS_WIDTH/2;
     	}	
@@ -73,10 +74,12 @@ public class Enemy extends DynamicGameObject {
     	stateTime += deltaTime;
     	
     	updateVelocity(); 
-         
+
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         
         //stateTime += deltaTime;
+        
+
         
         if(life <= 0)
         {

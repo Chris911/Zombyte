@@ -54,7 +54,7 @@ public class MultiWorldRenderer {
 //        
 //        batcher.endBatch();
     	
-    	batcher.beginBatch(Assets.mapItems);
+    	batcher.beginBatch(Assets.mapItems); 
     	batcher.drawSprite(World.WORLD_WIDTH/2, World.WORLD_HEIGHT/2, World.WORLD_WIDTH, World.WORLD_HEIGHT, Assets.MapBackground);
     	batcher.endBatch();
     }

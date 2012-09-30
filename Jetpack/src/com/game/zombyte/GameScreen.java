@@ -39,6 +39,7 @@ public class GameScreen extends GLScreen {
     Vector2 		actionTouchPoint;
     float 			velocity;
     float 			angle;
+    float 			gameOverTime;
     SpriteBatcher 	batcher;  
     
     World 			world;
@@ -85,6 +86,18 @@ public class GameScreen extends GLScreen {
 			public int getTime() {
 				return (int)elapsedTime;
 			}
+			
+			public void playBulletHit() {
+				Assets.basicShoot.play(0.5f);
+			}
+			
+			public void playRocketHit() {
+				Assets.rocketShoot.play(0.5f);
+			}
+			
+			public void playPlayerHit() {
+				Assets.powerUp.play(0.5f);
+			}
         };
         
         // Create a world Instance
@@ -100,6 +113,7 @@ public class GameScreen extends GLScreen {
         velocity = 0;
         startTime = System.currentTimeMillis();
         elapsedTime = 0;
+        gameOverTime = 0;
 
         moveJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
         moveJoystick.setBasePosition(new Vector2(120,100));
@@ -125,7 +139,7 @@ public class GameScreen extends GLScreen {
 	        updatePaused();
 	        break;
 	    case GAME_OVER:
-	        updateGameOver();
+	        updateGameOver(deltaTime);
 	        break;
 	    }
 	}
@@ -153,11 +167,15 @@ public class GameScreen extends GLScreen {
 	    	        guiCam.touchToWorld(moveTouchPoint);
 	        		handlePlayerMoveJoystickEvents();
 	        	}	
-	        	 else if(event.x > SCREEN_WIDTH/2 + 30) { // last 1/2
+	        	else if(event.x > SCREEN_WIDTH/2 + 30) { // last 1/2
 	        		shootTouchDown = true;
 	        		actionTouchPoint.set(event.x, event.y);
 	    	        guiCam.touchToWorld(actionTouchPoint);
-	        	 }
+	        	}
+	        	else if(event.x <= SCREEN_WIDTH/2 + 30 && event.x >= SCREEN_WIDTH/2 - 30) {
+	        		shootTouchDown = false;
+	        	}
+	        	
 	        }
 	        else if(event.type == TouchEvent.TOUCH_UP){
 	        	world.player.state = Player.PLAYER_STATE_IDLE;
@@ -187,7 +205,8 @@ public class GameScreen extends GLScreen {
 		// game.setScreen(new MainMenuScreen(game));
 	}	
 	
-	private void updateGameOver() {
+	private void updateGameOver(float deltaTime) {
+		gameOverTime+= deltaTime;
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {      
@@ -195,7 +214,7 @@ public class GameScreen extends GLScreen {
 	        moveTouchPoint.set(event.x, event.y);
 	        guiCam.touchToWorld(moveTouchPoint);
 	        
-	        if(event.type == TouchEvent.TOUCH_UP) {
+	        if(event.type == TouchEvent.TOUCH_UP && gameOverTime > 2.0f) {
 	        	game.setScreen(new MainMenuScreen(game));
 	        }
 	    }

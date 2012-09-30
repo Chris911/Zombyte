@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 
 import com.bag.lib.math.OverlapTester;
-import com.bag.lib.math.Vector2;
 
 /*
  * Master class holding all game objects and regulating their interactions
@@ -17,6 +16,9 @@ public class World {
     public interface WorldListener {
           //public void sound();
 		  int getTime();
+			void playBulletHit();
+			void playRocketHit();
+			void playPlayerHit();
     }
 
     // World's size
@@ -40,9 +42,11 @@ public class World {
     public final Random rand;
     
     public float lastBulletFiredTime;
+    public float gameTime;
     
     public int state;
     public int score;
+    public int difficulty = 5;
     
 
     public World(WorldListener listener) {
@@ -61,6 +65,7 @@ public class World {
         this.state = WORLD_STATE_RUNNING;
         lastBulletFiredTime = 0.0f;
         score = 0;
+        gameTime = 0;
         
         explosion = null;
         
@@ -70,12 +75,13 @@ public class World {
     
     private void initEnemies()
     {
-//    	for (int i = 0; i < 10; i++) {
-//			addEnemy(); 
-//		}
+    	for (int i = 0; i < 10; i++) {
+			addEnemy(); 
+		}
     }
 	
 	public void update(float deltaTime, float speed) {
+		gameTime += deltaTime;
 		updatePlayer(deltaTime, speed);
 		updateBullet(deltaTime);
 		updateEnemies(deltaTime);
@@ -128,13 +134,13 @@ public class World {
 	    int len = EnemyArray.size();
 	    
 	    // Add enemies if 2 enemies remaining
-//	    if(len <= 2)
-//	    {
-//	    	for(int i=0; i<10; i++)
-//	    	{
-//	    		addEnemy();
-//	    	}
-//	    }
+	    if(len <= 2)
+	    {
+	    	for(int i=0; i<10; i++)
+	    	{
+	    		addEnemy();
+	    	}
+	    }
 	    
 	    // Update the enemies
 	    for (int i = 0; i < len; i++) {
@@ -199,7 +205,7 @@ public class World {
 	private void checkCollisions() {
 		checkEnemyBulletCollisions();
 		checkPlayerEnemyCollisions();
-	    //checkAmmoCollisions();
+		checkEnemyEnemyCollisions();
 	    checkPowerUpCollisions();
 	    checkLevelPlayerCollisions();
 	}
@@ -215,7 +221,28 @@ public class World {
 		        	len = EnemyArray.size();
 		        	player.state = Player.PLAYER_STATE_HIT;
 		            //listener.hit();
+		        	listener.playPlayerHit();
 		        }
+		    }
+		}   
+	}
+	
+	// Enemy - Player collision
+	private void checkEnemyEnemyCollisions() {
+	    int len = EnemyArray.size();
+	    synchronized (EnemyArray) {
+	    	for (int i = 0; i < len; i++) {
+	    		Enemy enemy = EnemyArray.get(i);
+	    		for (int j = 0; j < len; j++) {
+			        
+	    			Enemy enemy2 = EnemyArray.get(j);
+	    			if(i != j){
+				        if (OverlapTester.overlapRectangles(enemy.bounds, enemy2.bounds)) {
+				        	enemy2.state = Enemy.ENEMY_STATE_COLLIDE;
+		
+				        }
+	    			}
+			    }
 		    }
 		}   
 	}
@@ -241,7 +268,7 @@ public class World {
 				        	bulletArray.remove(bul);
 				            alen = bulletArray.size();
 				            
-				            enemy.life -= 1; 
+				            enemy.life -= player.weapon.getDamage(); 
 				            score += enemy.score;
 				            // Add particle effect 
 					    	explosion = new Explosion(20, (int)enemy.position.x, (int)enemy.position.y);
@@ -300,22 +327,28 @@ public class World {
 	
 	private void addEnemy(){
 		int pos  = rand.nextInt(4);
-		int diff = rand.nextInt(5) + 2;
+		
+		if(gameTime > 20.0f)
+		{
+			difficulty ++;
+			gameTime = 0;
+		}
+		
 		if(pos == 0)
 		{
-			EnemyArray.add(new Enemy(WORLD_WIDTH/2+rand.nextInt(5) - 5, -10, Enemy.ENEMY_TYPE_ZOMBIE, diff));
+			EnemyArray.add(new Enemy(WORLD_WIDTH/2+rand.nextInt(20) - 5, -10, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
 		}
 		else if(pos == 1)
 		{
-			EnemyArray.add(new Enemy(-10, WORLD_HEIGHT/2+rand.nextInt(5) - 5, Enemy.ENEMY_TYPE_ZOMBIE, diff));
+			EnemyArray.add(new Enemy(-10, WORLD_HEIGHT/2+rand.nextInt(20) - 5, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
 		}
 		else if(pos == 2)
 		{
-			EnemyArray.add(new Enemy(WORLD_WIDTH/2+rand.nextInt(5) - 5, WORLD_HEIGHT + 10, Enemy.ENEMY_TYPE_ZOMBIE, diff));
+			EnemyArray.add(new Enemy(WORLD_WIDTH/2+rand.nextInt(11) - 5, WORLD_HEIGHT + 10, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
 		}
 		else
 		{
-			EnemyArray.add(new Enemy(WORLD_WIDTH + 10, WORLD_HEIGHT/2+rand.nextInt(5) - 5, Enemy.ENEMY_TYPE_ZOMBIE, diff));
+			EnemyArray.add(new Enemy(WORLD_WIDTH + 10, WORLD_HEIGHT/2+rand.nextInt(11) - 5, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
 		}
 	}
 	
@@ -330,7 +363,8 @@ public class World {
 						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
 													   player.position.y + (float)(Math.sin(angle/180*3.146)),
 													   angle, player.weapon.getBulletSpeed()));
-					
+						
+						listener.playBulletHit();
 					}
 					else if (player.weapon.getType() == Weapon.WEAPON_SHOTGUN) 
 					{
@@ -346,6 +380,7 @@ public class World {
 								   player.position.y + (float)(Math.sin(angle/180*3.146)),
 								   angle - 5,
 								   player.weapon.getBulletSpeed()));
+						listener.playBulletHit();
 						
 					}
 					lastBulletFiredTime = 0.0f;

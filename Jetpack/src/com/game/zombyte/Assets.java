@@ -82,8 +82,13 @@ public class Assets {
     // LevelObjects
     public static TextureRegion		tree;
     public static Animation		explosionAnimation;
- 
     
+    // Sounds
+	public static Sound basicShoot;
+	public static Sound rocketShoot;
+	public static Sound playerHit;
+	public static Sound powerUp;
+ 
     public static void load(GLGame game) {
        	
     	// Map Background
@@ -158,6 +163,11 @@ public class Assets {
 								    			   explosionFr9,explosionFr10,explosionFr11,explosionFr12,
 								    			   explosionFr13,explosionFr14,explosionFr15,explosionFr16);
     	
+    	// Sounds
+        basicShoot = game.getAudio().newSound("basicshot.ogg");
+        rocketShoot = game.getAudio().newSound("explo.ogg");
+        playerHit = game.getAudio().newSound("rocketshot.ogg");
+        powerUp = game.getAudio().newSound("powerup.ogg");
     }       
     
     public static void reload() {

@@ -26,26 +26,26 @@ public class Weapon {
 			this.bulletsRemaining = 1;
 			this.damage = 10;
 			this.fireRate = 0.5f;
-			this.bulletSpeed = 30;
+			this.bulletSpeed = 26;
 		}
 		else if(type == WEAPON_SHOTGUN)
 		{
 			this.bulletsRemaining = 25;
-			this.damage = 15;
+			this.damage = 25;
 			this.fireRate = 2.0f;
-			this.bulletSpeed = 17;
+			this.bulletSpeed = 14;
 		}
 		else if(type == WEAPON_RIFLE)
 		{
 			this.bulletsRemaining = 50; 
-			this.damage = 8.0f;
+			this.damage = 10.0f;
 			this.fireRate = 0.1f;
 			this.bulletSpeed = 30;
 		}
 		else if(type == WEAPON_ROCKET)
 		{
-			this.bulletsRemaining = 15;
-			this.damage = 25f;
+			this.bulletsRemaining = 10;
+			this.damage = 50.0f;
 			this.fireRate = 2.5f;
 			this.bulletSpeed = 17;
 		}
