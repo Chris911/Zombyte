@@ -1,7 +1,7 @@
 package com.game.zombyte;
 
 public class Weapon {
-	private int bulletsRemaining;
+	public int bulletsRemaining;
 	private float damage;
 	private float fireRate;
 	private int type;

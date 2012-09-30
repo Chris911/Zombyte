@@ -50,10 +50,10 @@ public class MainMenuScreen extends GLScreen {
         // UI Buttons and the array with all of their assets
         final int btnHeight = 90;
         final int btnWidth = 240;
-        singlePlayButton = new UIButton(450, 400, btnWidth, btnHeight, Assets.menuStartBtn, Assets.menuStartBtn); 
-        coopPlayButton 	 = new UIButton(450, 300, btnWidth, btnHeight, Assets.menuCoopBtn, Assets.menuCoopBtn);
-        highScoresButton = new UIButton(450, 200, btnWidth, btnHeight, Assets.menuSettingsBtn, Assets.menuSettingsBtn);
-        tutorialButton   = new UIButton(450, 100, btnWidth, btnHeight, Assets.menuTutorialBtn, Assets.menuTutorialBtn);
+        singlePlayButton = new UIButton(450, 385, btnWidth, btnHeight, Assets.menuStartBtn, Assets.menuStartBtn); 
+        coopPlayButton 	 = new UIButton(450, 285, btnWidth, btnHeight, Assets.menuCoopBtn, Assets.menuCoopBtn);
+        highScoresButton = new UIButton(450, 185, btnWidth, btnHeight, Assets.menuSettingsBtn, Assets.menuSettingsBtn);
+        tutorialButton   = new UIButton(450, 85, btnWidth, btnHeight, Assets.menuTutorialBtn, Assets.menuTutorialBtn);
         
         buttonsAssets = new ArrayList<UIButton>(); 
         buttonsAssets.add(singlePlayButton);

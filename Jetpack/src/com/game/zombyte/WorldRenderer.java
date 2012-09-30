@@ -196,14 +196,14 @@ public class WorldRenderer {
             
 		} catch (Exception e) {}
     }
-    
+     
     private void renderPowerUp() {
     	try {
 	    	batcher.beginBatch(Assets.spritesMap);
 	    	
 	        int len = world.PowerUpArray.size();
 	        for(int i = 0; i < len; i++) {
-	            PowerUp powerup = world.PowerUpArray.get(i);  
+	            PowerUp powerup = world.PowerUpArray.get(i);   
 	            
 	            if(powerup.type == PowerUp.POWERUP_TYPE_SHOTGUN)
 	            {
