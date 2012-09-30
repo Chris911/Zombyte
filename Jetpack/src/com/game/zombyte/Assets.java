@@ -104,7 +104,7 @@ public class Assets {
     public static void load(GLGame game) {
        	
     	// Map Background
-    	mapItems = new Texture(game, "bg.png");
+    	mapItems = new Texture(game, "map2.png");
     	MapBackground = new TextureRegion(mapItems, 0, 0, 1024, 512);
     	
     	// Main Menu (UI)
@@ -125,7 +125,7 @@ public class Assets {
     	// Main Menu Buttons
     	mainMenuButtons = new Texture(game, "menuButtons.png");
     	menuStartBtn 	= new TextureRegion(mainMenuButtons, 0, 0, 120, 45);
-    	menuCoopBtn 	= new TextureRegion(mainMenuButtons, 128, 0, 120, 45);
+    	menuCoopBtn 	= new TextureRegion(mainMenuButtons, 128, 0, 120, 45); 
     	menuTutorialBtn = new TextureRegion(mainMenuButtons, 0, 128, 120, 45);
     	menuSettingsBtn = new TextureRegion(mainMenuButtons, 128, 128, 120, 45);
     	
