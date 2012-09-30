@@ -412,7 +412,6 @@ public class World {
 						if(player.weapon.getType() != Weapon.WEAPON_ROCKET)
 							listener.playBulletHit();
 						else{
-					    	explosionArray.add(new Explosion(20, (int)player.position.x, (int)player.position.y, 2));
 							listener.playRocketHit();
 						}
 					}

@@ -53,10 +53,15 @@ public class WorldRenderer {
 //       }
 //        
 //        batcher.endBatch();
-    	
-    	batcher.beginBatch(Assets.mapItems);
-    	batcher.drawSprite(World.WORLD_WIDTH/2, World.WORLD_HEIGHT/2, World.WORLD_WIDTH, World.WORLD_HEIGHT, Assets.MapBackground);
-    	batcher.endBatch();
+    	if(world.round >=5){
+    		batcher.beginBatch(Assets.mapItems2);
+    		batcher.drawSprite(World.WORLD_WIDTH/2, World.WORLD_HEIGHT/2, World.WORLD_WIDTH, World.WORLD_HEIGHT, Assets.MapBackground2);
+    		batcher.endBatch();
+    	} else {
+    		batcher.beginBatch(Assets.mapItems1);
+    		batcher.drawSprite(World.WORLD_WIDTH/2, World.WORLD_HEIGHT/2, World.WORLD_WIDTH, World.WORLD_HEIGHT, Assets.MapBackground1);
+    		batcher.endBatch();
+    	}
     }
     
     public void renderObjects() {

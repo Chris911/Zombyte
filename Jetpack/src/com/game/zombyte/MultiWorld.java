@@ -194,10 +194,6 @@ public class MultiWorld {
 	    // Update the enemies
 	    for (int i = 0; i < len; i++) {
 	        Enemy enemy = EnemyArray.get(i);
-//	        float distX = player.position.x - enemy.position.x;
-//	        float distY = player.position.y - enemy.position.y;
-//	        float angle = (float) Math.atan2(distY, distX);
-	        //enemy.rotationAngle = angle;
 
 	        try{
 	        	float x = Float.parseFloat(server.getEnnemiesInfo(i, "x"));
@@ -206,7 +202,7 @@ public class MultiWorld {
 	        	Log.d("XY","x:"+x+" y:"+y);
 	        } catch(Exception e){}
 	        
-	        //enemy.update(deltaTime);
+	        enemy.updateOnline(deltaTime);
 	        
 	        if(enemy.state == Enemy.ENEMY_STATE_DEAD){
 	        	float xPos = enemy.position.x;

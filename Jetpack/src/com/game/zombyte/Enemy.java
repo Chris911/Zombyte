@@ -72,15 +72,25 @@ public class Enemy extends DynamicGameObject {
     public void update(float deltaTime) {    
     	bounds.lowerLeft.set(position).sub(bounds.width / 2, bounds.height / 2);
     	stateTime += deltaTime;
-    	
     	updateVelocity(); 
-
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         
-        //stateTime += deltaTime;
-        
-
-        
+        if(life <= 0)
+        {
+        	state = ENEMY_STATE_DEAD;
+        	
+        	if(type == ENEMY_TYPE_BOSS)
+        	{
+        		//DO SOMETHING?
+        	}
+        }
+    }
+    
+    public void updateOnline(float deltaTime) {    
+    	bounds.lowerLeft.set(position).sub(bounds.width / 2, bounds.height / 2);
+    	stateTime += deltaTime;
+    	//updateVelocity(); 
+        //position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         if(life <= 0)
         {
         	state = ENEMY_STATE_DEAD;

@@ -26,9 +26,18 @@ public class TutorialScreen extends GLScreen {
     boolean changeScreen;
     Screen screen;
     
-    String story;
-    String textToDisplay;
-    int charCounter;
+    String story1;
+    String story2;
+    String story3;
+
+    String textToDisplay1;
+    String textToDisplay2;
+    String textToDisplay3;
+
+    int charCounter1;
+    int charCounter2;
+    int charCounter3;
+
     
     ArrayList<UIButton> buttonsAssets;
     UIButton backButton;
@@ -60,9 +69,17 @@ public class TutorialScreen extends GLScreen {
         animationHandler = new AnimationHandler(game, buttonsAssets);
         changeScreen = false;
         
-        story = "You are against a swarm of zombies...";
-        textToDisplay = "";
-        charCounter = 0;
+        story1 = "You are against a swarm of zombies...";
+        story2 = "To survive, use weapons left behind";
+        story3 = "A friend might be of help in this dark world";
+
+        textToDisplay1 = "";
+        textToDisplay2 = "";
+        textToDisplay3 = "";
+
+        charCounter1 = 0;
+        charCounter2 = 0;
+        charCounter3 = 0;
         
         // Load previous game settings (sound enabled on/off)
         //Settings.load(game.getFileIO());
@@ -102,10 +119,21 @@ public class TutorialScreen extends GLScreen {
             }
         }
         
-        if(textToDisplay.length() != story.length())
+        if(textToDisplay1.length() != story1.length())
         {
-        	textToDisplay += story.charAt(charCounter);
-        	charCounter++;
+        	textToDisplay1 += story1.charAt(charCounter1);
+        	charCounter1++;
+        }
+        
+        if(textToDisplay2.length() != story2.length())
+        {
+        	textToDisplay2 += story2.charAt(charCounter2);
+        	charCounter2++;
+        }
+        if(textToDisplay3.length() != story3.length())
+        {
+        	textToDisplay3 += story3.charAt(charCounter3);
+        	charCounter2++;
         }
         
         // Check if we are changing screen

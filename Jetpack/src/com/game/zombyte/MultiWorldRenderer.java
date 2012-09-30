@@ -54,8 +54,8 @@ public class MultiWorldRenderer {
 //        
 //        batcher.endBatch();
     	
-    	batcher.beginBatch(Assets.mapItems); 
-    	batcher.drawSprite(World.WORLD_WIDTH/2, World.WORLD_HEIGHT/2, World.WORLD_WIDTH, World.WORLD_HEIGHT, Assets.MapBackground);
+    	batcher.beginBatch(Assets.mapItems1);
+    	batcher.drawSprite(World.WORLD_WIDTH/2, World.WORLD_HEIGHT/2, World.WORLD_WIDTH, World.WORLD_HEIGHT, Assets.MapBackground1);
     	batcher.endBatch();
     }
     
@@ -77,45 +77,54 @@ public class MultiWorldRenderer {
     }
     
     private void renderPlayer() {
-    	batcher.beginBatch(Assets.spritesMap);
+    	batcher.beginBatch(Assets.players);
     	
     	// Assign correct camera position to follow the player.  Don't overlap out of bounds
 		if(world.player.position.x < World.WORLD_WIDTH * 0.75 && world.player.position.x > World.WORLD_WIDTH * 0.25)
 			cam.position.x = world.player.position.x;
 		if(world.player.position.y < World.WORLD_HEIGHT * 0.75 && world.player.position.y > World.WORLD_HEIGHT * 0.25)
 			cam.position.y = world.player.position.y;
-       
-    	// Draw the player sprite
-        batcher.drawSprite(world.player.position.x, world.player.position.y , Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, Assets.playerIdle);
-        batcher.drawSprite(world.player2.position.x, world.player2.position.y , Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, Assets.playerIdle);
-
+       Player player = world.player;
+    	
+        // Draw the player sprite
+		if(world.player.state == Player.PLAYER_STATE_IDLE)
+		{
+			batcher.drawSprite(world.player.position.x, world.player.position.y , Player.PLAYER_WIDTH, 
+					Player.PLAYER_HEIGHT, (player.rotationAngle - 90), Assets.playerIdle);
+		}
+		else
+		{
+			TextureRegion keyFrame = Assets.playerAnimation.getKeyFrame(player.stateTime, Animation.ANIMATION_LOOPING);
+        	batcher.drawSprite(player.position.x, player.position.y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, player.rotationAngle-90, keyFrame);
+		}
 
         batcher.endBatch();
     }
     
     private void renderExplosions() {
       
-        GL10 gl = glGraphics.getGL();
-        gl.glEnable(GL10.GL_BLEND);
-        gl.glClear(GL10.GL_DEPTH_BUFFER_BIT);
-        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-	  	try {
-
-			batcher.beginBatch(Assets.tileMapItems);
-
-	        for(int j = 0; j < world.explosion.particles.size(); j++) {
-	        	
-	            Particle par = world.explosion.particles.get(j);
-	            gl.glColor4f(1, 1, 1, par.alpha);
-	      	  	batcher.drawSprite(par.x, par.y , 0.5f, 0.5f, Assets.redTile);
-	      	  	
-	        }
-        
-	        //gl.glDisable(GL10.GL_BLEND);
-	        batcher.endBatch();
-	        
-		} catch (Exception e) {}
-	    gl.glColor4f(1, 1, 1, 1);
+//        GL10 gl = glGraphics.getGL();
+//        gl.glEnable(GL10.GL_BLEND);
+//        gl.glClear(GL10.GL_DEPTH_BUFFER_BIT);
+//        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+//	  	try {
+//
+//			batcher.beginBatch(Assets.tileMapItems);
+//
+//	        for(int i = 0; i < world.explosionArray.size(); i++) {
+//	        	Explosion exp = world.explosionArray.get(i);
+//		        for(int j = 0; j < exp.particles.size(); j++) {
+//		            Particle par = exp.particles.get(j);
+//		            gl.glColor4f(1, 1, 1, par.alpha);
+//		      	  	batcher.drawSprite(par.x, par.y , 0.5f, 0.5f, Assets.redTile); 	  	
+//		        }
+//	        }
+//        
+//	        //gl.glDisable(GL10.GL_BLEND);
+//	        batcher.endBatch();
+//	        
+//		} catch (Exception e) {}
+//	    gl.glColor4f(1, 1, 1, 1);
     }
     
     private void renderEnemies() {
@@ -198,14 +207,14 @@ public class MultiWorldRenderer {
             
 		} catch (Exception e) {}
     }
-    
+     
     private void renderPowerUp() {
     	try {
 	    	batcher.beginBatch(Assets.spritesMap);
 	    	
 	        int len = world.PowerUpArray.size();
 	        for(int i = 0; i < len; i++) {
-	            PowerUp powerup = world.PowerUpArray.get(i);  
+	            PowerUp powerup = world.PowerUpArray.get(i);   
 	            
 	            if(powerup.type == PowerUp.POWERUP_TYPE_SHOTGUN)
 	            {
@@ -226,6 +235,14 @@ public class MultiWorldRenderer {
 	            	batcher.drawSprite(powerup.position.x, powerup.position.y, PowerUp.BASIC_WIDTH, PowerUp.BASIC_HEIGHT, 
 	            			          (powerup.rotationAngle - 90)*180/3.146f, Assets.rifle);
 	            }
+	            else if (powerup.type == PowerUp.POWERUP_TYPE_LIFE) 
+	            {
+	            	batcher.beginBatch(Assets.hearts);
+	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
+	            	batcher.drawSprite(powerup.position.x, powerup.position.y, PowerUp.BASIC_WIDTH, PowerUp.BASIC_HEIGHT, 
+	            			          (powerup.rotationAngle - 90)*180/3.146f, Assets.heartFull);
+	            	batcher.endBatch();
+	            }
 	        }
 	       
 	        batcher.endBatch();
@@ -236,11 +253,13 @@ public class MultiWorldRenderer {
     private void renderLevelObjects()
     {
     	try {
+            GL10 gl = glGraphics.getGL();
 	    	batcher.beginBatch(Assets.spritesMap);
 	    	
 	        int len = world.levelObjectsArray.size();
 	        for(int i = 0; i < len; i++) {
-	            LevelObject lev = world.levelObjectsArray.get(i);  
+	            LevelObject lev = world.levelObjectsArray.get(i); 
+	            gl.glColor4f(1, 1, 1, lev.alphaLevel);
 	            batcher.drawSprite(lev.position.x, lev.position.y, lev.size, lev.size ,lev.asset);
 	        }
 	        batcher.endBatch();

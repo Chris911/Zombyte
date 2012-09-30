@@ -3,6 +3,8 @@ package com.game.zombyte;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.view.KeyEvent;
+
 import com.bag.lib.Screen;
 import com.bag.lib.impl.GLGame;
 
@@ -34,5 +36,19 @@ public class JetpackActivity extends GLGame {
         super.onPause();
         //if(Settings.soundEnabled)
             //Assets.music.pause();
+    }
+    
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Assets.intro.stop();
+            Assets.gamemusic.stop();
+        	moveTaskToBack(true);
+
+
+            return true;
+        }
+
+        return false;
     }
 }
