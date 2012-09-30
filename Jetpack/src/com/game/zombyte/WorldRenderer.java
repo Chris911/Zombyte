@@ -101,12 +101,13 @@ public class WorldRenderer {
 
 			batcher.beginBatch(Assets.tileMapItems);
 
-	        for(int j = 0; j < world.explosion.particles.size(); j++) {
-	        	
-	            Particle par = world.explosion.particles.get(j);
-	            gl.glColor4f(1, 1, 1, par.alpha);
-	      	  	batcher.drawSprite(par.x, par.y , 0.5f, 0.5f, Assets.redTile);
-	      	  	
+	        for(int i = 0; i < world.explosionArray.size(); i++) {
+	        	Explosion exp = world.explosionArray.get(i);
+		        for(int j = 0; j < exp.particles.size(); j++) {
+		            Particle par = exp.particles.get(j);
+		            gl.glColor4f(1, 1, 1, par.alpha);
+		      	  	batcher.drawSprite(par.x, par.y , 0.5f, 0.5f, Assets.redTile); 	  	
+		        }
 	        }
         
 	        //gl.glDisable(GL10.GL_BLEND);

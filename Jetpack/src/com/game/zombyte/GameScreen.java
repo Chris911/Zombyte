@@ -40,6 +40,7 @@ public class GameScreen extends GLScreen {
     float 			velocity;
     float 			angle;
     float 			gameOverTime;
+    float 			nextRoundTime;
     SpriteBatcher 	batcher;  
     
     World 			world;
@@ -118,6 +119,7 @@ public class GameScreen extends GLScreen {
         startTime = System.currentTimeMillis();
         elapsedTime = 0;
         gameOverTime = 0;
+        nextRoundTime = 0;
 
         moveJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
         moveJoystick.setBasePosition(new Vector2(120,100));
@@ -141,6 +143,9 @@ public class GameScreen extends GLScreen {
 	        break;
 	    case GAME_PAUSED:
 	        updatePaused();
+	        break;
+	    case GAME_LEVEL_END:
+	    	updateNextRound(deltaTime);
 	        break;
 	    case GAME_OVER:
 	        updateGameOver(deltaTime);
@@ -201,6 +206,9 @@ public class GameScreen extends GLScreen {
 	    elapsedTime += deltaTime;
 	    world.update(deltaTime, velocity);
 	    
+	    if(world.state == World.WORLD_STATE_NEXT_LEVEL)
+	    	this.state = GAME_LEVEL_END;
+	    
 	    if(world.state == World.WORLD_STATE_GAME_OVER)
 	    	this.state = GAME_OVER;
 	}
@@ -208,6 +216,18 @@ public class GameScreen extends GLScreen {
 	private void updatePaused() {
 		// game.setScreen(new MainMenuScreen(game));
 	}	
+	
+	private void updateNextRound(float deltaTime) {
+		// First touch 
+		nextRoundTime+= deltaTime;
+		
+	    if(game.getInput().getTouchEvents().size() > 0 && nextRoundTime >= 2.0f) {
+	        state = GAME_RUNNING;
+	        world.state = World.WORLD_STATE_RUNNING;
+			world.player.position.set(World.WORLD_WIDTH/2,World.WORLD_HEIGHT/2);
+	        nextRoundTime = 0;
+	    }
+	}
 	
 	private void updateGameOver(float deltaTime) {
 		gameOverTime+= deltaTime;
@@ -288,7 +308,16 @@ public class GameScreen extends GLScreen {
 	}
 	
 	private void presentLevelEnd() {
-		// Draw here
+		
+		GL10 gl = glGraphics.getGL();
+		gl.glColor4f(1, 1, 1, 1);
+	    batcher.beginBatch(Assets.fontTex);
+	    Assets.font.drawText(batcher, "PREPARE FOR ROUND "+world.round, 320, 300);
+	    Assets.font.drawText(batcher, "CURRENT SCORE:"+world.score, 300, 200);
+	    if(nextRoundTime > 2.0f)
+	    	Assets.font.drawText(batcher, "TOUCH TO START!", 300, 150);
+
+	    batcher.endBatch();
 	}
 	
 	private void presentGameOver() {

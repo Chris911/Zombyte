@@ -3,6 +3,8 @@ package com.game.zombyte;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.net.NetworkInfo.DetailedState;
 
@@ -76,6 +78,7 @@ public class MultiWorld {
         // Network time
         server = new server();
         server.initConnection();
+
     }
     
     private void initEnemies()
@@ -84,9 +87,8 @@ public class MultiWorld {
 //			addEnemy(); 
 //		}
     }
-	
+    
 	public void update(float deltaTime, float speed) {
-		updateNetwork(deltaTime);
 		updatePlayer(deltaTime, speed);
 		updateBullet(deltaTime);
 		updateEnemies(deltaTime);
@@ -97,8 +99,9 @@ public class MultiWorld {
 		checkCollisions();
 		checkGameOver();
 	}
-	
-	private void updateNetwork(float deltaTime){
+
+	private void updatePlayer(float deltaTime, float speed) {
+	   
 		try{
 			player2.position.x = Float.parseFloat(server.getPlayerInfo("x"));
 			player2.position.y = Float.parseFloat(server.getPlayerInfo("y"));
@@ -106,17 +109,15 @@ public class MultiWorld {
 			if(server.getBulletInfo("avail").equals("true")){
 				bulletArray.add(new Bullet(player2.position.x, player2.position.y, Float.parseFloat(server.getBulletInfo("angle")), 20));
 			}
-		
 		} 
 		catch(Exception e){}
+		
 		try{
-		server.setPlayerData(String.valueOf(player.position.x), String.valueOf(player.position.y), "5", "4");
-		server.sendData();
+			server.setPlayerData(String.valueOf(player.position.x), String.valueOf(player.position.y), "5", "4");
+			server.sendData();
 		} catch(Exception e){};
-	}
-
-	private void updatePlayer(float deltaTime, float speed) {
-	    //if(speed == 0)
+		
+		//if(speed == 0)
 	    //	player.state = Player.PLAYER_STATE_IDLE;
 	    player.update(deltaTime);
 	    if(player.state == Player.PLAYER_STATE_HIT_WALL) {

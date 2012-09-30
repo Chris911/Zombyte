@@ -31,6 +31,8 @@ public class Explosion {
 					//if(this.particles.get(i).state == Particle.STATE_DEAD)
 						//particles.remove(i);
 				}
+				else
+					this.state = STATE_DEAD;
 			}
 			//if (isDead)
 				//this.state = STATE_DEAD; 

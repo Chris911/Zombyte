@@ -31,8 +31,9 @@ public class Enemy extends DynamicGameObject {
     private int   difficulty;
     public float rotationAngle;
     public int   score;
-    public float randomAngleX;
-    public float randomAngleY;
+    public int randomAngleX;
+    public int randomAngleY;
+    public int randDiff;
     
     public float stateTime;
 	
@@ -45,9 +46,8 @@ public class Enemy extends DynamicGameObject {
 		this.difficulty = difficulty;
 		this.type = type;
 		this.stateTime = 0.0f;
-		this.randomAngleX = randInRangeInc(0, 360);
-		this.randomAngleY = randInRangeInc(0, 360);
-
+		this.randomAngleX = rndInt(0,360);
+		this.randDiff = rndInt(1, 4);
 		initialize();
 	}
 	
@@ -56,7 +56,7 @@ public class Enemy extends DynamicGameObject {
     	if(type == ENEMY_TYPE_ZOMBIE)
     	{
     		this.score = ENEMY_SCORE;
-    		this.speed = ENEMY_MOVE_VELOCITY + (difficulty / 4);
+    		this.speed = ENEMY_MOVE_VELOCITY + (difficulty + randDiff)/5;
 	        
     	} 
     	else if (type == ENEMY_TYPE_BOSS)
@@ -104,7 +104,7 @@ public class Enemy extends DynamicGameObject {
         	rotationAngle = randomAngleX;
     	}
     }
-    public static int randInRangeInc(int min, int max) {
-        return min + (int) (Math.random() * (max - min));
-}
+	static int rndInt(int min, int max) {
+		return (int) (min + Math.random() * (max - min + 1));
+	}
 }

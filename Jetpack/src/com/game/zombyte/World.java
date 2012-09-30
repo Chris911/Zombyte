@@ -36,9 +36,9 @@ public class World {
     public final List<Enemy> EnemyArray;
     public final List<PowerUp> PowerUpArray;
     public final List<LevelObject> levelObjectsArray;
-
+    public final List<Explosion> explosionArray;
     public final List<RocketExplosion> rocketExplosionArray;
-    public Explosion explosion;
+    
     public final WorldListener listener;
     public final Random rand;
     
@@ -47,13 +47,19 @@ public class World {
     
     public int state;
     public int score;
-    public int difficulty = 5;    
+    public int difficulty = 2; 
+    public int round = 1;
+    public int numberOfEnemiesKilled = 0;
+    public int numberOfEnemiesToKillForNextRound = 20;
+    public int numberOfEnemiesThreshold = 0;
+
 
     public World(WorldListener listener) {
         this.bulletArray = new ArrayList<Bullet>();
         this.EnemyArray = new ArrayList<Enemy>();
         this.PowerUpArray = new ArrayList<PowerUp>();
         this.levelObjectsArray = new ArrayList<LevelObject>();
+        this.explosionArray = new ArrayList<Explosion>();
         this.rocketExplosionArray = new ArrayList<RocketExplosion>();
         
     	player = new Player(WORLD_WIDTH/2, 10);
@@ -66,16 +72,16 @@ public class World {
         lastBulletFiredTime = 0.0f;
         score = 0;
         gameTime = 0;
-        
-        explosion = null;
-        
+                
         initEnemies();
         LevelModifier.addTreesToMap(this);
     }
     
     private void initEnemies()
     {
-    	for (int i = 0; i < 10; i++) {
+    	// Round 1 enemies
+    	numberOfEnemiesToKillForNextRound = 20 + difficulty;
+    	for (int i = 0; i < numberOfEnemiesToKillForNextRound; i++) {
 			addEnemy(); 
 		}
     }
@@ -90,12 +96,12 @@ public class World {
 		updateLevelObjects(deltaTime);
 		updateRocketExplosions(deltaTime);
 		checkCollisions();
+		checkNextRound();
 		checkGameOver();
 	}
 
 	private void updatePlayer(float deltaTime, float speed) {
-	    //if(speed == 0)
-	    //	player.state = Player.PLAYER_STATE_IDLE;
+
 	    player.update(deltaTime);
 	    if(player.state == Player.PLAYER_STATE_HIT_WALL) {
 	    	player.state = player.previousState;
@@ -133,15 +139,6 @@ public class World {
 	private void updateEnemies(float deltaTime) {
 	    int len = EnemyArray.size();
 	    
-	    // Add enemies if 2 enemies remaining
-	    if(len <= 2)
-	    {
-	    	for(int i=0; i<10; i++)
-	    	{
-	    		addEnemy();
-	    	}
-	    }
-	    
 	    // Update the enemies
 	    for (int i = 0; i < len; i++) {
 	        Enemy enemy = EnemyArray.get(i);
@@ -155,6 +152,12 @@ public class World {
 	        	float xPos = enemy.position.x;
 	        	float yPos = enemy.position.y; 
 	        	EnemyArray.remove(enemy);
+	        	
+	        	numberOfEnemiesKilled ++;
+	        	if(numberOfEnemiesKilled <= numberOfEnemiesThreshold)
+	        		addEnemy();
+	        	
+	        	score += enemy.score*2;
 	        	i = EnemyArray.size();	
 	        	int genPowerUp = rand.nextInt(100);
 	        	if(genPowerUp > 95)
@@ -185,7 +188,15 @@ public class World {
 	}
 	private void updateExplosions(float deltaTime) {
 		try{	
-			explosion.update(deltaTime);
+			synchronized (explosionArray) {
+				for(int i = 0; i < explosionArray.size(); i ++){
+					Explosion exp = explosionArray.get(i);
+					exp.update(deltaTime);
+					
+					if(exp.state == Explosion.STATE_DEAD)
+						explosionArray.remove(i);
+				}
+			}
 		} catch(Exception e){}
 	}
 	
@@ -276,7 +287,7 @@ public class World {
 				            score += enemy.score;
 				            
 				            // Add particle effect 
-					    	explosion = new Explosion(20, (int)enemy.position.x, (int)enemy.position.y, 5);
+					    	explosionArray.add(new Explosion(10, (int)enemy.position.x, (int)enemy.position.y, 0.5f));
 				        }
 			        }
 				} 
@@ -325,6 +336,30 @@ public class World {
 		}   
 	}
 	
+	private void checkNextRound()
+	{
+		if(numberOfEnemiesKilled >= numberOfEnemiesToKillForNextRound )
+		{
+			EnemyArray.clear();
+			explosionArray.clear();
+			PowerUpArray.clear();
+			
+			numberOfEnemiesThreshold = 10 + difficulty;
+			
+	    	for(int i=0; i <= numberOfEnemiesThreshold; i++)
+	    	{
+	    		addEnemy();
+	    	}
+	        numberOfEnemiesKilled = 0;
+	        numberOfEnemiesToKillForNextRound += difficulty*1.5f;
+			difficulty ++;
+			score += 100 * (difficulty/2);
+			round++;
+			this.state = WORLD_STATE_NEXT_LEVEL;
+
+		}
+	}
+	
 	private void checkGameOver() {  	  	
     	if (player.life <=  0) {
             state = WORLD_STATE_GAME_OVER;
@@ -333,12 +368,6 @@ public class World {
 	public int enemyCounter = 0;
 	private void addEnemy(){
 		int pos  = rand.nextInt(4);
-		
-		if(gameTime > 20.0f)
-		{
-			difficulty += 2;
-			gameTime = 0;
-		}
 		
 		if(pos == 0)
 		{
@@ -374,8 +403,7 @@ public class World {
 						if(player.weapon.getType() != Weapon.WEAPON_ROCKET)
 							listener.playBulletHit();
 						else{
-					    	explosion = new Explosion(20, (int)player.position.x, (int)player.position.y, 2);
-
+					    	explosionArray.add(new Explosion(20, (int)player.position.x, (int)player.position.y, 2));
 							listener.playRocketHit();
 						}
 					}

@@ -9,9 +9,8 @@ public class Player extends DynamicGameObject {
     public static final float PLAYER_WIDTH 			= 1.4f;
     public static final float PLAYER_HEIGHT 		= 1.4f;
     public static final float PLAYER_FLOOR_POSITION = 0.5f + PLAYER_HEIGHT/2;
-    public static final float PLAYER_MAX_VELOCITY	= 12.0f;
     public static final float PLAYER_DAMAGE_TIME	= 0.7f;
-    public static final float PLAYER_BASE_SPEED		= 1.3f;
+    public static final float PLAYER_BASE_SPEED		= 1.2f;
     public static final float PLAYER_MAX_SPEED		= 1.6f;
 
     public static final int PLAYER_STATE_IDLE 		= 0;
@@ -44,20 +43,18 @@ public class Player extends DynamicGameObject {
     
     // In damage state time
     private float inDamageStateTime;
-    private float isHiddenStateTime;
     
 	public Player(float x, float y) {
 		super(x, y, PLAYER_WIDTH, PLAYER_HEIGHT);
 		
 		this.state = PLAYER_STATE_IDLE;
 		this.life = 6;
-		this.speed = 0.8f;
+		this.speed = PLAYER_BASE_SPEED;
 		this.isImmuneToDamage = false;
 		this.isTakingDamage = false;
 		this.weapon = new Weapon(Weapon.WEAPON_PISTOL);
 		this.angle = 0;
 		this.inDamageStateTime = 0;
-		this.isHiddenStateTime = 0;
 		this.isHiddenForTooLong = false;
 	}
 	
