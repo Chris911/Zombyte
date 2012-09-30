@@ -15,7 +15,7 @@ import com.bag.lib.impl.GLScreen;
 import com.bag.lib.math.OverlapTester;
 import com.bag.lib.math.Vector2;
 
-public class MainMenuScreen extends GLScreen {
+public class HighscoreScreen extends GLScreen {
     Camera2D guiCam;
     SpriteBatcher batcher;
     Vector2 touchPoint;
@@ -26,13 +26,17 @@ public class MainMenuScreen extends GLScreen {
     boolean changeScreen;
     Screen screen;
     
+    String story;
+    String textToDisplay;
+    int charCounter;
+    
     ArrayList<UIButton> buttonsAssets;
-    UIButton singlePlayButton;
+    UIButton backButton;
     UIButton coopPlayButton;
     UIButton highScoresButton;
     UIButton tutorialButton;
 
-    public MainMenuScreen(Game game) {
+    public HighscoreScreen(Game game) {
         super(game);
         
         // Main GL camera
@@ -48,24 +52,18 @@ public class MainMenuScreen extends GLScreen {
         Assets.load((GLGame) game);
         
         // UI Buttons and the array with all of their assets
-        final int btnHeight = 90;
-        final int btnWidth = 240;
-        singlePlayButton = new UIButton(450, 385, btnWidth, btnHeight, Assets.menuStartBtn, Assets.menuStartBtn); 
-        coopPlayButton 	 = new UIButton(450, 285, btnWidth, btnHeight, Assets.menuCoopBtn, Assets.menuCoopBtn);
-        highScoresButton = new UIButton(450, 185, btnWidth, btnHeight, Assets.menuSettingsBtn, Assets.menuSettingsBtn);
-        tutorialButton   = new UIButton(450, 85, btnWidth, btnHeight, Assets.menuTutorialBtn, Assets.menuTutorialBtn);
+        backButton = new UIButton(160, 100, 120, 100, Assets.blueTile, Assets.redTile);
         
-        buttonsAssets = new ArrayList<UIButton>(); 
-        buttonsAssets.add(singlePlayButton);
-        buttonsAssets.add(highScoresButton);
-        buttonsAssets.add(coopPlayButton);
-        buttonsAssets.add(tutorialButton);
-
+        buttonsAssets = new ArrayList<UIButton>();
+        buttonsAssets.add(backButton);
         
         animationHandler = new AnimationHandler(game, buttonsAssets);
         changeScreen = false;
         
-        Assets.intro.play();
+        story = "You are against a swarm of zombies...";
+        textToDisplay = "";
+        charCounter = 0;
+        
         // Load previous game settings (sound enabled on/off)
         //Settings.load(game.getFileIO());
         
@@ -89,40 +87,25 @@ public class MainMenuScreen extends GLScreen {
             guiCam.touchToWorld(touchPoint);
             
             if(event.type == TouchEvent.TOUCH_DOWN){
-                if(OverlapTester.pointInRectangle(singlePlayButton.bounds, touchPoint)) {
-                	singlePlayButton.state = UIButton.STATE_PRESSED;
+                if(OverlapTester.pointInRectangle(backButton.bounds, touchPoint)) {
+                	backButton.state = UIButton.STATE_PRESSED;
                 }	
-                else if(OverlapTester.pointInRectangle(tutorialButton.bounds, touchPoint)) {
-                	tutorialButton.state = UIButton.STATE_PRESSED;
-                }	
-                else if(OverlapTester.pointInRectangle(coopPlayButton.bounds, touchPoint)) {
-                	coopPlayButton.state = UIButton.STATE_PRESSED;
-                }
-                else if(OverlapTester.pointInRectangle(highScoresButton.bounds, touchPoint)) {
-                	highScoresButton.state = UIButton.STATE_PRESSED;
-                }
             }
             
             // Detect touch on specific bounding rects
             if(event.type == TouchEvent.TOUCH_UP) { 
-                if(singlePlayButton.state == UIButton.STATE_PRESSED) {
+                if(backButton.state == UIButton.STATE_PRESSED) {
                 	changeScreen = true;
-                	screen = new GameScreen(game); 
-                	singlePlayButton.state = UIButton.STATE_IDLE;
-                } else if(tutorialButton.state == UIButton.STATE_PRESSED) {
-                	changeScreen = true;
-                	screen = new TutorialScreen(game); 
-                	tutorialButton.state = UIButton.STATE_IDLE;
-                } else if(coopPlayButton.state == UIButton.STATE_PRESSED) {
-                	changeScreen = true;
-                	screen = new MultiGameScreen(game); 
-                	coopPlayButton.state = UIButton.STATE_IDLE;
-                } else if(highScoresButton.state == UIButton.STATE_PRESSED) {
-                	changeScreen = true;
-                	screen = new HighscoreScreen(game); 
-                	highScoresButton.state = UIButton.STATE_IDLE;
+                	screen = new MainMenuScreen(game); 
+                	backButton.state = UIButton.STATE_IDLE;
                 }
             }
+        }
+        
+        if(textToDisplay.length() != story.length())
+        {
+        	textToDisplay += story.charAt(charCounter);
+        	charCounter++;
         }
         
         // Check if we are changing screen
@@ -147,9 +130,12 @@ public class MainMenuScreen extends GLScreen {
         // Animate the menu screen and render the assets
 	    animationHandler.renderAnimations(gl, batcher);
         
+	    try{
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, "Grade-F Productions", 500,10); 
+	    Assets.font.drawText(batcher, textToDisplay, 100,400);
 	    batcher.endBatch();
+	    }
+	    catch(Exception e){}
 	    
         gl.glDisable(GL10.GL_BLEND);
     }

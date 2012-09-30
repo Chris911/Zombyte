@@ -4,6 +4,8 @@ import java.util.List;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.util.Log;
+import android.widget.Toast;
+
 import com.bag.lib.Game;
 import com.bag.lib.Input.TouchEvent;
 import com.bag.lib.gl.Camera2D;
@@ -14,6 +16,9 @@ import com.bag.lib.math.OverlapTester;
 import com.bag.lib.math.Rectangle;
 import com.bag.lib.math.Vector2;
 
+import com.game.database.Highscore;
+import com.game.database.HighscoreDataSource;
+import com.game.database.HighscoreDatabaseHelper;
 import com.game.zombyte.World.WorldListener;
 
 @SuppressWarnings("unused")
@@ -169,7 +174,7 @@ public class GameScreen extends GLScreen {
 	private void updateRunning(float deltaTime) {
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
-	    for(int i = 0; i < len; i++) {
+	    for(int i = 0; i < len; i++) { 
 	        TouchEvent event = touchEvents.get(i);
 	        	        
 	        if(event.type == TouchEvent.TOUCH_DRAGGED ||event.type == TouchEvent.TOUCH_DOWN){     
@@ -250,7 +255,13 @@ public class GameScreen extends GLScreen {
 	        guiCam.touchToWorld(moveTouchPoint);
 	        
 	        if(event.type == TouchEvent.TOUCH_UP && gameOverTime > 2.0f) {
+
 	    		Assets.gamemusic.stop();
+	        	HighscoreDataSource dbHelper = new HighscoreDataSource(ZombyteActivity.gameContext);
+	        	dbHelper.open();
+	        	dbHelper.createHighscore(new Highscore("GCA", world.score));
+	        	dbHelper.close();
+	        	
 	        	game.setScreen(new MainMenuScreen(game));
 	        }
 	    }

@@ -3,19 +3,24 @@ package com.game.zombyte;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+<<<<<<< HEAD:Jetpack/src/com/game/zombyte/JetpackActivity.java
 import android.view.KeyEvent;
+=======
+import android.content.Context;
+>>>>>>> d2c87c01aeeafb765babf62b09433f2d772a6f13:Jetpack/src/com/game/zombyte/ZombyteActivity.java
 
 import com.bag.lib.Screen;
 import com.bag.lib.impl.GLGame;
 
-public class JetpackActivity extends GLGame {
+public class ZombyteActivity extends GLGame {
 
 	boolean firstTimeCreate = true;
-    
+    public static Context gameContext;
+	
     public Screen getStartScreen() {
         //return new MainMenuScreen(this);
+    	this.gameContext = this.getBaseContext();
         return new MainMenuScreen(this);
-
     }
     
     @Override
