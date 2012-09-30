@@ -1,9 +1,5 @@
 package com.game.zombyte;
-
-import android.util.Log;
-
 import com.bag.lib.DynamicGameObject;
-
 public class Player extends DynamicGameObject {
 
     public static final float PLAYER_WIDTH 			= 1.4f;
@@ -79,7 +75,6 @@ public class Player extends DynamicGameObject {
 		{
 			speed = PLAYER_MAX_SPEED;
 			inDamageStateTime += deltaTime;
-			Log.d("Time","t: "+inDamageStateTime);
 			if(inDamageStateTime >= PLAYER_DAMAGE_TIME)
 			{
 				inDamageStateTime = 0; 

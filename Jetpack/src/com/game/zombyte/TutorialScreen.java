@@ -38,6 +38,8 @@ public class TutorialScreen extends GLScreen {
     int charCounter2;
     int charCounter3;
 
+    public float onScreenTime;
+
     
     ArrayList<UIButton> buttonsAssets;
     UIButton backButton;
@@ -80,19 +82,20 @@ public class TutorialScreen extends GLScreen {
         charCounter1 = 0;
         charCounter2 = 0;
         charCounter3 = 0;
+        onScreenTime = 0;
         
         // Load previous game settings (sound enabled on/off)
         //Settings.load(game.getFileIO());
         
-    }       
-
+    }   
+    
     @Override
     public void update(float deltaTime) {
     	
     	// Acquire all of touch events
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
         game.getInput().getKeyEvents();
-        
+        onScreenTime+= deltaTime;
         int len = touchEvents.size();
         for(int i = 0; i < len; i++) {
         	
@@ -104,9 +107,11 @@ public class TutorialScreen extends GLScreen {
             guiCam.touchToWorld(touchPoint);
             
             if(event.type == TouchEvent.TOUCH_DOWN){
-                if(OverlapTester.pointInRectangle(backButton.bounds, touchPoint)) {
-                	backButton.state = UIButton.STATE_PRESSED;
-                }	
+            	if(onScreenTime > 2.0f) {
+	                if(OverlapTester.pointInRectangle(backButton.bounds, touchPoint)) {
+	                	backButton.state = UIButton.STATE_PRESSED;
+	                }	
+            	}
             }
             
             // Detect touch on specific bounding rects
@@ -133,7 +138,7 @@ public class TutorialScreen extends GLScreen {
         if(textToDisplay3.length() != story3.length())
         {
         	textToDisplay3 += story3.charAt(charCounter3);
-        	charCounter2++;
+        	charCounter3++;
         }
         
         // Check if we are changing screen
@@ -161,8 +166,8 @@ public class TutorialScreen extends GLScreen {
 	    try{
 	    batcher.beginBatch(Assets.fontTex);
 	    Assets.font.drawText(batcher, textToDisplay1, 100,400);
-	    Assets.font.drawText(batcher, textToDisplay1, 100,400);
-	    Assets.font.drawText(batcher, textToDisplay1, 100,400);
+	    Assets.font.drawText(batcher, textToDisplay2, 100,360);
+	    Assets.font.drawText(batcher, textToDisplay3, 100,320);
 
 	    batcher.endBatch();
 	    }

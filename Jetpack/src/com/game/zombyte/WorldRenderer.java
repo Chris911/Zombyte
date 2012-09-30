@@ -123,9 +123,7 @@ public class WorldRenderer {
 		      	  	batcher.drawSprite(par.x, par.y , 0.5f, 0.5f, Assets.redTile); 	  	
 		        }
 	        }
-        
-	        //gl.glDisable(GL10.GL_BLEND);
-	        batcher.endBatch();
+      	    batcher.endBatch();
 	        
 		} catch (Exception e) {}
 	    gl.glColor4f(1, 1, 1, 1);

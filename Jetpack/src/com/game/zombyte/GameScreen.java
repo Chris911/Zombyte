@@ -2,8 +2,6 @@ package com.game.zombyte;
 
 import java.util.List;
 import javax.microedition.khronos.opengles.GL10;
-
-import android.util.Log;
 import android.widget.Toast;
 
 import com.bag.lib.Game;
@@ -405,13 +403,6 @@ public class GameScreen extends GLScreen {
 	    batcher.beginBatch(Assets.fontTex);
 	    Assets.font.drawText(batcher, "SCORE:" + world.score, 25, 465);
 	    Assets.font.drawText(batcher, " x " + world.player.weapon.bulletsRemaining, 700, 450);
-	    Assets.font.drawText(batcher, "ToKill: "+world.numberOfEnemiesToKillForNextRound, 30, 230);
-	    Assets.font.drawText(batcher, "Pre: "+world.numberOfEnemiesPreSpawend, 30, 210);
-	    Assets.font.drawText(batcher, "Killed: "+world.numberOfEnemiesKilled, 30, 180);
-	    Assets.font.drawText(batcher, "toSpaw: "+world.numberOfEnemiesToSpawn, 30, 150); 
-
-	    
-
 	    batcher.endBatch();
 	     
 //	    final float hubWeaponX = 675;
