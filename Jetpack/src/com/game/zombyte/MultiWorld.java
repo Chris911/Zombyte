@@ -3,14 +3,12 @@ package com.game.zombyte;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import android.net.NetworkInfo.DetailedState;
 import android.util.Log;
 
 import com.bag.lib.math.OverlapTester;
-import com.game.network.*;
+import com.bag.lib.math.Rectangle;
+import com.game.network.server;
 /*
  * Master class holding all game objects and regulating their interactions
  */
@@ -50,6 +48,8 @@ public class MultiWorld {
     public int state;
     public int score;
     
+    public Rectangle pause;
+    
     public com.game.network.server server;
     
     public MultiWorld(MultiWorldListener listener) {
@@ -78,74 +78,67 @@ public class MultiWorld {
         // Network time
         server = new server();
         server.initConnection();
-        initEnemies();
 
-    }
-    
-    private void initEnemies()
-    {
-    	try{
-			for(int i=0; i < 1; i++){
-					EnemyArray.add(new Enemy(
-					Float.parseFloat(server.getEnnemiesInfo(i, "x")),
-					Float.parseFloat(server.getEnnemiesInfo(i, "y")),
-					Enemy.ENEMY_TYPE_ZOMBIE, 2));
-					Log.d("XXX",":"+Float.parseFloat(server.getEnnemiesInfo(i, "x")));
-				}
-    	} catch (Exception e){}
+        player.life= 20;
+        player2.life= 20;
+
     }
     
 	public void update(float deltaTime, float speed) {
 		updatePlayer(deltaTime, speed);
 		updateBullet(deltaTime);
-		updateEnemies(deltaTime);
-		updatePowerUp(deltaTime);
 		updateExplosions(deltaTime);
 		updateLevelObjects(deltaTime);
 		updateRocketExplosions(deltaTime);
 		checkCollisions();
+		checkPlayerLife();
 		checkGameOver();
 	}
 	public boolean enemySpawn = false;
 	private void updatePlayer(float deltaTime, float speed) {
 	   
-		// Get Data 
+		// Get Enemy player Data 
 		try{
 			player2.position.x = Float.parseFloat(server.getPlayerInfo("x"));
 			player2.position.y = Float.parseFloat(server.getPlayerInfo("y"));
-		
+			 
+
 			if(server.getBulletInfo("avail").equals("true")){
 				bulletArray.add(new Bullet(player2.position.x, player2.position.y, Float.parseFloat(server.getBulletInfo("angle")), 20));
 			}
 
 		} 
 		catch(Exception e){}
-		
-    	try{
-    		if(!enemySpawn){
-			for(int i=0; i < 4; i++){
-					EnemyArray.add(new Enemy(
-					Float.parseFloat(server.getEnnemiesInfo(i, "x")),
-					Float.parseFloat(server.getEnnemiesInfo(i, "y")),
-					Enemy.ENEMY_TYPE_ZOMBIE, 2));
-					Log.d("XXX",":"+Float.parseFloat(server.getEnnemiesInfo(i, "x")));
-					Log.d("YYY",":"+Float.parseFloat(server.getEnnemiesInfo(i, "y")));
-					
-				}
-			enemySpawn = true;
-    		}
-    	} catch (Exception e){}
-    	
+
 		
 		// Send Data
 		try{
-			server.setPlayerData(String.valueOf(player.position.x), String.valueOf(player.position.y), "5", "4");
+			server.setPlayerData(String.valueOf(player.position.x), String.valueOf(player.position.y), "5", "1",String.valueOf(player2.life));
 			server.sendData();
 		} catch(Exception e){};
-		
-		//if(speed == 0)
-	    //	player.state = Player.PLAYER_STATE_IDLE;
+
+	    
+	    
+	    int len = bulletArray.size();
+	    synchronized (bulletArray) {
+	    	for (int i = 0; i < len; i++) {
+		        Bullet bul = bulletArray.get(i);
+
+		        if (OverlapTester.overlapRectangles(bul.bounds, player.bounds)) {
+		        	len = bulletArray.size();
+		        	player.state = Player.PLAYER_STATE_HIT;
+		        	
+		        	//We were hit! Oh Noes!!!
+		        	
+		        	Assets.rocketShoot.play(0.5f);
+		        }
+		    }
+		}
 	    player.update(deltaTime);
+	    Log.d("Life","P1"+player.life);
+	    Log.d("Life","P2"+player2.life);
+
+	    
 	    if(player.state == Player.PLAYER_STATE_HIT_WALL) {
 	    	player.state = player.previousState;
 	    }
@@ -162,13 +155,6 @@ public class MultiWorld {
 		}
 	}
 	
-	private void updatePowerUp(float deltaTime) {
-		synchronized (PowerUpArray) {
-			for(int i = 0; i < PowerUpArray.size(); i ++){
-				PowerUpArray.get(i).update(deltaTime); 
-			}
-		}
-	}
 	
 	private void updateLevelObjects(float deltaTime) {
 		synchronized (levelObjectsArray) {
@@ -179,59 +165,6 @@ public class MultiWorld {
 	}
 	
 	
-	private void updateEnemies(float deltaTime) {
-	    int len = EnemyArray.size();
-	    
-	    // Add enemies if 2 enemies remaining
-//	    if(len <= 2)
-//	    {
-//	    	for(int i=0; i<10; i++)
-//	    	{
-//	    		addEnemy();
-//	    	}
-//	    }
-	    
-	    // Update the enemies
-	    for (int i = 0; i < len; i++) {
-	        Enemy enemy = EnemyArray.get(i);
-
-	        try{
-	        	float x = Float.parseFloat(server.getEnnemiesInfo(i, "x"));
-	        	float y = Float.parseFloat(server.getEnnemiesInfo(i, "y"));
-	        	enemy.position.set(x,y);
-	        	Log.d("XY","x:"+x+" y:"+y);
-	        } catch(Exception e){}
-	        
-	        enemy.updateOnline(deltaTime);
-	        
-	        if(enemy.state == Enemy.ENEMY_STATE_DEAD){
-	        	float xPos = enemy.position.x;
-	        	float yPos = enemy.position.y; 
-	        	EnemyArray.remove(enemy);
-	        	i = EnemyArray.size();	
-	        	int genPowerUp = rand.nextInt(100);
-	        	if(genPowerUp > 95)
-	        	{
-	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_SHOTGUN);
-	        	}
-	        	else if(genPowerUp > 85 && genPowerUp < 90)
-	        	{
-	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_ROCKET);
-	        	}
-	        	else if(genPowerUp > 80 && genPowerUp < 85)
-	        	{
-	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_RIFLE);
-	        	}
-	        }
-	        if(player.state == Player.PLAYER_STATE_HIDDEN && !player.isHiddenForTooLong)
-	        { 
-	        	enemy.state = Enemy.ENEMY_STATE_RETARDED;
-	        }
-	        else{
-	        	enemy.state = Enemy.ENEMY_STATE_ALIVE;
-	        }
-	    }
-	}
 	private void updateExplosions(float deltaTime) {
 		try{	
 			explosion.update(deltaTime);
@@ -240,77 +173,60 @@ public class MultiWorld {
 //	
 	
 	private void updateRocketExplosions(float deltaTime) {
-		try{
-			for (int i = 0; i < rocketExplosionArray.size(); i++) {
-				RocketExplosion exp = rocketExplosionArray.get(i);
-				if(exp.state == RocketExplosion.ROCKETEXP_STATE_ACTIVE)
-				{
-					exp.update(deltaTime);
-				}
-				else
-				{
-					rocketExplosionArray.remove(i);
-				}
-			}
-		} catch(Exception e){}
+//		try{
+//			for (int i = 0; i < rocketExplosionArray.size(); i++) {
+//				RocketExplosion exp = rocketExplosionArray.get(i);
+//				if(exp.state == RocketExplosion.ROCKETEXP_STATE_ACTIVE)
+//				{
+//					exp.update(deltaTime);
+//				}
+//				else
+//				{
+//					rocketExplosionArray.remove(i);
+//				}
+//			}
+//		} catch(Exception e){}
 	}
 	
 	private void checkCollisions() {
-		checkEnemyBulletCollisions();
-		checkPlayerEnemyCollisions();
-	    //checkAmmoCollisions();
+		checkPlayerBulletCollisions();
 	    checkPowerUpCollisions();
 	    checkLevelPlayerCollisions();
 	}
 	
-	// Enemy - Player collision
-	private void checkPlayerEnemyCollisions() {
-	    int len = EnemyArray.size();
-	    synchronized (EnemyArray) {
+//	// Enemy - Player collision
+//	private void checkPlayerEnemyCollisions() {
+//	    int len = EnemyArray.size();
+//	    synchronized (EnemyArray) {
+//	    	for (int i = 0; i < len; i++) {
+//		        Enemy enemy = EnemyArray.get(i);
+//
+//		        if (OverlapTester.overlapRectangles(enemy.bounds, player.bounds)) {
+//		        	len = EnemyArray.size();
+//		        	player.state = Player.PLAYER_STATE_HIT;
+//		            //listener.hit();
+//		        }
+//		    }
+//		}   
+//	}
+	
+	// We touched the enemy player with a bullet!
+	private void checkPlayerBulletCollisions() {
+	    int len = bulletArray.size();
+	    synchronized (bulletArray) {
 	    	for (int i = 0; i < len; i++) {
-		        Enemy enemy = EnemyArray.get(i);
+		        Bullet bul = bulletArray.get(i);
 
-		        if (OverlapTester.overlapRectangles(enemy.bounds, player.bounds)) {
-		        	len = EnemyArray.size();
+		        if (OverlapTester.overlapRectangles(bul.bounds, player2.bounds)) {
+		        	len = bulletArray.size();
 		        	player.state = Player.PLAYER_STATE_HIT;
-		            //listener.hit();
+		        	
+		        	//The enemy was hit!
+		        	player2.life --;
+		        	Assets.powerUp.play(0.5f);
 		        }
 		    }
 		}   
-	}
-	
-	// Enemy - Ammo collision
-	private void checkEnemyBulletCollisions() {
-	    int elen = EnemyArray.size();
-	    int alen = bulletArray.size();
-	    synchronized (EnemyArray) {
-		    for (int i = 0; i < elen; i++) {
-		        Enemy enemy = EnemyArray.get(i);
-		        synchronized (enemy) {
-		        	for (int j = 0; j < alen; j++){
-			        	Bullet bul = bulletArray.get(j);
-				        if (OverlapTester.overlapRectangles(bul.bounds, enemy.bounds)) {
-				        	if(player.weapon.getType() == Weapon.WEAPON_ROCKET)
-				        	{
-					        	float xPos = bul.position.x;
-					        	float yPos = bul.position.y;
-					        	rocketExplosionArray.add(new RocketExplosion(xPos, yPos));
-				        	}
-				        	
-				        	bulletArray.remove(bul);
-				            alen = bulletArray.size();
-				            
-				            enemy.life -= 1; 
-				            score += enemy.score;
-				            // Add particle effect 
-					    	explosion = new Explosion(20, (int)enemy.position.x, (int)enemy.position.y, 5);
-				            //enemy.life -= bul.weaponDamage; 
-				            //listener.enemyHit();
-				        }
-			        }
-				} 
-		    }
-		}
 	}
 	
 	// Powerup - Player collision
@@ -350,33 +266,29 @@ public class MultiWorld {
 		}   
 	}
 //	
-	private void checkGameOver() {  	  	
-    	if (player.life <=  0) {
-            state = WORLD_STATE_GAME_OVER;
-            //listener.gameOver();
-        }
+	private void checkPlayerLife(){
+		
+		try{
+		if(player.life <= 5 || player2.life <= 5){
+			server.setPlayerData("0", "0", "0", "0", "0");
+			state = WORLD_STATE_GAME_OVER;
+			server.sendData();
+		}
+		} catch(Exception e){}
 	}
 	
-	private void addEnemy(){
-		int pos  = rand.nextInt(4);
-		int diff = rand.nextInt(5) + 2;
-		if(pos == 0)
-		{
-			EnemyArray.add(new Enemy(WORLD_WIDTH/2+rand.nextInt(5) - 5, -10, Enemy.ENEMY_TYPE_ZOMBIE, diff));
-		}
-		else if(pos == 1)
-		{
-			EnemyArray.add(new Enemy(-10, WORLD_HEIGHT/2+rand.nextInt(5) - 5, Enemy.ENEMY_TYPE_ZOMBIE, diff));
-		}
-		else if(pos == 2)
-		{
-			EnemyArray.add(new Enemy(WORLD_WIDTH/2+rand.nextInt(5) - 5, WORLD_HEIGHT + 10, Enemy.ENEMY_TYPE_ZOMBIE, diff));
-		}
-		else
-		{
-			EnemyArray.add(new Enemy(WORLD_WIDTH + 10, WORLD_HEIGHT/2+rand.nextInt(5) - 5, Enemy.ENEMY_TYPE_ZOMBIE, diff));
-		}
+	private void checkGameOver() {  
+		try{
+			String gameOver = server.getPlayerInfo("avail");
+			if(gameOver.equals("0")){
+			if (player.life <=  0 || player2.life <= 0) {
+				state = WORLD_STATE_GAME_OVER;
+				//listener.gameOver();
+			}
+    	}
+	} catch(Exception e){}
 	}
+
 	
 	public void addBullet(float angle){
 		synchronized (bulletArray) {	
@@ -420,8 +332,8 @@ public class MultiWorld {
 			}
 		}
 	}
-	
 	public void addPowerUp(float xPos, float yPos, int type){
+		
 		// Max of 5 powerups at the same time
 		if(PowerUpArray.size() < 5)
 		{

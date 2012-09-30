@@ -1,4 +1,7 @@
 package com.game.network;
+                                                                     
+                                                                     
+             
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -63,16 +66,16 @@ public class server extends Thread {
 			out = new PrintWriter(echoSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 		} catch (UnknownHostException e) {
-			//System.err.println("Don't know about host: taranis.");
-			//System.exit(1);
+			System.err.println("Don't know about host: taranis.");
+			System.exit(1);
 		} catch (IOException e) {
-			//System.err.println("Couldn't get I/O for " + "the connection to: taranis.");
-			//System.exit(1);
+			System.err.println("Couldn't get I/O for " + "the connection to: taranis.");
+			System.exit(1);
 		}
 
-		//System.out.println("Connected.");
+		System.out.println("Connected.");
 
-		///System.out.println("Fetching");
+		System.out.println("Fetching");
 		String input = "";
 
 		obj = new JSONObject();
@@ -81,12 +84,12 @@ public class server extends Thread {
 			while ((input = in.readLine()) != null) {
 				Object obj = (JSONObject) parser.parse(input);
 				jsonObject = (JSONObject) obj;
-				//System.out.println("Fetching123");
+				System.out.println("Fetching123");
 				/*
-				 * - PLAYER x y angle score
+				 * - PLAYER x y angle score health
 				 */
 
-				playerArray = new String[4];
+				playerArray = new String[6];
 				
 				try {
 					JSONArray player = (JSONArray) jsonObject.get("player");
@@ -95,6 +98,7 @@ public class server extends Thread {
 					for (int i = 0; iterator.hasNext(); i++) {
 						playerArray[i] = String.valueOf(iterator.next());
 					}
+					
 				}catch (Exception e){
 					
 				}
@@ -114,10 +118,10 @@ public class server extends Thread {
 				
 				}
 				/*
-				 * - Game score1
+				 * - Game gameover
 				 */
 
-				gameArray = new String[4];
+				gameArray = new String[1];
 
 				try {
 					JSONArray game = (JSONArray) jsonObject.get("game");
@@ -165,10 +169,10 @@ public class server extends Thread {
 					ennemiesArrayD[0] = String.valueOf(ennemiesD.get(0));
 					ennemiesArrayD[1] = String.valueOf(ennemiesD.get(1));
 					
-					//System.out.println(ennemiesArrayA[0]);
-					//System.out.println(ennemiesArrayB[0]);
-					//System.out.println(ennemiesArrayC[0]);
-					//System.out.println(ennemiesArrayD[0]);					
+					System.out.println(ennemiesArrayA[0]);
+					System.out.println(ennemiesArrayB[0]);
+					System.out.println(ennemiesArrayC[0]);
+					System.out.println(ennemiesArrayD[0]);					
 					
 				} catch (Exception e) {
 					// throw up
@@ -218,6 +222,8 @@ public class server extends Thread {
 			caseValue = 3;
 		else if (key.equals("avail"))
 			caseValue = 4;
+		else if (key.equals("health"))
+			caseValue = 5;
 		else
 			return "null";
 
@@ -253,14 +259,8 @@ public class server extends Thread {
 	 * available, returns NULL
 	 */
 
-	public String getGameInfo(String key) {
-		int caseValue = 0;
-
-		// if(key.equals("x")) caseValue = 0;
-		// else if(key.equals("y")) caseValue = 1;
-		// else return "null";
-
-		return gameArray[caseValue];
+	public String getGameInfo() {
+		return gameArray[0];
 	}
 
 	/*
@@ -290,13 +290,14 @@ public class server extends Thread {
 	 * ----------- SETTERS ----------------
 	 */
 
-	public void setPlayerData(String x, String y, String angle, String type) {
+	public void setPlayerData(String x, String y, String angle, String type, String health) {
 		listPlayer = new JSONArray();
 
 		listPlayer.add(x);
 		listPlayer.add(y);
 		listPlayer.add(angle);
 		listPlayer.add(type);
+		listPlayer.add(health);
 
 		obj.put("player", listPlayer);
 	}

@@ -253,7 +253,6 @@ public class GameScreen extends GLScreen {
 	        guiCam.touchToWorld(moveTouchPoint);
 	        
 	        if(event.type == TouchEvent.TOUCH_UP && gameOverTime > 2.0f) {
-<<<<<<< HEAD
 	        	if(world.score > 0)
 	        	{
 		        	HighscoreDataSource dbHelper = new HighscoreDataSource(ZombyteActivity.gameContext);
@@ -261,15 +260,8 @@ public class GameScreen extends GLScreen {
 		        	dbHelper.createHighscore(new Highscore("GCA", world.score));
 		        	dbHelper.close();
 	        	}
-=======
 
 	    		Assets.gamemusic.stop();
-	        	HighscoreDataSource dbHelper = new HighscoreDataSource(ZombyteActivity.gameContext);
-	        	dbHelper.open();
-	        	dbHelper.createHighscore(new Highscore("GCA", world.score));
-	        	dbHelper.close();
->>>>>>> bb7c664022c093b914a508964a51c592bb052222
-	        	
 	        	game.setScreen(new MainMenuScreen(game));
 	        }
 	    }

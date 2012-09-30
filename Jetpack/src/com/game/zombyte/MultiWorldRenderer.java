@@ -97,6 +97,8 @@ public class MultiWorldRenderer {
 			TextureRegion keyFrame = Assets.playerAnimation.getKeyFrame(player.stateTime, Animation.ANIMATION_LOOPING);
         	batcher.drawSprite(player.position.x, player.position.y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, player.rotationAngle-90, keyFrame);
 		}
+		batcher.drawSprite(world.player2.position.x, world.player2.position.y , Player.PLAYER_WIDTH, 
+				Player.PLAYER_HEIGHT, Assets.playerIdle); 
 
         batcher.endBatch();
     }

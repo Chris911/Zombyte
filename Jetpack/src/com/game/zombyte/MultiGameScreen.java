@@ -2,8 +2,8 @@ package com.game.zombyte;
 
 import java.util.List;
 import javax.microedition.khronos.opengles.GL10;
+import android.widget.Toast;
 
-import android.util.Log;
 import com.bag.lib.Game;
 import com.bag.lib.Input.TouchEvent;
 import com.bag.lib.gl.Camera2D;
@@ -14,10 +14,11 @@ import com.bag.lib.math.OverlapTester;
 import com.bag.lib.math.Rectangle;
 import com.bag.lib.math.Vector2;
 
+import com.game.database.Highscore;
+import com.game.database.HighscoreDataSource;
+import com.game.database.HighscoreDatabaseHelper;
 import com.game.zombyte.MultiWorld.MultiWorldListener;
-import com.game.zombyte.World.WorldListener;
 
-@SuppressWarnings("unused")
 public class MultiGameScreen extends GLScreen {
 	
 	// States 
@@ -40,9 +41,12 @@ public class MultiGameScreen extends GLScreen {
     Vector2 		actionTouchPoint;
     float 			velocity;
     float 			angle;
+    float 			gameOverTime;
+    float 			nextRoundTime;
+    float			nextWeaponTime;
     SpriteBatcher 	batcher;  
     
-    MultiWorld 		world;
+    MultiWorld 			world;
     MultiWorldListener 	worldListener;
     MultiWorldRenderer 	renderer;
     
@@ -86,6 +90,22 @@ public class MultiGameScreen extends GLScreen {
 			public int getTime() {
 				return (int)elapsedTime;
 			}
+			
+			public void playBulletHit() {
+				Assets.basicShoot.play(0.3f);
+			}
+			
+			public void playRocketHit() {
+				Assets.rocketShoot.play(0.3f);
+			}
+			
+			public void playPlayerHit() {
+				Assets.playerHit.play(0.05f);
+			}
+			
+			public void powerUpHit() {
+				Assets.powerUp.play(0.8f);
+			}
         };
         
         // Create a world Instance
@@ -101,11 +121,14 @@ public class MultiGameScreen extends GLScreen {
         velocity = 0;
         startTime = System.currentTimeMillis();
         elapsedTime = 0;
+        gameOverTime = 0;
+        nextRoundTime = 0;
+        nextWeaponTime = 0;
 
         moveJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
-        moveJoystick.setBasePosition(new Vector2(120,100));
+        moveJoystick.setBasePosition(new Vector2(100,75));
         actionJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
-        actionJoystick.setBasePosition(new Vector2(680,100));
+        actionJoystick.setBasePosition(new Vector2(700,75));
     }
 
 	@Override
@@ -125,8 +148,11 @@ public class MultiGameScreen extends GLScreen {
 	    case GAME_PAUSED:
 	        updatePaused();
 	        break;
+	    case GAME_LEVEL_END:
+	    	updateNextRound(deltaTime);
+	        break;
 	    case GAME_OVER:
-	        updateGameOver();
+	        updateGameOver(deltaTime);
 	        break;
 	    }
 	}
@@ -134,6 +160,8 @@ public class MultiGameScreen extends GLScreen {
 	// Update when state is READY
 	private void updateReady() {
 		// First touch 
+		Assets.intro.stop();
+		Assets.gamemusic.play();
 	    if(game.getInput().getTouchEvents().size() > 0) {
 	        state = GAME_RUNNING;
 	    }
@@ -143,7 +171,7 @@ public class MultiGameScreen extends GLScreen {
 	private void updateRunning(float deltaTime) {
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
-	    for(int i = 0; i < len; i++) {
+	    for(int i = 0; i < len; i++) { 
 	        TouchEvent event = touchEvents.get(i);
 	        	        
 	        if(event.type == TouchEvent.TOUCH_DRAGGED ||event.type == TouchEvent.TOUCH_DOWN){     
@@ -154,31 +182,45 @@ public class MultiGameScreen extends GLScreen {
 	    	        guiCam.touchToWorld(moveTouchPoint);
 	        		handlePlayerMoveJoystickEvents();
 	        	}	
-	        	 else if(event.x > SCREEN_WIDTH/2 + 30) { // last 1/2
+	        	else if(event.x > SCREEN_WIDTH/2 + 30 && event.y >= 120) { // last 1/2
 	        		shootTouchDown = true;
 	        		actionTouchPoint.set(event.x, event.y);
 	    	        guiCam.touchToWorld(actionTouchPoint);
-	        	 }
+	        	}
+	        	else if(event.x <= SCREEN_WIDTH/2 + 30 && event.x >= SCREEN_WIDTH/2 - 30) {
+	        		shootTouchDown = false;
+	        	}
+
+	        	
 	        }
 	        else if(event.type == TouchEvent.TOUCH_UP){
 	        	world.player.state = Player.PLAYER_STATE_IDLE;
 	        	moveJoystickFirstTouch = true;
 	        	actionJoystickFirstTouch = true;
 	        	
-	        	if(event.x < SCREEN_WIDTH/2 - 30){ // First 1/2 (starting from left)
+	        	if(event.x < SCREEN_WIDTH/2 - 30){ 
 	                moveJoystick.resetStickPosition();
 	        	}
-	        	if(event.x > SCREEN_WIDTH/2 + 30){ // First 1/2 (starting from left)
+	        	if(event.x > SCREEN_WIDTH/2 + 30 && event.y >= 120){ 
 	        		shootTouchDown = false;
 	                actionJoystick.resetStickPosition();
 	        	}
+	        	else if(event.x >= (3/4)*800 && event.y < 120){
+	        		shootTouchDown = false;
+	        		world.player.toggleWeapons();
+	                actionJoystick.resetStickPosition();
+	        	}
 	        } 
-	    }    
+	    }  
+	    
 	    if(shootTouchDown)
 	    	handlePlayerActionJoystickEvents();
 	    
 	    elapsedTime += deltaTime;
 	    world.update(deltaTime, velocity);
+	    
+	    if(world.state == World.WORLD_STATE_NEXT_LEVEL)
+	    	this.state = GAME_LEVEL_END;
 	    
 	    if(world.state == World.WORLD_STATE_GAME_OVER)
 	    	this.state = GAME_OVER;
@@ -188,7 +230,20 @@ public class MultiGameScreen extends GLScreen {
 		// game.setScreen(new MainMenuScreen(game));
 	}	
 	
-	private void updateGameOver() {
+	private void updateNextRound(float deltaTime) {
+		// First touch 
+		nextRoundTime+= deltaTime;
+		
+	    if(game.getInput().getTouchEvents().size() > 0 && nextRoundTime >= 2.0f) {
+	        state = GAME_RUNNING;
+	        world.state = World.WORLD_STATE_RUNNING;
+			world.player.position.set(World.WORLD_WIDTH/2,World.WORLD_HEIGHT/2);
+	        nextRoundTime = 0;
+	    }
+	}
+	
+	private void updateGameOver(float deltaTime) {
+		gameOverTime+= deltaTime;
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {      
@@ -196,7 +251,16 @@ public class MultiGameScreen extends GLScreen {
 	        moveTouchPoint.set(event.x, event.y);
 	        guiCam.touchToWorld(moveTouchPoint);
 	        
-	        if(event.type == TouchEvent.TOUCH_UP) {
+	        if(event.type == TouchEvent.TOUCH_UP && gameOverTime > 2.0f) {
+	        	if(world.score > 0)
+	        	{
+		        	HighscoreDataSource dbHelper = new HighscoreDataSource(ZombyteActivity.gameContext);
+		        	dbHelper.open();
+		        	dbHelper.createHighscore(new Highscore("GCA", world.score));
+		        	dbHelper.close();
+	        	}
+
+	    		Assets.gamemusic.stop();
 	        	game.setScreen(new MainMenuScreen(game));
 	        }
 	    }
@@ -266,7 +330,7 @@ public class MultiGameScreen extends GLScreen {
 	}
 	
 	private void presentLevelEnd() {
-		// Draw here
+
 	}
 	
 	private void presentGameOver() {
@@ -274,35 +338,92 @@ public class MultiGameScreen extends GLScreen {
 		GL10 gl = glGraphics.getGL();
 		gl.glColor4f(1, 1, 1, 1);
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, "GAME OVER", 300, 300);
+	    Assets.font.drawText(batcher, "GAME OVER", 320, 300);
+	    Assets.font.drawText(batcher, "FINAL SCORE:"+world.score, 290, 200);
 	    batcher.endBatch();
 	}
 	
 	private void drawUI()
 	{
 		try{
-		batcher.beginBatch(Assets.tileMapItems);
+		batcher.beginBatch(Assets.joystickMap);
 		
 		// Base
-		batcher.drawSprite(moveJoystick.basePosition.x, moveJoystick.basePosition.y, moveJoystick.size*2, moveJoystick.size*2, Assets.redTile);
+		batcher.drawSprite(moveJoystick.basePosition.x, moveJoystick.basePosition.y, moveJoystick.size, moveJoystick.size, Assets.joystickBottom);
 		// Stick
-		batcher.drawSprite(moveJoystick.stickPosition.x, moveJoystick.stickPosition.y, JOYSTICK_SIZE*0.8f, JOYSTICK_SIZE*0.8f, Assets.blueTile);
+		batcher.drawSprite(moveJoystick.stickPosition.x, moveJoystick.stickPosition.y, JOYSTICK_SIZE, JOYSTICK_SIZE, Assets.joystickTop);
 	
 		// Base
-		batcher.drawSprite(actionJoystick.basePosition.x, actionJoystick.basePosition.y, actionJoystick.size*2, actionJoystick.size*2, Assets.redTile);
+		batcher.drawSprite(actionJoystick.basePosition.x, actionJoystick.basePosition.y, actionJoystick.size, actionJoystick.size, Assets.joystickBottom);
 		// Stick
-		batcher.drawSprite(actionJoystick.stickPosition.x, actionJoystick.stickPosition.y, JOYSTICK_SIZE*0.8f, JOYSTICK_SIZE*0.8f, Assets.blueTile);
+		batcher.drawSprite(actionJoystick.stickPosition.x, actionJoystick.stickPosition.y, JOYSTICK_SIZE, JOYSTICK_SIZE, Assets.joystickTop);
 		
+		batcher.endBatch();
+	    
+		GL10 gl = glGraphics.getGL();
+		gl.glColor4f(1, 1, 1, 1);
+		batcher.beginBatch(Assets.hubMap);
+		batcher.drawSprite(128, 435, 256, 100, Assets.hubLeft);		
+		batcher.drawSprite(672, 435, 256, 100, Assets.hubRight);		
+		batcher.endBatch();
+		
+		batcher.beginBatch(Assets.hearts);
+		
+		if(world.player.life >= 2)
+			batcher.drawSprite(65,  440, 32, 32, Assets.heartFull);
+		else if(world.player.life >= 1)
+			batcher.drawSprite(65,  440, 32, 32, Assets.heartHalf);
+		else
+			batcher.drawSprite(65,  440, 32, 32, Assets.heartEmpty);
+		
+		if(world.player.life >= 4)
+			batcher.drawSprite(105,  440, 32, 32, Assets.heartFull);
+		else if(world.player.life >= 3)
+			batcher.drawSprite(105,  440, 32, 32, Assets.heartHalf);
+		else
+			batcher.drawSprite(105,  440, 32, 32, Assets.heartEmpty);
+		
+		if(world.player.life >= 6)
+			batcher.drawSprite(145,  440, 32, 32, Assets.heartFull); 
+		else if(world.player.life >= 5)
+			batcher.drawSprite(145,  440, 32, 32, Assets.heartHalf);
+		else
+			batcher.drawSprite(145,  440, 32, 32, Assets.heartEmpty);
+
 		batcher.endBatch();
 		
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, "SCORE: "+world.score, 30, 450);
-	    Assets.font.drawText(batcher, "LIVES: "+world.player.life, 30, 430);
+	    Assets.font.drawText(batcher, "SCORE:" + world.score, 25, 465);
+	    Assets.font.drawText(batcher, " x " + world.player.weapon.bulletsRemaining, 700, 450);
 	    batcher.endBatch();
-		
+	     
+//	    final float hubWeaponX = 675;
+//	    final float hubWeaponY = 460;
+	    final float hubWeaponX = 200;
+	    final float hubWeaponY = 200;
+	    final float hubWeaponRatio = 50.0f; 
+	    batcher.beginBatch(Assets.spritesMap);
+	    if(world.player.weapon.getType() == Weapon.WEAPON_PISTOL)
+	    {
+	    	batcher.drawSprite(650, 433, 75, 75, Assets.pistol);
+	    }
+	    else if(world.player.weapon.getType() == Weapon.WEAPON_SHOTGUN)
+	    {
+	    	batcher.drawSprite(670, 413, 100, 100, Assets.shotgun); 
+	    }
+	    else if(world.player.weapon.getType() == Weapon.WEAPON_ROCKET)
+	    {
+	    	batcher.drawSprite(675, 460, 100, 100, Assets.rocket);
+	    }
+	    else if(world.player.weapon.getType() == Weapon.WEAPON_RIFLE)
+	    {
+	    	batcher.drawSprite(660, 438, 65, 65, Assets.rifle);
+	    }
+	    batcher.endBatch();
+	    
 		} catch(Exception e){
 			
-		}
+		} 
 	}
 
     @Override
@@ -337,6 +458,7 @@ public class MultiGameScreen extends GLScreen {
     	if(moveStickIsMoving){
     		world.player.velocity.x = moveJoystick.getStickBaseDistance().x/10;
     		world.player.velocity.y = moveJoystick.getStickBaseDistance().y/10;
+    		world.player.rotationAngle = moveJoystick.getAngle();
     		moveStickIsMoving = false;
     	}
 

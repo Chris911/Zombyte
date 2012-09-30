@@ -66,7 +66,7 @@ public class HighscoreScreen extends GLScreen {
         animationHandler = new AnimationHandler(game, buttonsAssets);
         changeScreen = false;
         
-        highScoreTop = "Name/tScore/n-------------------------------";
+        highScoreTop = "NAME    SCORE";
         textToDisplay = "";
         highscoreCounter = 0;
         
@@ -136,13 +136,17 @@ public class HighscoreScreen extends GLScreen {
         // Animate the menu screen and render the assets
 	    animationHandler.renderAnimations(gl, batcher);
         
+	    batcher.beginBatch(Assets.fontTex);
+
+    	Assets.font.drawText(batcher, highScoreTop, 320, 350);
+    	batcher.endBatch();
+	    
 	    try{
 	    batcher.beginBatch(Assets.fontTex);
-	    	int yInc = 10;
-	    	Assets.font.drawText(batcher, highScoreTop, 200, 420);
-	    	for (int i = 0; i < highscores.size() || i < 10; i++) {
+	    	int yInc = 30;
+	    	for (int i = 0; i < highscores.size() && i < 10; i++) {
 	    		if(highscores.get(i).getScore() > 0)
-	    			Assets.font.drawText(batcher, highscores.get(i).toString(), 200,400-(i*yInc));
+	    			Assets.font.drawText(batcher, highscores.get(i).toString(), 320,320-(i*yInc));
 			}
 	    	
 	    batcher.endBatch();

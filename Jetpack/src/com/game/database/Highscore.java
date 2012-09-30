@@ -24,7 +24,7 @@ public class Highscore implements Comparable<Highscore> {
 	}
 	
 	public String toString() {
-		return name + "\t" + Integer.toString(score);
+		return name.toUpperCase() + "      " + Integer.toString(score).toUpperCase();
 	}
 
 	public int compareTo(Highscore another) {

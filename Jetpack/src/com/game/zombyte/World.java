@@ -176,7 +176,7 @@ public class World {
 	        	{
 	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_RIFLE);
 	        	}
-	        	else if(genPowerUp > 75 && genPowerUp < 80)
+	        	else if(genPowerUp > 77 && genPowerUp < 80)
 	        	{
 	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_LIFE);
 	        	}
