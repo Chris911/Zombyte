@@ -1,6 +1,8 @@
 package com.game.zombyte;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -14,6 +16,8 @@ import com.bag.lib.impl.GLGame;
 import com.bag.lib.impl.GLScreen;
 import com.bag.lib.math.OverlapTester;
 import com.bag.lib.math.Vector2;
+import com.game.database.Highscore;
+import com.game.database.HighscoreDataSource;
 
 public class HighscoreScreen extends GLScreen {
     Camera2D guiCam;
@@ -26,15 +30,17 @@ public class HighscoreScreen extends GLScreen {
     boolean changeScreen;
     Screen screen;
     
-    String story;
+    String highScoreTop;
     String textToDisplay;
-    int charCounter;
+    int highscoreCounter;
     
     ArrayList<UIButton> buttonsAssets;
     UIButton backButton;
     UIButton coopPlayButton;
     UIButton highScoresButton;
     UIButton tutorialButton;
+    
+    List<Highscore> highscores;
 
     public HighscoreScreen(Game game) {
         super(game);
@@ -49,7 +55,7 @@ public class HighscoreScreen extends GLScreen {
         touchPoint = new Vector2();
         
         // Pre-load assets here
-        Assets.load((GLGame) game);
+        Assets.load((GLGame) game); 
         
         // UI Buttons and the array with all of their assets
         backButton = new UIButton(160, 100, 120, 100, Assets.blueTile, Assets.redTile);
@@ -60,9 +66,15 @@ public class HighscoreScreen extends GLScreen {
         animationHandler = new AnimationHandler(game, buttonsAssets);
         changeScreen = false;
         
-        story = "You are against a swarm of zombies...";
+        highScoreTop = "Name/tScore/n-------------------------------";
         textToDisplay = "";
-        charCounter = 0;
+        highscoreCounter = 0;
+        
+        HighscoreDataSource dbHelper = new HighscoreDataSource(ZombyteActivity.gameContext);
+        dbHelper.open();
+        highscores = dbHelper.getAllHighscores();
+        Collections.sort(highscores);
+        dbHelper.close();
         
         // Load previous game settings (sound enabled on/off)
         //Settings.load(game.getFileIO());
@@ -102,12 +114,6 @@ public class HighscoreScreen extends GLScreen {
             }
         }
         
-        if(textToDisplay.length() != story.length())
-        {
-        	textToDisplay += story.charAt(charCounter);
-        	charCounter++;
-        }
-        
         // Check if we are changing screen
         if(changeScreen) {
         	animationHandler.transitionToScreenWithRotateAnimation(screen);
@@ -132,7 +138,13 @@ public class HighscoreScreen extends GLScreen {
         
 	    try{
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, textToDisplay, 100,400);
+	    	int yInc = 10;
+	    	Assets.font.drawText(batcher, highScoreTop, 200, 420);
+	    	for (int i = 0; i < highscores.size() || i < 10; i++) {
+	    		if(highscores.get(i).getScore() > 0)
+	    			Assets.font.drawText(batcher, highscores.get(i).toString(), 200,400-(i*yInc));
+			}
+	    	
 	    batcher.endBatch();
 	    }
 	    catch(Exception e){}

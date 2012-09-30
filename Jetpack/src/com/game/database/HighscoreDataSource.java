@@ -46,7 +46,7 @@ public class HighscoreDataSource {
 		return cursorToHighscore(cursor);
 	}
 
-	public List<Highscore> getAllShows() {
+	public List<Highscore> getAllHighscores() {
 		List<Highscore> highscoreList = new ArrayList<Highscore>();
 		Cursor cursor = database.query(HighscoreDatabaseHelper.TABLE_HIGHSCORE,
 				allColumns, null, null, null, null, null);

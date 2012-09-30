@@ -1,6 +1,6 @@
 package com.game.database;
 
-public class Highscore {
+public class Highscore implements Comparable<Highscore> {
 	
 	private String name;
 	private int score;
@@ -21,5 +21,13 @@ public class Highscore {
 	}
 	public void setScore(int score) {
 		this.score = score;
+	}
+	
+	public String toString() {
+		return name + "\t" + Integer.toString(score);
+	}
+
+	public int compareTo(Highscore another) {
+		return another.score - this.score;
 	}
 }
