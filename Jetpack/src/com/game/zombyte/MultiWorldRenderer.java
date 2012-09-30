@@ -8,18 +8,18 @@ import com.bag.lib.gl.SpriteBatcher;
 import com.bag.lib.gl.TextureRegion;
 import com.bag.lib.impl.GLGraphics;
 
-public class WorldRenderer {
+public class MultiWorldRenderer {
     static final float FRUSTUM_WIDTH = 20;
     static final float FRUSTUM_HEIGHT = 11;
 	
     GLGraphics 		glGraphics;
-    World 			world;
+    MultiWorld 		world;
     Camera2D 		cam;
     SpriteBatcher 	batcher;    
     
     // Constructor of the world renderer
     // Draws every game objects in the world
-    public WorldRenderer(GLGraphics glGraphics, SpriteBatcher batcher, World world) {
+    public MultiWorldRenderer(GLGraphics glGraphics, SpriteBatcher batcher, MultiWorld world) {
         this.glGraphics = glGraphics;
         this.world = world;
         this.cam = new Camera2D(glGraphics, FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
@@ -87,6 +87,8 @@ public class WorldRenderer {
        
     	// Draw the player sprite
         batcher.drawSprite(world.player.position.x, world.player.position.y , Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, Assets.player);
+        batcher.drawSprite(world.player2.position.x, world.player2.position.y , Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, Assets.player);
+
 
         batcher.endBatch();
     }

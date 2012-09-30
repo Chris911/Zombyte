@@ -34,6 +34,7 @@ public class Player extends DynamicGameObject {
     
     private boolean isImmuneToDamage;
     private boolean isTakingDamage;
+    public boolean	isHiddenForTooLong;
     
     // Current weapon
     public Weapon weapon;
@@ -43,6 +44,7 @@ public class Player extends DynamicGameObject {
     
     // In damage state time
     private float inDamageStateTime;
+    private float isHiddenStateTime;
     
 	public Player(float x, float y) {
 		super(x, y, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -55,11 +57,21 @@ public class Player extends DynamicGameObject {
 		this.weapon = new Weapon(Weapon.WEAPON_PISTOL);
 		this.angle = 0;
 		this.inDamageStateTime = 0;
+		this.isHiddenStateTime = 0;
+		this.isHiddenForTooLong = false;
 	}
 	
 	public void update(float deltaTime) {
     	bounds.lowerLeft.set(position).sub(bounds.width / 2, bounds.height / 2);
 		
+    	if(!isHiddenForTooLong && state == PLAYER_STATE_HIDDEN){
+    		isHiddenStateTime += deltaTime;
+    		if(isHiddenStateTime >= 2.0f){
+    			isHiddenForTooLong = true;
+    			state = PLAYER_STATE_IDLE;
+    			isHiddenStateTime = 0;
+    		}
+    	}
     	
 		if (isTakingDamage){
 			life --;
@@ -99,8 +111,6 @@ public class Player extends DynamicGameObject {
 			if(!isImmuneToDamage)
 				isTakingDamage = true;
 		}
-		
-
 		
 		// Modify position
 		position.add(velocity.x * deltaTime * speed, velocity.y * deltaTime * speed);

@@ -29,7 +29,8 @@ public class Enemy extends DynamicGameObject {
     private int   difficulty;
     public float rotationAngle;
     public int   score;
-    public float randomAngle;
+    public float randomAngleX;
+    public float randomAngleY;
     
     public float stateTime;
 	
@@ -42,7 +43,9 @@ public class Enemy extends DynamicGameObject {
 		this.difficulty = difficulty;
 		this.type = type;
 		this.stateTime = 0.0f;
-		this.randomAngle = randInRangeInc(0, 360);
+		this.randomAngleX = randInRangeInc(0, 360);
+		this.randomAngleY = randInRangeInc(0, 360);
+
 		
 		initialize();
 	}
@@ -93,8 +96,9 @@ public class Enemy extends DynamicGameObject {
     		velocity.y = (float) (speed*Math.sin(rotationAngle));
     	}
     	else{
-        	velocity.x = (float) (speed/10*Math.cos(randomAngle));
-        	velocity.y = (float) (speed/10*Math.sin(randomAngle));
+        	velocity.x = (float) (speed*Math.cos(randomAngleX));
+        	velocity.y = (float) (speed*Math.sin(randomAngleX));
+        	rotationAngle = randomAngleX;
     	}
     }
     public static int randInRangeInc(int min, int max) {

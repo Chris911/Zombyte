@@ -92,6 +92,9 @@ public class MainMenuScreen extends GLScreen {
                 else if(OverlapTester.pointInRectangle(tutorialButton.bounds, touchPoint)) {
                 	tutorialButton.state = UIButton.STATE_PRESSED;
                 }	
+                else if(OverlapTester.pointInRectangle(coopPlayButton.bounds, touchPoint)) {
+                	coopPlayButton.state = UIButton.STATE_PRESSED;
+                }
             }
             
             // Detect touch on specific bounding rects
@@ -104,6 +107,10 @@ public class MainMenuScreen extends GLScreen {
                 	changeScreen = true;
                 	screen = new TutorialScreen(game); 
                 	tutorialButton.state = UIButton.STATE_IDLE;
+                } else if(coopPlayButton.state == UIButton.STATE_PRESSED) {
+                	changeScreen = true;
+                	screen = new MultiGameScreen(game); 
+                	coopPlayButton.state = UIButton.STATE_IDLE;
                 }
             }
         }

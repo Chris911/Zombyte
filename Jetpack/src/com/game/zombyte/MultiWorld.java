@@ -4,17 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.bag.lib.math.OverlapTester;
-import com.bag.lib.math.Vector2;
+import android.net.NetworkInfo.DetailedState;
 
+import com.bag.lib.math.OverlapTester;
+import com.game.network.*;
 /*
  * Master class holding all game objects and regulating their interactions
  */
 
-public class World {
+public class MultiWorld {
 	
 	// Interface, mostly used to access sound effects
-    public interface WorldListener {
+    public interface MultiWorldListener {
           //public void sound();
 		  int getTime();
     }
@@ -29,6 +30,8 @@ public class World {
     public static final int WORLD_STATE_GAME_OVER 	= 2;
     
     public final Player player;
+    public final Player player2;
+    
     public final List<Bullet> bulletArray;
     public final List<Enemy> EnemyArray;
     public final List<PowerUp> PowerUpArray;
@@ -36,7 +39,7 @@ public class World {
 
     public final List<RocketExplosion> rocketExplosionArray;
     public Explosion explosion;
-    public final WorldListener listener;
+    public final MultiWorldListener listener;
     public final Random rand;
     
     public float lastBulletFiredTime;
@@ -44,8 +47,10 @@ public class World {
     public int state;
     public int score;
     
+    public com.game.network.server server;
+    
+    public MultiWorld(MultiWorldListener listener) {
 
-    public World(WorldListener listener) {
         this.bulletArray = new ArrayList<Bullet>();
         this.EnemyArray = new ArrayList<Enemy>();
         this.PowerUpArray = new ArrayList<PowerUp>();
@@ -53,7 +58,8 @@ public class World {
         this.rocketExplosionArray = new ArrayList<RocketExplosion>();
         
     	player = new Player(WORLD_WIDTH/2, 10);
-        
+    	player2 = new Player(WORLD_WIDTH/2, 10);
+
     	this.listener = listener;
         
         rand = new Random();
@@ -66,6 +72,10 @@ public class World {
         
         initEnemies();
         LevelModifier.addTreesToMap(this);
+        
+        // Network time
+        server = new server();
+        server.initConnection();
     }
     
     private void initEnemies()
@@ -76,6 +86,7 @@ public class World {
     }
 	
 	public void update(float deltaTime, float speed) {
+		updateNetwork(deltaTime);
 		updatePlayer(deltaTime, speed);
 		updateBullet(deltaTime);
 		updateEnemies(deltaTime);
@@ -85,6 +96,21 @@ public class World {
 		updateRocketExplosions(deltaTime);
 		checkCollisions();
 		checkGameOver();
+	}
+	
+	private void updateNetwork(float deltaTime){
+		try{
+			player2.position.x = Float.parseFloat(server.getPlayerInfo("x"));
+			player2.position.y = Float.parseFloat(server.getPlayerInfo("y"));
+		
+			if(server.getBulletInfo("avail").equals("true")){
+				bulletArray.add(new Bullet(player2.position.x, player2.position.y, Float.parseFloat(server.getBulletInfo("angle")), 20));
+			}
+		
+		} 
+		catch(Exception e){}
+		server.setPlayerData(String.valueOf(player.position.x), String.valueOf(player.position.y), "2", "2");
+		server.sendData();
 	}
 
 	private void updatePlayer(float deltaTime, float speed) {
@@ -348,6 +374,8 @@ public class World {
 								   player.weapon.getBulletSpeed()));
 						
 					}
+					server.setBulletData(String.valueOf(player.position.x), String.valueOf(player.position.y),
+							String.valueOf(angle), "3", "true"); 
 					lastBulletFiredTime = 0.0f;
 					//Decrement ammo
 					player.weapon.fire(); 

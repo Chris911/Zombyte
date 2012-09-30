@@ -16,12 +16,14 @@ public class LevelObject extends GameObject{
 	public int type;
 	public float alphaLevel;
 	public TextureRegion asset;
+	public int size;
 	
 	
-	public LevelObject(float x, float y, int type) {
-		super(x, y, TREE_SIZE, TREE_SIZE);
+	public LevelObject(float x, float y, int type, int size) {
+		super(x, y, size, size);
 		this.type = type;
 		this.state = STATE_IDLE;
+		this.size = size;
 		
 		if(type == GAMEOBJECT_TYPE_TREE){
 			this.asset = Assets.tree;

@@ -22,7 +22,7 @@ public class RocketExplosion extends GameObject {
 	
     public void update(float deltaTime) {    
     	stateTime += deltaTime;
-    	if(stateTime > 1.12)
+    	if(stateTime > 1.12/2)
     	{
     		this.state = ROCKETEXP_STATE_NOT_ACTIVE;
     	}
