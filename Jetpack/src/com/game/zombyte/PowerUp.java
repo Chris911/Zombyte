@@ -10,6 +10,7 @@ public class PowerUp extends DynamicGameObject {
 	public static final int POWERUP_TYPE_SHOTGUN = Weapon.WEAPON_SHOTGUN;
 	public static final int POWERUP_TYPE_ROCKET  = Weapon.WEAPON_ROCKET;
 	public static final int POWERUP_TYPE_RIFLE   = Weapon.WEAPON_RIFLE;
+	public static final int POWERUP_TYPE_LIFE    = 9;
 	
 	public int state;
 	public int type;
