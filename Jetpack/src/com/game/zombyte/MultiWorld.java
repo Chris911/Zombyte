@@ -109,8 +109,10 @@ public class MultiWorld {
 		
 		} 
 		catch(Exception e){}
+		try{
 		server.setPlayerData(String.valueOf(player.position.x), String.valueOf(player.position.y), "2", "2");
 		server.sendData();
+		} catch(Exception e){};
 	}
 
 	private void updatePlayer(float deltaTime, float speed) {
@@ -374,8 +376,10 @@ public class MultiWorld {
 								   player.weapon.getBulletSpeed()));
 						
 					}
+					try{
 					server.setBulletData(String.valueOf(player.position.x), String.valueOf(player.position.y),
 							String.valueOf(angle), "3", "true"); 
+					} catch(Exception e){}
 					lastBulletFiredTime = 0.0f;
 					//Decrement ammo
 					player.weapon.fire(); 
