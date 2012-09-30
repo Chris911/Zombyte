@@ -160,7 +160,10 @@ public class TutorialScreen extends GLScreen {
         
 	    try{
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, textToDisplay, 100,400);
+	    Assets.font.drawText(batcher, textToDisplay1, 100,400);
+	    Assets.font.drawText(batcher, textToDisplay1, 100,400);
+	    Assets.font.drawText(batcher, textToDisplay1, 100,400);
+
 	    batcher.endBatch();
 	    }
 	    catch(Exception e){}
