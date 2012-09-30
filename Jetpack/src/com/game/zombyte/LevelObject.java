@@ -2,6 +2,7 @@ package com.game.zombyte;
 
 import com.bag.lib.GameObject;
 import com.bag.lib.gl.TextureRegion;
+import com.bag.lib.math.Circle;
 
 public class LevelObject extends GameObject{
 
@@ -17,7 +18,7 @@ public class LevelObject extends GameObject{
 	public float alphaLevel;
 	public TextureRegion asset;
 	public int size;
-	
+	public Circle c;
 	
 	public LevelObject(float x, float y, int type, int size) {
 		super(x, y, size, size);
@@ -25,6 +26,7 @@ public class LevelObject extends GameObject{
 		this.state = STATE_IDLE;
 		this.size = size;
 		this.alphaLevel = 1.0f;
+		this.c = new Circle(x,y,size/2);
 		
 		if(type == GAMEOBJECT_TYPE_TREE){
 			this.asset = Assets.tree;

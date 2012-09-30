@@ -303,7 +303,7 @@ public class World {
 	    synchronized (levelObjectsArray) {
 	    	for (int i = 0; i < len; i++) {
 		        LevelObject lev = levelObjectsArray.get(i);
-		        if (OverlapTester.overlapRectangles(lev.bounds, player.bounds))
+		        if (OverlapTester.overlapCircleRectangle(lev.c, player.bounds))
 		        {
 		        	lev.state = LevelObject.STATE_COLLIDED;
 		        	player.state = Player.PLAYER_STATE_HIDDEN;
