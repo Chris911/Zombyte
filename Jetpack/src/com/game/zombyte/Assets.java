@@ -10,8 +10,19 @@ import com.bag.lib.impl.GLGame;
 public class Assets {
    
 	// Main Menu
-    public static Texture mainMenuItems;
-    public static TextureRegion mainMenuBackground;
+	public static Texture menuItems;
+	public static TextureRegion menuBackground;
+	
+	// Map Background
+    public static Texture mapItems;
+    public static TextureRegion MapBackground;
+    
+    // Main Menu Buttons
+    public static Texture mainMenuButtons;
+    public static TextureRegion menuStartBtn;
+    public static TextureRegion menuCoopBtn;
+    public static TextureRegion menuTutorialBtn;
+    public static TextureRegion menuSettingsBtn;
     
     // Game Interface
     
@@ -71,13 +82,24 @@ public class Assets {
     // LevelObjects
     public static TextureRegion		tree;
     public static Animation		explosionAnimation;
-
+ 
     
     public static void load(GLGame game) {
        	
+    	// Map Background
+    	mapItems = new Texture(game, "bg.png");
+    	MapBackground = new TextureRegion(mapItems, 0, 0, 1024, 512);
+    	
     	// Main Menu (UI)
-    	mainMenuItems = new Texture(game, "bg.png");
-    	mainMenuBackground = new TextureRegion(mainMenuItems, 0, 0, 1024, 512);
+    	menuItems = new Texture(game, "menuBg.png"); 
+    	menuBackground = new TextureRegion(menuItems, 0, 0, 800, 480);
+    	
+    	// Main Menu Buttons
+    	mainMenuButtons = new Texture(game, "menuButtons.png");
+    	menuStartBtn 	= new TextureRegion(mainMenuButtons, 0, 0, 120, 45);
+    	menuCoopBtn 	= new TextureRegion(mainMenuButtons, 128, 0, 120, 45);
+    	menuTutorialBtn = new TextureRegion(mainMenuButtons, 0, 128, 120, 45);
+    	menuSettingsBtn = new TextureRegion(mainMenuButtons, 128, 128, 120, 45);
     	
     	// Game Screen 
     	tileMapItems = new Texture(game, "tilemap.png");
@@ -141,9 +163,11 @@ public class Assets {
     public static void reload() {
     	tileMapItems.reload();
     	playerItems.reload();
-    	mainMenuItems.reload();
+    	mapItems.reload();
     	spritesMap.reload();
-
+    	menuItems.reload();
+    	mainMenuButtons.reload();
+    	fontTex.reload();
     	//if(Settings.soundEnabled )
            // music.play();
     }

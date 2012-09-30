@@ -48,12 +48,14 @@ public class MainMenuScreen extends GLScreen {
         Assets.load((GLGame) game);
         
         // UI Buttons and the array with all of their assets
-        singlePlayButton = new UIButton(160, 100, 120, 100, Assets.blueTile, Assets.redTile);
-        coopPlayButton 	 = new UIButton(320, 100, 120, 100, Assets.blueTile, Assets.redTile);
-        highScoresButton = new UIButton(480, 100, 120, 100, Assets.blueTile, Assets.redTile);
-        tutorialButton   = new UIButton(640, 100, 120, 100, Assets.blueTile, Assets.redTile);
+        final int btnHeight = 90;
+        final int btnWidth = 240;
+        singlePlayButton = new UIButton(450, 400, btnWidth, btnHeight, Assets.menuStartBtn, Assets.menuStartBtn); 
+        coopPlayButton 	 = new UIButton(450, 300, btnWidth, btnHeight, Assets.menuCoopBtn, Assets.menuCoopBtn);
+        highScoresButton = new UIButton(450, 200, btnWidth, btnHeight, Assets.menuSettingsBtn, Assets.menuSettingsBtn);
+        tutorialButton   = new UIButton(450, 100, btnWidth, btnHeight, Assets.menuTutorialBtn, Assets.menuTutorialBtn);
         
-        buttonsAssets = new ArrayList<UIButton>();
+        buttonsAssets = new ArrayList<UIButton>(); 
         buttonsAssets.add(singlePlayButton);
         buttonsAssets.add(highScoresButton);
         buttonsAssets.add(coopPlayButton);
@@ -138,7 +140,7 @@ public class MainMenuScreen extends GLScreen {
 	    animationHandler.renderAnimations(gl, batcher);
         
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, "THIS IS A FONT TEST", 100,400);
+	    Assets.font.drawText(batcher, "Grade-F Productions", 500,10); 
 	    batcher.endBatch();
 	    
         gl.glDisable(GL10.GL_BLEND);

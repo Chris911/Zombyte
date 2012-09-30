@@ -36,10 +36,10 @@ public class AnimationHandler {
         gl.glColor4f(1, 1, 1, sceneAlpha);  
         
         // Select the assets batch and draw them
-        batcher.beginBatch(Assets.mainMenuItems);
-        batcher.drawSprite(400, 240, 800, 480, sceneAngle, Assets.mainMenuBackground);
+        batcher.beginBatch(Assets.menuItems);
+        batcher.drawSprite(400, 240, 800, 480, sceneAngle, Assets.menuBackground);
         batcher.endBatch();
-        batcher.beginBatch(Assets.tileMapItems);
+        batcher.beginBatch(Assets.mainMenuButtons);
 
         for(int idx = 0; idx < buttons.size(); idx++){
         	UIButton but = buttons.get(idx);
