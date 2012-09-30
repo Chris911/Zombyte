@@ -41,6 +41,7 @@ public class GameScreen extends GLScreen {
     float 			angle;
     float 			gameOverTime;
     float 			nextRoundTime;
+    float			nextWeaponTime;
     SpriteBatcher 	batcher;  
     
     World 			world;
@@ -120,6 +121,7 @@ public class GameScreen extends GLScreen {
         elapsedTime = 0;
         gameOverTime = 0;
         nextRoundTime = 0;
+        nextWeaponTime = 0;
 
         moveJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
         moveJoystick.setBasePosition(new Vector2(120,100));
@@ -176,7 +178,7 @@ public class GameScreen extends GLScreen {
 	    	        guiCam.touchToWorld(moveTouchPoint);
 	        		handlePlayerMoveJoystickEvents();
 	        	}	
-	        	else if(event.x > SCREEN_WIDTH/2 + 30) { // last 1/2
+	        	else if(event.x > SCREEN_WIDTH/2 + 30 && event.y >= 120) { // last 1/2
 	        		shootTouchDown = true;
 	        		actionTouchPoint.set(event.x, event.y);
 	    	        guiCam.touchToWorld(actionTouchPoint);
@@ -184,6 +186,7 @@ public class GameScreen extends GLScreen {
 	        	else if(event.x <= SCREEN_WIDTH/2 + 30 && event.x >= SCREEN_WIDTH/2 - 30) {
 	        		shootTouchDown = false;
 	        	}
+
 	        	
 	        }
 	        else if(event.type == TouchEvent.TOUCH_UP){
@@ -191,15 +194,21 @@ public class GameScreen extends GLScreen {
 	        	moveJoystickFirstTouch = true;
 	        	actionJoystickFirstTouch = true;
 	        	
-	        	if(event.x < SCREEN_WIDTH/2 - 30){ // First 1/2 (starting from left)
+	        	if(event.x < SCREEN_WIDTH/2 - 30){ 
 	                moveJoystick.resetStickPosition();
 	        	}
-	        	if(event.x > SCREEN_WIDTH/2 + 30){ // First 1/2 (starting from left)
+	        	if(event.x > SCREEN_WIDTH/2 + 30 && event.y >= 120){ 
 	        		shootTouchDown = false;
 	                actionJoystick.resetStickPosition();
 	        	}
+	        	else if(event.x >= (3/4)*800 && event.y < 120){
+	        		shootTouchDown = false;
+	        		world.player.toggleWeapons();
+	                actionJoystick.resetStickPosition();
+	        	}
 	        } 
-	    }    
+	    }  
+	    
 	    if(shootTouchDown)
 	    	handlePlayerActionJoystickEvents();
 	    
@@ -312,9 +321,9 @@ public class GameScreen extends GLScreen {
 		GL10 gl = glGraphics.getGL();
 		gl.glColor4f(1, 1, 1, 1);
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, "PREPARE FOR ROUND "+world.round, 320, 300);
-	    Assets.font.drawText(batcher, "CURRENT SCORE:"+world.score, 300, 200);
-	    if(nextRoundTime > 2.0f)
+	    Assets.font.drawText(batcher, "PREPARE FOR ROUND "+world.round, 270, 300);
+	    Assets.font.drawText(batcher, "CURRENT SCORE:"+world.score, 270, 320);
+	    if(nextRoundTime > 1.5f)
 	    	Assets.font.drawText(batcher, "TOUCH TO START!", 300, 150);
 
 	    batcher.endBatch();
@@ -382,7 +391,13 @@ public class GameScreen extends GLScreen {
 	    batcher.beginBatch(Assets.fontTex);
 	    Assets.font.drawText(batcher, "SCORE:" + world.score, 25, 465);
 	    Assets.font.drawText(batcher, " x " + world.player.weapon.bulletsRemaining, 700, 450);
-	    //Assets.font.drawText(batcher, "LIVES: "+world.player.life, 30, 430);
+	    Assets.font.drawText(batcher, "ToKill: "+world.numberOfEnemiesToKillForNextRound, 30, 230);
+	    Assets.font.drawText(batcher, "Pre: "+world.numberOfEnemiesPreSpawend, 30, 210);
+	    Assets.font.drawText(batcher, "Killed: "+world.numberOfEnemiesKilled, 30, 180);
+	    Assets.font.drawText(batcher, "toSpaw: "+world.numberOfEnemiesToSpawn, 30, 150); 
+
+	    
+
 	    batcher.endBatch();
 	     
 //	    final float hubWeaponX = 675;

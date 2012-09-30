@@ -37,7 +37,9 @@ public class Player extends DynamicGameObject {
     
     // Current weapon
     public Weapon weapon;
-    
+    public Weapon pistol;
+    public Weapon tempWeapon;
+
     // Direction angle
     private float angle;
     
@@ -53,6 +55,7 @@ public class Player extends DynamicGameObject {
 		this.isImmuneToDamage = false;
 		this.isTakingDamage = false;
 		this.weapon = new Weapon(Weapon.WEAPON_PISTOL);
+		this.pistol = new Weapon(Weapon.WEAPON_PISTOL);
 		this.angle = 0;
 		this.inDamageStateTime = 0;
 		this.isHiddenForTooLong = false;
@@ -116,5 +119,18 @@ public class Player extends DynamicGameObject {
 		} else if (position.y < 0 + PLAYER_HEIGHT/2) {
 			position.y = PLAYER_HEIGHT/2;
 		}
+	}
+	
+	public void toggleWeapons()
+	{
+		try{
+			if(weapon.getType() != Weapon.WEAPON_PISTOL) {
+			tempWeapon = weapon;
+			weapon = pistol;
+			}
+			else if(tempWeapon != null){
+				weapon = tempWeapon;
+			}
+		} catch(Exception e){}
 	}
 }

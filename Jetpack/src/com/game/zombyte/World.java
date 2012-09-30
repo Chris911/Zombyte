@@ -51,8 +51,8 @@ public class World {
     public int round = 1;
     public int numberOfEnemiesKilled = 0;
     public int numberOfEnemiesToKillForNextRound = 20;
-    public int numberOfEnemiesThreshold = 0;
-
+    public int numberOfEnemiesPreSpawend = 0;
+    public int numberOfEnemiesToSpawn = 0;
 
     public World(WorldListener listener) {
         this.bulletArray = new ArrayList<Bullet>();
@@ -80,10 +80,12 @@ public class World {
     private void initEnemies()
     {
     	// Round 1 enemies
-    	numberOfEnemiesToKillForNextRound = 20 + difficulty;
+    	numberOfEnemiesToKillForNextRound = 15 + difficulty;
+    	numberOfEnemiesPreSpawend = numberOfEnemiesToKillForNextRound;
     	for (int i = 0; i < numberOfEnemiesToKillForNextRound; i++) {
 			addEnemy(); 
 		}
+    	numberOfEnemiesToSpawn = numberOfEnemiesToKillForNextRound - numberOfEnemiesPreSpawend;
     }
 	 
 	public void update(float deltaTime, float speed) {
@@ -154,8 +156,10 @@ public class World {
 	        	EnemyArray.remove(enemy);
 	        	
 	        	numberOfEnemiesKilled ++;
-	        	if(numberOfEnemiesKilled <= numberOfEnemiesThreshold)
+	        	if(numberOfEnemiesToSpawn > 0){
 	        		addEnemy();
+	        		numberOfEnemiesToSpawn--;
+	        	}
 	        	
 	        	score += enemy.score*2;
 	        	i = EnemyArray.size();	
@@ -305,7 +309,10 @@ public class World {
 		        {
 		        	if(pup.type == PowerUp.POWERUP_TYPE_LIFE)
 		        	{
-		        		player.life++;
+		        		if(player.life <= 6)
+		        			player.life+=2;
+		        		else
+		        			score += 500;
 		        	}
 		        	else
 		        	{
@@ -338,20 +345,22 @@ public class World {
 	
 	private void checkNextRound()
 	{
-		if(numberOfEnemiesKilled >= numberOfEnemiesToKillForNextRound )
+		if(numberOfEnemiesKilled == numberOfEnemiesToKillForNextRound )
 		{
 			EnemyArray.clear();
 			explosionArray.clear();
 			PowerUpArray.clear();
+			bulletArray.clear();
 			
-			numberOfEnemiesThreshold = 10 + difficulty;
+			numberOfEnemiesPreSpawend = 10 + difficulty;
 			
-	    	for(int i=0; i <= numberOfEnemiesThreshold; i++)
+	    	for(int i=0; i <= numberOfEnemiesPreSpawend; i++)
 	    	{
 	    		addEnemy();
 	    	}
 	        numberOfEnemiesKilled = 0;
 	        numberOfEnemiesToKillForNextRound += difficulty*1.5f;
+	        numberOfEnemiesToSpawn = numberOfEnemiesToKillForNextRound - numberOfEnemiesPreSpawend;
 			difficulty ++;
 			score += 100 * (difficulty/2);
 			round++;
