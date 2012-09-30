@@ -35,12 +35,6 @@ public class Assets {
     public static TextureRegion menuTutorialBtn;
     public static TextureRegion menuSettingsBtn;
     
-    // Game Interface
-    
-    // Game Objects
-    public static Texture playerItems;
-    public static TextureRegion player;
-    
     public static Texture explosionItems;
     public static TextureRegion explo1;
     
@@ -57,6 +51,12 @@ public class Assets {
     public static TextureRegion bullet;
     public static TextureRegion bulletRed;
     public static TextureRegion bulletYellow;
+    
+    // Player
+    public static Texture players;
+    public static TextureRegion playerIdle;
+    public static TextureRegion playerLeft;
+    public static TextureRegion playerRight;
     
     // Weapons
     public static TextureRegion shotgun;
@@ -84,8 +84,14 @@ public class Assets {
     public static TextureRegion explosionFr15;
     public static TextureRegion explosionFr16;
     
+    // Joystick
+    public static Texture joystickMap;
+    public static TextureRegion joystickBottom;
+    public static TextureRegion joystickTop;
+    
     // Animations
     public static Animation		zombieMoveAnimation;
+    public static Animation		playerAnimation;
     
     // Font
     public static Texture 		fontTex;  
@@ -133,16 +139,19 @@ public class Assets {
     	tileMapItems = new Texture(game, "tilemap.png");
     	blueTile = new TextureRegion(tileMapItems, 0, 0, 64, 64);
     	redTile = new TextureRegion(tileMapItems, 64, 0, 64, 64);
-
-    	// Game Objects
-    	playerItems = new Texture(game, "pacman.png");
-    	player = new TextureRegion(playerItems, 0, 0, 64, 64);
     	
     	// Sprites
     	spritesMap = new Texture(game, "sprites.png");
-    	zombieIdle = new TextureRegion(spritesMap, 0, 0, 128, 128);
-    	zombieLeft = new TextureRegion(spritesMap, 0, 128, 128, 128);
+    	zombieIdle  = new TextureRegion(spritesMap, 0, 0, 128, 128);
+    	zombieLeft  = new TextureRegion(spritesMap, 0, 128, 128, 128);
     	zombieRight = new TextureRegion(spritesMap, 0, 256, 128, 128);
+    	
+    	// Player
+    	players = new Texture(game, "playerSprite.png");
+    	playerIdle  = new TextureRegion(players, 128, 128, 128, 128);
+    	playerLeft  = new TextureRegion(players, 0, 0, 128, 128);
+    	playerRight = new TextureRegion(players, 0, 128, 128, 128);
+    	
     	bullet     = new TextureRegion(spritesMap, 128, 128, 128, 128);
     	bulletRed  = new TextureRegion(spritesMap, 128, 256, 128, 128);
     	bulletYellow  = new TextureRegion(spritesMap, 128, 384, 128, 128);
@@ -153,6 +162,11 @@ public class Assets {
     	rocketBullet = new TextureRegion(spritesMap, 256, 256, 8, 8);
     	rifle 	   = new TextureRegion(spritesMap,   256, 128, 32, 32);
     	pistol 	   = new TextureRegion(spritesMap,   384, 128, 32, 32);
+    	
+    	// Joystick
+    	joystickMap = new Texture(game, "joystick.png");
+    	joystickBottom = new TextureRegion(joystickMap, 0, 0, 64, 64);
+    	joystickTop    = new TextureRegion(joystickMap, 64, 0, 64, 64);
     	
     	// Explosion
     	explosionMap  = new Texture(game, "explosion.png");
@@ -175,6 +189,7 @@ public class Assets {
     	
     	// Animation
     	zombieMoveAnimation = new Animation(0.2f, zombieLeft, zombieIdle, zombieRight );
+    	playerAnimation     = new Animation(0.2f, playerLeft, playerIdle, playerRight );
     	
     	// Font
     	fontTex = new Texture(game, "font3.png");
@@ -196,12 +211,17 @@ public class Assets {
     
     public static void reload() {
     	tileMapItems.reload();
-    	playerItems.reload();
     	mapItems.reload();
     	spritesMap.reload();
     	menuItems.reload();
     	mainMenuButtons.reload();
     	fontTex.reload();
+    	hubMap.reload();
+    	players.reload();
+    	joystickMap.reload();
+    	hearts.reload();
+    	explosionItems.reload();
+    	explosionMap.reload();
     	//if(Settings.soundEnabled )
            // music.play();
     }

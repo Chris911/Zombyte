@@ -39,7 +39,8 @@ public class Player extends DynamicGameObject {
     public Weapon weapon;
     
     // Direction angle
-    private float angle;
+    public float rotationAngle;
+    public float stateTime;
     
     // In damage state time
     private float inDamageStateTime;
@@ -53,14 +54,17 @@ public class Player extends DynamicGameObject {
 		this.isImmuneToDamage = false;
 		this.isTakingDamage = false;
 		this.weapon = new Weapon(Weapon.WEAPON_PISTOL);
-		this.angle = 0;
+		this.rotationAngle = 0;
 		this.inDamageStateTime = 0;
 		this.isHiddenForTooLong = false;
+		this.stateTime = 0;
 	}
 	
 	public void update(float deltaTime) {
     	bounds.lowerLeft.set(position).sub(bounds.width / 2, bounds.height / 2);
 		
+    	stateTime += deltaTime;
+    	
 		if (isTakingDamage){
 			life --;
 			isTakingDamage = false;

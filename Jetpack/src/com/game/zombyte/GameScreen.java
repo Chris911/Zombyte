@@ -122,9 +122,9 @@ public class GameScreen extends GLScreen {
         nextRoundTime = 0;
 
         moveJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
-        moveJoystick.setBasePosition(new Vector2(120,100));
+        moveJoystick.setBasePosition(new Vector2(100,75));
         actionJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
-        actionJoystick.setBasePosition(new Vector2(680,100));
+        actionJoystick.setBasePosition(new Vector2(700,75));
     }
 
 	@Override
@@ -333,17 +333,17 @@ public class GameScreen extends GLScreen {
 	private void drawUI()
 	{
 		try{
-		batcher.beginBatch(Assets.tileMapItems);
+		batcher.beginBatch(Assets.joystickMap);
 		
 		// Base
-		batcher.drawSprite(moveJoystick.basePosition.x, moveJoystick.basePosition.y, moveJoystick.size*2, moveJoystick.size*2, Assets.redTile);
+		batcher.drawSprite(moveJoystick.basePosition.x, moveJoystick.basePosition.y, moveJoystick.size, moveJoystick.size, Assets.joystickBottom);
 		// Stick
-		batcher.drawSprite(moveJoystick.stickPosition.x, moveJoystick.stickPosition.y, JOYSTICK_SIZE*0.8f, JOYSTICK_SIZE*0.8f, Assets.blueTile);
+		batcher.drawSprite(moveJoystick.stickPosition.x, moveJoystick.stickPosition.y, JOYSTICK_SIZE, JOYSTICK_SIZE, Assets.joystickTop);
 	
 		// Base
-		batcher.drawSprite(actionJoystick.basePosition.x, actionJoystick.basePosition.y, actionJoystick.size*2, actionJoystick.size*2, Assets.redTile);
+		batcher.drawSprite(actionJoystick.basePosition.x, actionJoystick.basePosition.y, actionJoystick.size, actionJoystick.size, Assets.joystickBottom);
 		// Stick
-		batcher.drawSprite(actionJoystick.stickPosition.x, actionJoystick.stickPosition.y, JOYSTICK_SIZE*0.8f, JOYSTICK_SIZE*0.8f, Assets.blueTile);
+		batcher.drawSprite(actionJoystick.stickPosition.x, actionJoystick.stickPosition.y, JOYSTICK_SIZE, JOYSTICK_SIZE, Assets.joystickTop);
 		
 		batcher.endBatch();
 	    
@@ -408,6 +408,7 @@ public class GameScreen extends GLScreen {
 	    	batcher.drawSprite(660, 438, 65, 65, Assets.rifle);
 	    }
 	    batcher.endBatch();
+	    
 		} catch(Exception e){
 			
 		} 
@@ -445,6 +446,7 @@ public class GameScreen extends GLScreen {
     	if(moveStickIsMoving){
     		world.player.velocity.x = moveJoystick.getStickBaseDistance().x/10;
     		world.player.velocity.y = moveJoystick.getStickBaseDistance().y/10;
+    		world.player.rotationAngle = moveJoystick.getAngle();
     		moveStickIsMoving = false;
     	}
 

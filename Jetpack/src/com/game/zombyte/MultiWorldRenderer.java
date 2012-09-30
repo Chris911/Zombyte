@@ -77,7 +77,7 @@ public class MultiWorldRenderer {
     }
     
     private void renderPlayer() {
-    	batcher.beginBatch(Assets.playerItems);
+    	batcher.beginBatch(Assets.spritesMap);
     	
     	// Assign correct camera position to follow the player.  Don't overlap out of bounds
 		if(world.player.position.x < World.WORLD_WIDTH * 0.75 && world.player.position.x > World.WORLD_WIDTH * 0.25)
@@ -86,8 +86,8 @@ public class MultiWorldRenderer {
 			cam.position.y = world.player.position.y;
        
     	// Draw the player sprite
-        batcher.drawSprite(world.player.position.x, world.player.position.y , Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, Assets.player);
-        batcher.drawSprite(world.player2.position.x, world.player2.position.y , Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, Assets.player);
+        batcher.drawSprite(world.player.position.x, world.player.position.y , Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, Assets.playerIdle);
+        batcher.drawSprite(world.player2.position.x, world.player2.position.y , Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, Assets.playerIdle);
 
 
         batcher.endBatch();
