@@ -65,6 +65,7 @@ public class MainMenuScreen extends GLScreen {
         animationHandler = new AnimationHandler(game, buttonsAssets);
         changeScreen = false;
         
+        Assets.intro.play();
         // Load previous game settings (sound enabled on/off)
         //Settings.load(game.getFileIO());
         

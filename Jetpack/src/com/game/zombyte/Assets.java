@@ -6,6 +6,7 @@ import com.bag.lib.gl.Font;
 import com.bag.lib.gl.Texture;
 import com.bag.lib.gl.TextureRegion;
 import com.bag.lib.impl.GLGame;
+import com.bag.lib.Music;
 
 public class Assets {
    
@@ -14,8 +15,12 @@ public class Assets {
 	public static TextureRegion menuBackground;
 	
 	// Map Background
-    public static Texture mapItems;
-    public static TextureRegion MapBackground;
+    public static Texture mapItems1;
+    public static TextureRegion MapBackground1;
+
+    public static Texture mapItems2;
+    public static TextureRegion MapBackground2;
+    
     
     // HUB
     public static Texture hubMap;
@@ -34,9 +39,6 @@ public class Assets {
     public static TextureRegion menuCoopBtn;
     public static TextureRegion menuTutorialBtn;
     public static TextureRegion menuSettingsBtn;
-    
-    public static Texture explosionItems;
-    public static TextureRegion explo1;
     
     // Game Backgrounds
     public static Texture tileMapItems;
@@ -106,12 +108,17 @@ public class Assets {
 	public static Sound rocketShoot;
 	public static Sound playerHit;
 	public static Sound powerUp;
+	
+	public static Music intro;
+	public static Music gamemusic;
  
     public static void load(GLGame game) {
        	
     	// Map Background
-    	mapItems = new Texture(game, "map2.png");
-    	MapBackground = new TextureRegion(mapItems, 0, 0, 1024, 512);
+    	mapItems1 = new Texture(game, "map1.png");
+    	MapBackground1 = new TextureRegion(mapItems1, 0, 0, 1024, 512);
+    	mapItems2 = new Texture(game, "map2.png");
+    	MapBackground2 = new TextureRegion(mapItems2, 0, 0, 1024, 512);
     	
     	// Main Menu (UI)
     	menuItems = new Texture(game, "menuBg.png"); 
@@ -207,11 +214,20 @@ public class Assets {
         rocketShoot = game.getAudio().newSound("explo.ogg");
         playerHit = game.getAudio().newSound("rocketshot.ogg");
         powerUp = game.getAudio().newSound("powerup.ogg");
+        
+        intro = game.getAudio().newMusic("intro.ogg");
+        intro.setLooping(false);
+        intro.setVolume(0.5f);
+        
+        gamemusic = game.getAudio().newMusic("game.ogg");
+        gamemusic.setLooping(true);
+        gamemusic.setVolume(0.8f);
     }       
     
     public static void reload() {
     	tileMapItems.reload();
-    	mapItems.reload();
+    	mapItems1.reload();
+    	mapItems2.reload();
     	spritesMap.reload();
     	menuItems.reload();
     	mainMenuButtons.reload();
@@ -220,7 +236,6 @@ public class Assets {
     	players.reload();
     	joystickMap.reload();
     	hearts.reload();
-    	explosionItems.reload();
     	explosionMap.reload();
     	//if(Settings.soundEnabled )
            // music.play();

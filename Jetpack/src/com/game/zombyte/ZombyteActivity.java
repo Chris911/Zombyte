@@ -2,7 +2,7 @@ package com.game.zombyte;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-
+import android.view.KeyEvent;
 import android.content.Context;
 
 import com.bag.lib.Screen;
@@ -37,5 +37,30 @@ public class ZombyteActivity extends GLGame {
         super.onPause();
         //if(Settings.soundEnabled)
             //Assets.music.pause();
+    }
+    
+    @Override
+    public void onStop() {
+        super.onStop();
+        Assets.intro.stop();
+        Assets.gamemusic.stop();
+    	moveTaskToBack(true);
+    }
+    
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Assets.intro.stop();
+            Assets.gamemusic.stop();
+        	moveTaskToBack(true);
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_HOME) {
+            Assets.intro.stop();
+            Assets.gamemusic.stop();
+        	moveTaskToBack(true);
+            return true;
+        }
+
+        return false;
     }
 }

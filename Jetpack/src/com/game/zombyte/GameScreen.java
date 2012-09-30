@@ -2,8 +2,6 @@ package com.game.zombyte;
 
 import java.util.List;
 import javax.microedition.khronos.opengles.GL10;
-
-import android.util.Log;
 import android.widget.Toast;
 
 import com.bag.lib.Game;
@@ -95,11 +93,11 @@ public class GameScreen extends GLScreen {
 			}
 			
 			public void playBulletHit() {
-				Assets.basicShoot.play(0.5f);
+				Assets.basicShoot.play(0.3f);
 			}
 			
 			public void playRocketHit() {
-				Assets.rocketShoot.play(0.5f);
+				Assets.rocketShoot.play(0.3f);
 			}
 			
 			public void playPlayerHit() {
@@ -163,6 +161,8 @@ public class GameScreen extends GLScreen {
 	// Update when state is READY
 	private void updateReady() {
 		// First touch 
+		Assets.intro.stop();
+		Assets.gamemusic.play();
 	    if(game.getInput().getTouchEvents().size() > 0) {
 	        state = GAME_RUNNING;
 	    }
@@ -253,6 +253,7 @@ public class GameScreen extends GLScreen {
 	        guiCam.touchToWorld(moveTouchPoint);
 	        
 	        if(event.type == TouchEvent.TOUCH_UP && gameOverTime > 2.0f) {
+<<<<<<< HEAD
 	        	if(world.score > 0)
 	        	{
 		        	HighscoreDataSource dbHelper = new HighscoreDataSource(ZombyteActivity.gameContext);
@@ -260,6 +261,14 @@ public class GameScreen extends GLScreen {
 		        	dbHelper.createHighscore(new Highscore("GCA", world.score));
 		        	dbHelper.close();
 	        	}
+=======
+
+	    		Assets.gamemusic.stop();
+	        	HighscoreDataSource dbHelper = new HighscoreDataSource(ZombyteActivity.gameContext);
+	        	dbHelper.open();
+	        	dbHelper.createHighscore(new Highscore("GCA", world.score));
+	        	dbHelper.close();
+>>>>>>> bb7c664022c093b914a508964a51c592bb052222
 	        	
 	        	game.setScreen(new MainMenuScreen(game));
 	        }
@@ -334,7 +343,7 @@ public class GameScreen extends GLScreen {
 		GL10 gl = glGraphics.getGL();
 		gl.glColor4f(1, 1, 1, 1);
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, "PREPARE FOR ROUND "+world.round, 270, 300);
+	    Assets.font.drawText(batcher, "PREPARE FOR ROUND "+world.round, 265, 300);
 	    Assets.font.drawText(batcher, "CURRENT SCORE:"+world.score, 270, 320);
 	    if(nextRoundTime > 1.5f)
 	    	Assets.font.drawText(batcher, "TOUCH TO START!", 300, 150);
@@ -348,7 +357,7 @@ public class GameScreen extends GLScreen {
 		gl.glColor4f(1, 1, 1, 1);
 	    batcher.beginBatch(Assets.fontTex);
 	    Assets.font.drawText(batcher, "GAME OVER", 320, 300);
-	    Assets.font.drawText(batcher, "FINAL SCORE:"+world.score, 300, 200);
+	    Assets.font.drawText(batcher, "FINAL SCORE:"+world.score, 290, 200);
 	    batcher.endBatch();
 	}
 	
@@ -404,13 +413,6 @@ public class GameScreen extends GLScreen {
 	    batcher.beginBatch(Assets.fontTex);
 	    Assets.font.drawText(batcher, "SCORE:" + world.score, 25, 465);
 	    Assets.font.drawText(batcher, " x " + world.player.weapon.bulletsRemaining, 700, 450);
-	    Assets.font.drawText(batcher, "ToKill: "+world.numberOfEnemiesToKillForNextRound, 30, 230);
-	    Assets.font.drawText(batcher, "Pre: "+world.numberOfEnemiesPreSpawend, 30, 210);
-	    Assets.font.drawText(batcher, "Killed: "+world.numberOfEnemiesKilled, 30, 180);
-	    Assets.font.drawText(batcher, "toSpaw: "+world.numberOfEnemiesToSpawn, 30, 150); 
-
-	    
-
 	    batcher.endBatch();
 	     
 //	    final float hubWeaponX = 675;

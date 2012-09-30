@@ -26,9 +26,20 @@ public class TutorialScreen extends GLScreen {
     boolean changeScreen;
     Screen screen;
     
-    String story;
-    String textToDisplay;
-    int charCounter;
+    String story1;
+    String story2;
+    String story3;
+
+    String textToDisplay1;
+    String textToDisplay2;
+    String textToDisplay3;
+
+    int charCounter1;
+    int charCounter2;
+    int charCounter3;
+
+    public float onScreenTime;
+
     
     ArrayList<UIButton> buttonsAssets;
     UIButton backButton;
@@ -60,22 +71,31 @@ public class TutorialScreen extends GLScreen {
         animationHandler = new AnimationHandler(game, buttonsAssets);
         changeScreen = false;
         
-        story = "You are against a swarm of zombies...";
-        textToDisplay = "";
-        charCounter = 0;
+        story1 = "You are against a swarm of zombies...";
+        story2 = "To survive, use weapons left behind";
+        story3 = "A friend might be of help in this dark world";
+
+        textToDisplay1 = "";
+        textToDisplay2 = "";
+        textToDisplay3 = "";
+
+        charCounter1 = 0;
+        charCounter2 = 0;
+        charCounter3 = 0;
+        onScreenTime = 0;
         
         // Load previous game settings (sound enabled on/off)
         //Settings.load(game.getFileIO());
         
-    }       
-
+    }   
+    
     @Override
     public void update(float deltaTime) {
     	
     	// Acquire all of touch events
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
         game.getInput().getKeyEvents();
-        
+        onScreenTime+= deltaTime;
         int len = touchEvents.size();
         for(int i = 0; i < len; i++) {
         	
@@ -87,9 +107,11 @@ public class TutorialScreen extends GLScreen {
             guiCam.touchToWorld(touchPoint);
             
             if(event.type == TouchEvent.TOUCH_DOWN){
-                if(OverlapTester.pointInRectangle(backButton.bounds, touchPoint)) {
-                	backButton.state = UIButton.STATE_PRESSED;
-                }	
+            	if(onScreenTime > 2.0f) {
+	                if(OverlapTester.pointInRectangle(backButton.bounds, touchPoint)) {
+	                	backButton.state = UIButton.STATE_PRESSED;
+	                }	
+            	}
             }
             
             // Detect touch on specific bounding rects
@@ -102,10 +124,21 @@ public class TutorialScreen extends GLScreen {
             }
         }
         
-        if(textToDisplay.length() != story.length())
+        if(textToDisplay1.length() != story1.length())
         {
-        	textToDisplay += story.charAt(charCounter);
-        	charCounter++;
+        	textToDisplay1 += story1.charAt(charCounter1);
+        	charCounter1++;
+        }
+        
+        if(textToDisplay2.length() != story2.length())
+        {
+        	textToDisplay2 += story2.charAt(charCounter2);
+        	charCounter2++;
+        }
+        if(textToDisplay3.length() != story3.length())
+        {
+        	textToDisplay3 += story3.charAt(charCounter3);
+        	charCounter3++;
         }
         
         // Check if we are changing screen
@@ -132,7 +165,10 @@ public class TutorialScreen extends GLScreen {
         
 	    try{
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, textToDisplay, 100,400);
+	    Assets.font.drawText(batcher, textToDisplay1, 100,400);
+	    Assets.font.drawText(batcher, textToDisplay2, 100,360);
+	    Assets.font.drawText(batcher, textToDisplay3, 100,320);
+
 	    batcher.endBatch();
 	    }
 	    catch(Exception e){}
