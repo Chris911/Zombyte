@@ -321,7 +321,8 @@ public class GameScreen extends GLScreen {
 		GL10 gl = glGraphics.getGL();
 		gl.glColor4f(1, 1, 1, 1);
 		batcher.beginBatch(Assets.hubMap);
-		batcher.drawSprite(128, 435, 256, 100, Assets.hub);		
+		batcher.drawSprite(128, 435, 256, 100, Assets.hubLeft);		
+		batcher.drawSprite(672, 435, 256, 100, Assets.hubRight);		
 		batcher.endBatch();
 		
 		batcher.beginBatch(Assets.hearts);
@@ -341,7 +342,7 @@ public class GameScreen extends GLScreen {
 			batcher.drawSprite(105,  440, 32, 32, Assets.heartEmpty);
 		
 		if(world.player.life >= 6)
-			batcher.drawSprite(145,  440, 32, 32, Assets.heartFull);
+			batcher.drawSprite(145,  440, 32, 32, Assets.heartFull); 
 		else if(world.player.life >= 5)
 			batcher.drawSprite(145,  440, 32, 32, Assets.heartHalf);
 		else
@@ -351,7 +352,32 @@ public class GameScreen extends GLScreen {
 		
 	    batcher.beginBatch(Assets.fontTex);
 	    Assets.font.drawText(batcher, "SCORE:" + world.score, 25, 465);
+	    Assets.font.drawText(batcher, " x " + world.player.weapon.bulletsRemaining, 700, 460);
 	    //Assets.font.drawText(batcher, "LIVES: "+world.player.life, 30, 430);
+	    batcher.endBatch();
+	     
+//	    final float hubWeaponX = 675;
+//	    final float hubWeaponY = 460;
+	    final float hubWeaponX = 200;
+	    final float hubWeaponY = 200;
+	    final float hubWeaponRatio = 50.0f; 
+	    batcher.beginBatch(Assets.spritesMap);
+	    if(world.player.weapon.getType() == Weapon.WEAPON_PISTOL)
+	    {
+	    	batcher.drawSprite(675, 460, 75, 75, Assets.pistol); 
+	    }
+	    else if(world.player.weapon.getType() == Weapon.WEAPON_SHOTGUN)
+	    {
+	    	batcher.drawSprite(675, 460, 100, 100, Assets.shotgun);
+	    }
+	    else if(world.player.weapon.getType() == Weapon.WEAPON_ROCKET)
+	    {
+	    	batcher.drawSprite(675, 460, 100, 100, Assets.rocket);
+	    }
+	    else if(world.player.weapon.getType() == Weapon.WEAPON_RIFLE)
+	    {
+	    	batcher.drawSprite(675, 460, 75, 75, Assets.rifle);
+	    }
 	    batcher.endBatch();
 		} catch(Exception e){
 			

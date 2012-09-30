@@ -19,7 +19,9 @@ public class Assets {
     
     // HUB
     public static Texture hubMap;
-    public static TextureRegion hub;
+    public static TextureRegion hubLeft;
+    public static TextureRegion hubRight;
+    
     // HUB - HEARTS
     public static Texture hearts;
     public static TextureRegion heartFull;
@@ -61,10 +63,11 @@ public class Assets {
     public static TextureRegion rocket;
     public static TextureRegion rocketBullet;
     public static TextureRegion rifle;
+    public static TextureRegion pistol;
     
     // Explosion
     public static Texture explosionMap;
-    public static TextureRegion explosionFr1;
+    public static TextureRegion explosionFr1; 
     public static TextureRegion explosionFr2;
     public static TextureRegion explosionFr3;
     public static TextureRegion explosionFr4;
@@ -110,7 +113,9 @@ public class Assets {
     	
     	// HUB
     	hubMap = new Texture(game, "hubs.png");
-    	hub = new TextureRegion(hubMap, 0, 0, 256, 64);
+    	hubLeft = new TextureRegion(hubMap, 0, 0, 256, 64);
+    	hubRight = new TextureRegion(hubMap, 256, 0, 256, 64);
+    	
     	// HUB - Hearts
     	hearts = new Texture(game, "hearts.png");
     	heartFull  = new TextureRegion(hearts, 0, 0, 32, 32);
@@ -147,6 +152,7 @@ public class Assets {
     	rocket     = new TextureRegion(spritesMap,   256, 384, 64, 64);
     	rocketBullet = new TextureRegion(spritesMap, 256, 256, 8, 8);
     	rifle 	   = new TextureRegion(spritesMap,   256, 128, 32, 32);
+    	pistol 	   = new TextureRegion(spritesMap,   384, 128, 32, 32);
     	
     	// Explosion
     	explosionMap  = new Texture(game, "explosion.png");
@@ -154,7 +160,7 @@ public class Assets {
     	explosionFr2  = new TextureRegion(explosionMap, 48, 0, 48, 56);
     	explosionFr3  = new TextureRegion(explosionMap, 96, 0, 56, 56);
     	explosionFr4  = new TextureRegion(explosionMap, 152, 0, 48, 56);
-    	explosionFr5  = new TextureRegion(explosionMap, 0, 56, 48, 56);
+    	explosionFr5  = new TextureRegion(explosionMap, 0, 56, 48, 56); 
     	explosionFr6  = new TextureRegion(explosionMap, 48, 56, 48, 56);
     	explosionFr7  = new TextureRegion(explosionMap, 96, 56, 56, 56);
     	explosionFr8  = new TextureRegion(explosionMap, 152, 56, 48, 56);
@@ -205,4 +211,3 @@ public class Assets {
          //   sound.play(0.4f);
     }
 }
-
