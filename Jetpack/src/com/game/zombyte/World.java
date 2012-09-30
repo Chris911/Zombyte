@@ -169,6 +169,10 @@ public class World {
 	        	{
 	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_RIFLE);
 	        	}
+	        	else if(genPowerUp > 75 && genPowerUp < 80)
+	        	{
+	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_LIFE);
+	        	}
 	        }
 	        if(player.state == Player.PLAYER_STATE_HIDDEN)
 	        { 
@@ -288,11 +292,18 @@ public class World {
 		        PowerUp pup = PowerUpArray.get(i);
 		        if (OverlapTester.overlapRectangles(pup.bounds, player.bounds))
 		        {
-		        	player.weapon.setType(pup.type);
+		        	if(pup.type == PowerUp.POWERUP_TYPE_LIFE)
+		        	{
+		        		player.life++;
+		        	}
+		        	else
+		        	{
+			        	player.weapon.setType(pup.type);
+		        	}
 		        	PowerUpArray.remove(pup);
 		        	len = PowerUpArray.size();
 		        	listener.powerUpHit();
-		        }
+	        	}
 		    }
 		}   
 	}

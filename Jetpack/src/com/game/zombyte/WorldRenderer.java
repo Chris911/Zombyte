@@ -224,6 +224,14 @@ public class WorldRenderer {
 	            	batcher.drawSprite(powerup.position.x, powerup.position.y, PowerUp.BASIC_WIDTH, PowerUp.BASIC_HEIGHT, 
 	            			          (powerup.rotationAngle - 90)*180/3.146f, Assets.rifle);
 	            }
+	            else if (powerup.type == PowerUp.POWERUP_TYPE_LIFE) 
+	            {
+	            	batcher.beginBatch(Assets.hearts);
+	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
+	            	batcher.drawSprite(powerup.position.x, powerup.position.y, PowerUp.BASIC_WIDTH, PowerUp.BASIC_HEIGHT, 
+	            			          (powerup.rotationAngle - 90)*180/3.146f, Assets.heartFull);
+	            	batcher.endBatch();
+	            }
 	        }
 	       
 	        batcher.endBatch();

@@ -352,7 +352,7 @@ public class GameScreen extends GLScreen {
 		
 	    batcher.beginBatch(Assets.fontTex);
 	    Assets.font.drawText(batcher, "SCORE:" + world.score, 25, 465);
-	    Assets.font.drawText(batcher, " x " + world.player.weapon.bulletsRemaining, 700, 460);
+	    Assets.font.drawText(batcher, " x " + world.player.weapon.bulletsRemaining, 700, 450);
 	    //Assets.font.drawText(batcher, "LIVES: "+world.player.life, 30, 430);
 	    batcher.endBatch();
 	     
@@ -364,11 +364,11 @@ public class GameScreen extends GLScreen {
 	    batcher.beginBatch(Assets.spritesMap);
 	    if(world.player.weapon.getType() == Weapon.WEAPON_PISTOL)
 	    {
-	    	batcher.drawSprite(675, 460, 75, 75, Assets.pistol); 
+	    	batcher.drawSprite(650, 433, 75, 75, Assets.pistol);
 	    }
 	    else if(world.player.weapon.getType() == Weapon.WEAPON_SHOTGUN)
 	    {
-	    	batcher.drawSprite(675, 460, 100, 100, Assets.shotgun);
+	    	batcher.drawSprite(670, 413, 100, 100, Assets.shotgun); 
 	    }
 	    else if(world.player.weapon.getType() == Weapon.WEAPON_ROCKET)
 	    {
@@ -376,7 +376,7 @@ public class GameScreen extends GLScreen {
 	    }
 	    else if(world.player.weapon.getType() == Weapon.WEAPON_RIFLE)
 	    {
-	    	batcher.drawSprite(675, 460, 75, 75, Assets.rifle);
+	    	batcher.drawSprite(660, 438, 65, 65, Assets.rifle);
 	    }
 	    batcher.endBatch();
 		} catch(Exception e){
