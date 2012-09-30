@@ -3,17 +3,20 @@ package com.game.zombyte;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.content.Context;
+
 import com.bag.lib.Screen;
 import com.bag.lib.impl.GLGame;
 
-public class JetpackActivity extends GLGame {
+public class ZombyteActivity extends GLGame {
 
 	boolean firstTimeCreate = true;
-    
+    public static Context gameContext;
+	
     public Screen getStartScreen() {
         //return new MainMenuScreen(this);
+    	this.gameContext = this.getBaseContext();
         return new MainMenuScreen(this);
-
     }
     
     @Override
