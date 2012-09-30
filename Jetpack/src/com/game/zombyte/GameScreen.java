@@ -96,7 +96,11 @@ public class GameScreen extends GLScreen {
 			}
 			
 			public void playPlayerHit() {
-				Assets.powerUp.play(0.5f);
+				Assets.playerHit.play(0.05f);
+			}
+			
+			public void powerUpHit() {
+				Assets.powerUp.play(0.8f);
 			}
         };
         
@@ -292,7 +296,8 @@ public class GameScreen extends GLScreen {
 		GL10 gl = glGraphics.getGL();
 		gl.glColor4f(1, 1, 1, 1);
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, "GAME OVER", 300, 300);
+	    Assets.font.drawText(batcher, "GAME OVER", 320, 300);
+	    Assets.font.drawText(batcher, "FINAL SCORE:"+world.score, 300, 200);
 	    batcher.endBatch();
 	}
 	

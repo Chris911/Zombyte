@@ -234,11 +234,13 @@ public class WorldRenderer {
     private void renderLevelObjects()
     {
     	try {
+            GL10 gl = glGraphics.getGL();
 	    	batcher.beginBatch(Assets.spritesMap);
 	    	
 	        int len = world.levelObjectsArray.size();
 	        for(int i = 0; i < len; i++) {
-	            LevelObject lev = world.levelObjectsArray.get(i);  
+	            LevelObject lev = world.levelObjectsArray.get(i); 
+	            gl.glColor4f(1, 1, 1, lev.alphaLevel);
 	            batcher.drawSprite(lev.position.x, lev.position.y, lev.size, lev.size ,lev.asset);
 	        }
 	        batcher.endBatch();

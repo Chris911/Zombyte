@@ -17,11 +17,11 @@ public class Particle {
 	private float lifetime;		// particle dies when it reaches this value
 	public	float alpha;
 	
-	public Particle(int x, int y) {
+	public Particle(int x, int y, float size) {
 		this.x = x;
 		this.y = y;
 		this.state = Particle.STATE_ALIVE;
-		this.width = rndInt(1, MAX_DIMENSION);
+		this.width = size;
 		this.height = this.width;
 		this.lifetime = 0.5f;
 		this.age = 0;

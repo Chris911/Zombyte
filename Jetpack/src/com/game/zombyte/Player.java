@@ -32,8 +32,8 @@ public class Player extends DynamicGameObject {
     // Speed of the player (walking / running)
     private float speed;
     
-    private boolean isImmuneToDamage;
-    private boolean isTakingDamage;
+    public boolean isImmuneToDamage;
+    public boolean isTakingDamage;
     public boolean	isHiddenForTooLong;
     
     // Current weapon
@@ -64,15 +64,6 @@ public class Player extends DynamicGameObject {
 	public void update(float deltaTime) {
     	bounds.lowerLeft.set(position).sub(bounds.width / 2, bounds.height / 2);
 		
-    	if(!isHiddenForTooLong && state == PLAYER_STATE_HIDDEN){
-    		isHiddenStateTime += deltaTime;
-    		if(isHiddenStateTime >= 2.0f){
-    			isHiddenForTooLong = true;
-    			state = PLAYER_STATE_IDLE;
-    			isHiddenStateTime = 0;
-    		}
-    	}
-    	
 		if (isTakingDamage){
 			life --;
 			isTakingDamage = false;

@@ -109,7 +109,7 @@ public class Assets {
     	menuBackground = new TextureRegion(menuItems, 0, 0, 800, 480);
     	
     	// HUB
-    	hubMap = new Texture(game, "hub.png");
+    	hubMap = new Texture(game, "hubs.png");
     	hub = new TextureRegion(hubMap, 0, 0, 256, 64);
     	// HUB - Hearts
     	hearts = new Texture(game, "hearts.png");

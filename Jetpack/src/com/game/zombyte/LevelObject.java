@@ -24,6 +24,7 @@ public class LevelObject extends GameObject{
 		this.type = type;
 		this.state = STATE_IDLE;
 		this.size = size;
+		this.alphaLevel = 1.0f;
 		
 		if(type == GAMEOBJECT_TYPE_TREE){
 			this.asset = Assets.tree;
@@ -33,7 +34,9 @@ public class LevelObject extends GameObject{
 	public void update()
 	{
 		if(state == STATE_COLLIDED){
-			
+			this.alphaLevel = 0.6f;
+		} else {
+			this.alphaLevel = 1.0f;
 		}
 	}
 }

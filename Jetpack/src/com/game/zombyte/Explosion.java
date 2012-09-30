@@ -11,11 +11,11 @@ public class Explosion {
 	protected int size;						// number of particles
 	protected int state;						// whether it's still active or not
 	
-	public Explosion(int particleNr, int x, int y) {
+	public Explosion(int particleNr, int x, int y, float size) {
 		this.state = STATE_ALIVE;
 		this.particles = new ArrayList<Particle>();
 	 	for (int i = 0; i < particleNr; i++) {
-			Particle p = new Particle(x, y);
+			Particle p = new Particle(x, y, size);
 			this.particles.add(p);
 		}
 	 	size = particleNr;

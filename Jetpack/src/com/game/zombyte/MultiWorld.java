@@ -110,7 +110,7 @@ public class MultiWorld {
 		} 
 		catch(Exception e){}
 		try{
-		server.setPlayerData(String.valueOf(player.position.x), String.valueOf(player.position.y), "2", "2");
+		server.setPlayerData(String.valueOf(player.position.x), String.valueOf(player.position.y), "5", "4");
 		server.sendData();
 		} catch(Exception e){};
 	}
@@ -272,7 +272,7 @@ public class MultiWorld {
 				            enemy.life -= 1; 
 				            score += enemy.score;
 				            // Add particle effect 
-					    	explosion = new Explosion(20, (int)enemy.position.x, (int)enemy.position.y);
+					    	explosion = new Explosion(20, (int)enemy.position.x, (int)enemy.position.y, 5);
 				            //enemy.life -= bul.weaponDamage; 
 				            //listener.enemyHit();
 				        }

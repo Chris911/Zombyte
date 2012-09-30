@@ -19,6 +19,7 @@ public class World {
 			void playBulletHit();
 			void playRocketHit();
 			void playPlayerHit();
+			void powerUpHit();
     }
 
     // World's size
@@ -46,8 +47,7 @@ public class World {
     
     public int state;
     public int score;
-    public int difficulty = 5;
-    
+    public int difficulty = 5;    
 
     public World(WorldListener listener) {
         this.bulletArray = new ArrayList<Bullet>();
@@ -170,7 +170,7 @@ public class World {
 	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_RIFLE);
 	        	}
 	        }
-	        if(player.state == Player.PLAYER_STATE_HIDDEN && !player.isHiddenForTooLong)
+	        if(player.state == Player.PLAYER_STATE_HIDDEN)
 	        { 
 	        	enemy.state = Enemy.ENEMY_STATE_RETARDED;
 	        }
@@ -220,7 +220,8 @@ public class World {
 		        	len = EnemyArray.size();
 		        	player.state = Player.PLAYER_STATE_HIT;
 		            //listener.hit();
-		        	listener.playPlayerHit();
+		        	if(player.isTakingDamage)
+		        		listener.playPlayerHit();
 		        }
 		    }
 		}   
@@ -269,10 +270,9 @@ public class World {
 				            
 				            enemy.life -= player.weapon.getDamage(); 
 				            score += enemy.score;
+				            
 				            // Add particle effect 
-					    	explosion = new Explosion(20, (int)enemy.position.x, (int)enemy.position.y);
-				            //enemy.life -= bul.weaponDamage; 
-				            //listener.enemyHit();
+					    	explosion = new Explosion(20, (int)enemy.position.x, (int)enemy.position.y, 5);
 				        }
 			        }
 				} 
@@ -289,10 +289,9 @@ public class World {
 		        if (OverlapTester.overlapRectangles(pup.bounds, player.bounds))
 		        {
 		        	player.weapon.setType(pup.type);
-		        	//score += pup.score;
 		        	PowerUpArray.remove(pup);
 		        	len = PowerUpArray.size();
-		            //listener.pickUpPup();
+		        	listener.powerUpHit();
 		        }
 		    }
 		}   
@@ -307,12 +306,10 @@ public class World {
 		        if (OverlapTester.overlapRectangles(lev.bounds, player.bounds))
 		        {
 		        	lev.state = LevelObject.STATE_COLLIDED;
-		        	//listener.pickUpPup();
 		        	player.state = Player.PLAYER_STATE_HIDDEN;
-		        }else {
-		        	player.isHiddenForTooLong = false;
-		        	lev.state = LevelObject.STATE_IDLE;
 		        }
+		        else
+		        	lev.state = LevelObject.STATE_IDLE;
 		    }
 		}   
 	}
@@ -320,35 +317,35 @@ public class World {
 	private void checkGameOver() {  	  	
     	if (player.life <=  0) {
             state = WORLD_STATE_GAME_OVER;
-            //listener.gameOver();
         }
 	}
-	
+	public int enemyCounter = 0;
 	private void addEnemy(){
 		int pos  = rand.nextInt(4);
 		
 		if(gameTime > 20.0f)
 		{
-			difficulty ++;
+			difficulty += 2;
 			gameTime = 0;
 		}
 		
 		if(pos == 0)
 		{
-			EnemyArray.add(new Enemy(WORLD_WIDTH/2+rand.nextInt(20) - 5, -10, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
+			EnemyArray.add(new Enemy(enemyCounter%40, -10, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
 		}
 		else if(pos == 1)
 		{
-			EnemyArray.add(new Enemy(-10, WORLD_HEIGHT/2+rand.nextInt(20) - 5, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
+			EnemyArray.add(new Enemy(-10, enemyCounter%22, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
 		}
 		else if(pos == 2)
 		{
-			EnemyArray.add(new Enemy(WORLD_WIDTH/2+rand.nextInt(11) - 5, WORLD_HEIGHT + 10, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
+			EnemyArray.add(new Enemy(enemyCounter%40 , WORLD_HEIGHT + 10, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
 		}
 		else
 		{
-			EnemyArray.add(new Enemy(WORLD_WIDTH + 10, WORLD_HEIGHT/2+rand.nextInt(11) - 5, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
+			EnemyArray.add(new Enemy(WORLD_WIDTH + 10, enemyCounter%22, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
 		}
+		enemyCounter += 8;
 	}
 	
 	public void addBullet(float angle){
@@ -363,7 +360,13 @@ public class World {
 													   player.position.y + (float)(Math.sin(angle/180*3.146)),
 													   angle, player.weapon.getBulletSpeed()));
 						
-						listener.playBulletHit();
+						if(player.weapon.getType() != Weapon.WEAPON_ROCKET)
+							listener.playBulletHit();
+						else{
+					    	explosion = new Explosion(20, (int)player.position.x, (int)player.position.y, 2);
+
+							listener.playRocketHit();
+						}
 					}
 					else if (player.weapon.getType() == Weapon.WEAPON_SHOTGUN) 
 					{
@@ -393,8 +396,8 @@ public class World {
 	}
 	
 	public void addPowerUp(float xPos, float yPos, int type){
-		// Max of 5 powerups at the same time
-		if(PowerUpArray.size() < 5)
+		// Max of 3 powerups at the same time
+		if(PowerUpArray.size() < 3)
 		{
 			PowerUpArray.add(new PowerUp(xPos, yPos, type));
 		}
