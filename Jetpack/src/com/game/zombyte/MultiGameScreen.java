@@ -1,8 +1,8 @@
 package com.game.zombyte;
 
 import java.util.List;
+
 import javax.microedition.khronos.opengles.GL10;
-import android.widget.Toast;
 
 import com.bag.lib.Game;
 import com.bag.lib.Input.TouchEvent;
@@ -10,13 +10,9 @@ import com.bag.lib.gl.Camera2D;
 import com.bag.lib.gl.FPSCounter;
 import com.bag.lib.gl.SpriteBatcher;
 import com.bag.lib.impl.GLScreen;
-import com.bag.lib.math.OverlapTester;
-import com.bag.lib.math.Rectangle;
 import com.bag.lib.math.Vector2;
-
 import com.game.database.Highscore;
 import com.game.database.HighscoreDataSource;
-import com.game.database.HighscoreDatabaseHelper;
 import com.game.zombyte.MultiWorld.MultiWorldListener;
 
 public class MultiGameScreen extends GLScreen {
@@ -91,21 +87,21 @@ public class MultiGameScreen extends GLScreen {
 				return (int)elapsedTime;
 			}
 			
-			public void playBulletHit() {
-				Assets.basicShoot.play(0.3f);
-			}
-			
-			public void playRocketHit() {
-				Assets.rocketShoot.play(0.3f);
-			}
-			
-			public void playPlayerHit() {
-				Assets.playerHit.play(0.05f);
-			}
-			
-			public void powerUpHit() {
-				Assets.powerUp.play(0.8f);
-			}
+//			public void playBulletHit() {
+//				Assets.basicShoot.play(0.3f);
+//			}
+//			
+//			public void playRocketHit() {
+//				Assets.rocketShoot.play(0.3f);
+//			}
+//			
+//			public void playPlayerHit() {
+//				Assets.playerHit.play(0.05f);
+//			}
+//			
+//			public void powerUpHit() {
+//				Assets.powerUp.play(0.8f);
+//			}
         };
         
         // Create a world Instance
@@ -397,11 +393,6 @@ public class MultiGameScreen extends GLScreen {
 	    Assets.font.drawText(batcher, " x " + world.player.weapon.bulletsRemaining, 700, 450);
 	    batcher.endBatch();
 	     
-//	    final float hubWeaponX = 675;
-//	    final float hubWeaponY = 460;
-	    final float hubWeaponX = 200;
-	    final float hubWeaponY = 200;
-	    final float hubWeaponRatio = 50.0f; 
 	    batcher.beginBatch(Assets.spritesMap);
 	    if(world.player.weapon.getType() == Weapon.WEAPON_PISTOL)
 	    {

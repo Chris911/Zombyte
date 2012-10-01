@@ -49,11 +49,12 @@ public class World {
     public int score;
     public int difficulty = 2; 
     public int round = 1;
+	public int enemyCounter = 0;
     public int numberOfEnemiesKilled = 0;
     public int numberOfEnemiesToKillForNextRound = 20;
     public int numberOfEnemiesPreSpawend = 0;
     public int numberOfEnemiesToSpawn = 0;
-
+    
     public World(WorldListener listener) {
         this.bulletArray = new ArrayList<Bullet>();
         this.EnemyArray = new ArrayList<Enemy>();
@@ -72,10 +73,16 @@ public class World {
         lastBulletFiredTime = 0.0f;
         score = 0;
         gameTime = 0;
-                
+        
         initEnemies();
         LevelModifier.addTreesToMap(this);
     }
+    
+	/***************************************
+	 * 
+	 * 	INITIALIZATION METHODS
+	 * 
+	 ***************************************/
     
     private void initEnemies()
     {
@@ -88,6 +95,12 @@ public class World {
     	numberOfEnemiesToSpawn = numberOfEnemiesToKillForNextRound - numberOfEnemiesPreSpawend;
     }
 	 
+    
+	/***************************************
+	 * 
+	 * 	UPDATE METHODS
+	 * 
+	 ***************************************/
 	public void update(float deltaTime, float speed) {
 		gameTime += deltaTime;
 		updatePlayer(deltaTime, speed);
@@ -103,7 +116,6 @@ public class World {
 	}
 
 	private void updatePlayer(float deltaTime, float speed) {
-
 	    player.update(deltaTime);
 	    if(player.state == Player.PLAYER_STATE_HIT_WALL) {
 	    	player.state = player.previousState;
@@ -220,10 +232,16 @@ public class World {
 		} catch(Exception e){}
 	}
 	
+	
+	/***************************************
+	 * 
+	 * 	COLLISIONS DETECTION
+	 * 
+	 ***************************************/
 	private void checkCollisions() {
 		checkEnemyBulletCollisions();
 		checkPlayerEnemyCollisions();
-		checkEnemyEnemyCollisions();
+		//checkEnemyEnemyCollisions();
 	    checkPowerUpCollisions();
 	    checkLevelPlayerCollisions();
 	}
@@ -236,35 +254,33 @@ public class World {
 		        Enemy enemy = EnemyArray.get(i);
 
 		        if (OverlapTester.overlapRectangles(enemy.bounds, player.bounds)) {
-		        	len = EnemyArray.size();
-		        	player.state = Player.PLAYER_STATE_HIT;
-		            //listener.hit();
-		        	if(player.isTakingDamage)
+		        	player.state = Player.PLAYER_STATE_BLINKING;
+		        	if(player.canTakeDamage)
 		        		listener.playPlayerHit();
 		        }
 		    }
 		}   
 	}
 	
-	// Enemy - Player collision
-	private void checkEnemyEnemyCollisions() {
-	    int len = EnemyArray.size();
-	    synchronized (EnemyArray) {
-	    	for (int i = 0; i < len; i++) {
-	    		Enemy enemy = EnemyArray.get(i);
-	    		for (int j = 0; j < len; j++) {
-			        
-	    			Enemy enemy2 = EnemyArray.get(j);
-	    			if(i != j){
-				        if (OverlapTester.overlapRectangles(enemy.bounds, enemy2.bounds)) {
-				        	enemy2.state = Enemy.ENEMY_STATE_COLLIDE;
-		
-				        }
-	    			}
-			    }
-		    }
-		}   
-	}
+//	// Enemy - Player collision
+//	private void checkEnemyEnemyCollisions() {
+//	    int len = EnemyArray.size();
+//	    synchronized (EnemyArray) {
+//	    	for (int i = 0; i < len; i++) {
+//	    		Enemy enemy = EnemyArray.get(i);
+//	    		for (int j = 0; j < len; j++) {
+//			        
+//	    			Enemy enemy2 = EnemyArray.get(j);
+//	    			if(i != j){
+//				        if (OverlapTester.overlapRectangles(enemy.bounds, enemy2.bounds)) {
+//				        	enemy2.state = Enemy.ENEMY_STATE_COLLIDE;
+//		
+//				        }
+//	    			}
+//			    }
+//		    }
+//		}   
+//	}
 	
 	// Enemy - Ammo collision
 	private void checkEnemyBulletCollisions() {
@@ -316,8 +332,11 @@ public class World {
 		        	}
 		        	else
 		        	{
-			        	player.weapon.setType(pup.type);
-		        	}
+		        		if(player.weapon.getType() != pup.type)
+		        			player.weapon.setType(pup.type);
+		        		else
+		        			player.weapon.bulletsRemaining += 10;
+		        	}	
 		        	PowerUpArray.remove(pup);
 		        	len = PowerUpArray.size();
 		        	listener.powerUpHit();
@@ -343,27 +362,50 @@ public class World {
 		}   
 	}
 	
+	
+	/***************************************
+	 * 
+	 * 	GAME STATE CHECKING
+	 * 
+	 ***************************************/
+	// Next round
 	private void checkNextRound()
 	{
 		if(numberOfEnemiesKilled == numberOfEnemiesToKillForNextRound )
 		{
+			listener.powerUpHit();
 			EnemyArray.clear();
 			explosionArray.clear();
 			PowerUpArray.clear();
 			bulletArray.clear();
+			rocketExplosionArray.clear();
 			
 			numberOfEnemiesPreSpawend = 10 + difficulty;
 			
-	    	for(int i=0; i <= numberOfEnemiesPreSpawend; i++)
-	    	{
-	    		addEnemy();
-	    	}
+			if(round%5 == 0) {
+				
+				numberOfEnemiesPreSpawend = 3;
+		    	for(int i=0; i <= numberOfEnemiesPreSpawend; i++)
+		    	{
+		    		addBoss();
+		    	}
+		        numberOfEnemiesToKillForNextRound += difficulty;
+		        
+			} else {
+				numberOfEnemiesPreSpawend = 10 + difficulty;
+		    	for(int i=0; i < numberOfEnemiesPreSpawend; i++)
+		    	{
+		    		addEnemy();
+		    	}
+		        numberOfEnemiesToKillForNextRound += difficulty;
+		        numberOfEnemiesToSpawn = numberOfEnemiesToKillForNextRound - numberOfEnemiesPreSpawend;
+			}
+	    	
 	        numberOfEnemiesKilled = 0;
-	        numberOfEnemiesToKillForNextRound += difficulty*1.5f;
-	        numberOfEnemiesToSpawn = numberOfEnemiesToKillForNextRound - numberOfEnemiesPreSpawend;
+	        //numberOfEnemiesToKillForNextRound += difficulty*1.5f;
 			difficulty ++;
 			score += 100 * (difficulty/2);
-			round++;
+			//round++;
 			this.state = WORLD_STATE_NEXT_LEVEL;
 
 		}
@@ -374,7 +416,15 @@ public class World {
             state = WORLD_STATE_GAME_OVER;
         }
 	}
-	public int enemyCounter = 0;
+	
+
+	/***************************************
+	 * 
+	 * 	WORLD MODIFICATIONS METHODS
+	 * 
+	 ***************************************/
+	
+	// Add an enemy to the world
 	private void addEnemy(){
 		int pos  = rand.nextInt(4);
 		
@@ -397,6 +447,30 @@ public class World {
 		enemyCounter += 8;
 	}
 	
+	// Add an enemy to the world
+	private void addBoss(){
+		int pos  = rand.nextInt(4);
+		
+		if(pos == 0)
+		{
+			EnemyArray.add(new Enemy(enemyCounter%40, -20, Enemy.ENEMY_TYPE_BOSS, difficulty+1));
+		}
+		else if(pos == 1)
+		{
+			EnemyArray.add(new Enemy(-2, enemyCounter%22, Enemy.ENEMY_TYPE_BOSS, difficulty+1));
+		}
+		else if(pos == 2)
+		{
+			EnemyArray.add(new Enemy(enemyCounter%40 , WORLD_HEIGHT + 27, Enemy.ENEMY_TYPE_BOSS, difficulty+1));
+		}
+		else
+		{
+			EnemyArray.add(new Enemy(WORLD_WIDTH + 13, enemyCounter%22, Enemy.ENEMY_TYPE_BOSS, difficulty+1));
+		}
+		enemyCounter += 8;
+	}
+	
+	// Add a bullet to the world
 	public void addBullet(float angle){
 		synchronized (bulletArray) {	
 			if(lastBulletFiredTime > player.weapon.getFireRate()) {	

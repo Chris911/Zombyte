@@ -1,7 +1,5 @@
 package com.game.zombyte;
 
-import android.util.Log;
-
 import com.bag.lib.math.Vector2;
 
 public class Joystick {

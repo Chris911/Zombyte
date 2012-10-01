@@ -45,9 +45,9 @@ public class Weapon {
 		else if(type == WEAPON_ROCKET)
 		{
 			this.bulletsRemaining = 10;
-			this.damage = 50.0f;
+			this.damage = 60.0f;
 			this.fireRate = 2.5f;
-			this.bulletSpeed = 17;
+			this.bulletSpeed = 35;
 		}
 	}
 	

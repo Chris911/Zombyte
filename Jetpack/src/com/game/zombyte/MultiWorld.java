@@ -126,7 +126,7 @@ public class MultiWorld {
 
 		        if (OverlapTester.overlapRectangles(bul.bounds, player.bounds)) {
 		        	len = bulletArray.size();
-		        	player.state = Player.PLAYER_STATE_HIT;
+		        	player.state = Player.PLAYER_STATE_BLINKING;
 		        	
 		        	//We were hit! Oh Noes!!!
 		        	
@@ -219,7 +219,7 @@ public class MultiWorld {
 
 		        if (OverlapTester.overlapRectangles(bul.bounds, player2.bounds)) {
 		        	len = bulletArray.size();
-		        	player.state = Player.PLAYER_STATE_HIT;
+		        	player.state = Player.PLAYER_STATE_BLINKING;
 		        	
 		        	//The enemy was hit!
 		        	player2.life --;

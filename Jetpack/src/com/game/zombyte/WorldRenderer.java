@@ -31,8 +31,6 @@ public class WorldRenderer {
         cam.setViewportAndMatrices();
         renderBackground();
         renderObjects();
-        renderExplosions();
-        renderRocketExplosion();
     }
     
     public void renderBackground() {
@@ -54,7 +52,7 @@ public class WorldRenderer {
 //        
 //        batcher.endBatch();
 
-    	if( world.round < 5 || world.round > 11) {
+    	if( world.round < 6 || world.round > 11) {
     		batcher.beginBatch(Assets.mapItems1);
     		batcher.drawSprite(World.WORLD_WIDTH/2, World.WORLD_HEIGHT/2, World.WORLD_WIDTH, World.WORLD_HEIGHT, Assets.MapBackground1);
     		batcher.endBatch();
@@ -74,6 +72,8 @@ public class WorldRenderer {
         gl.glColor4f(1, 1, 1, 1);
         
         renderPlayer();
+        renderExplosions();
+        renderRocketExplosion();
         renderEnemies();
         renderAmmo();
         renderPowerUp();
@@ -140,14 +140,22 @@ public class WorldRenderer {
 	            
 	            if(enemy.type == Enemy.ENEMY_TYPE_ZOMBIE)
 	            {
+	            	if(enemy.state != Enemy.ENEMY_STATE_RETARDED){
 	            	TextureRegion keyFrame = Assets.zombieMoveAnimation.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
 	            	batcher.drawSprite(enemy.position.x, enemy.position.y, 1.4f, 1.4f,(enemy.rotationAngle - 90)*180/3.146f, keyFrame);
+	            	}
+	            	else {
+		            	TextureRegion keyFrame = Assets.zombieMoveAnimation.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
+		            	batcher.drawSprite(enemy.position.x, enemy.position.y, 1.4f, 1.4f,(enemy.randomAngleX - 90)*180/3.146f, keyFrame);
+	            	}
+	            	
 	            	
 	            } 
 	            else if ( enemy.type == Enemy.ENEMY_TYPE_BOSS ) 
 	            {
 	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
-	            	batcher.drawSprite(enemy.position.x, enemy.position.y, 5, 5, (enemy.rotationAngle - 90)*180/3.146f, Assets.zombieIdle);
+	            	batcher.drawSprite(enemy.position.x, enemy.position.y, enemy.bounds.width, enemy.bounds.height,
+	            			(enemy.rotationAngle - 90)*180/3.146f, Assets.zombieIdle);
 	            }
 	        }
 	       
@@ -253,19 +261,37 @@ public class WorldRenderer {
     	catch(Exception e) { }
     }
     
+    private float levelObjectsAlpha = 1.0f;
+    private int alphaCounter = 0;
     private void renderLevelObjects()
     {
     	try {
             GL10 gl = glGraphics.getGL();
+            gl.glEnable(GL10.GL_BLEND);
+            gl.glEnable(GL10.GL_LINE_SMOOTH);
+            gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+            
 	    	batcher.beginBatch(Assets.spritesMap);
 	    	
 	        int len = world.levelObjectsArray.size();
 	        for(int i = 0; i < len; i++) {
-	            LevelObject lev = world.levelObjectsArray.get(i); 
-	            gl.glColor4f(1, 1, 1, lev.alphaLevel);
+	            LevelObject lev = world.levelObjectsArray.get(i);
+	            if(lev.alphaLevel == 1.0f)
+	            	alphaCounter++;
+	        }
+	        
+	        if(alphaCounter != len)
+	        	levelObjectsAlpha = 0.6f;
+	        else
+	        	levelObjectsAlpha = 1.0f;
+	        
+	        gl.glColor4f(1, 1, 1, levelObjectsAlpha);
+	        for(int i = 0; i < len; i++) {
+	            LevelObject lev = world.levelObjectsArray.get(i);
 	            batcher.drawSprite(lev.position.x, lev.position.y, lev.size, lev.size ,lev.asset);
 	        }
 	        batcher.endBatch();
+	        alphaCounter = 0;
     	}
     	catch(Exception e) { }	
     }

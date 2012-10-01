@@ -1,7 +1,5 @@
 package com.game.zombyte;
 
-import java.util.Random;
-
 import com.bag.lib.DynamicGameObject;
 
 public class Enemy extends DynamicGameObject {
@@ -27,13 +25,13 @@ public class Enemy extends DynamicGameObject {
     public int state;
     public int life;
     
-    private float speed;
-    private int   difficulty;
-    public float rotationAngle;
-    public int   score;
-    public int randomAngleX;
-    public int randomAngleY;
-    public int randDiff;
+    private float 	speed;
+    private int   	difficulty;
+    public float 	rotationAngle;
+    public int   	score;
+    public int 		randomAngleX;
+    public int 		randomAngleY;
+    public int 		randDiff;
     
     public float stateTime;
 	
@@ -61,11 +59,11 @@ public class Enemy extends DynamicGameObject {
     	} 
     	else if (type == ENEMY_TYPE_BOSS)
     	{
-    		this.score = (int) (500 * (difficulty * 2));
-    		this.life = (int) (100 + (difficulty * 25));
-    		this.speed = ENEMY_MOVE_VELOCITY *difficulty ; 
-    		this.bounds.width += ENEMY_BOSS_WIDTH/2;
-    		this.bounds.height += ENEMY_BOSS_WIDTH/2;
+    		this.score = (int) (50 * (difficulty * 2));
+    		this.life = (int) (30 + (difficulty * 25));
+    		this.speed = 2.1f + (difficulty + rndInt(2, 20))/7; 
+    		this.bounds.width += ENEMY_BOSS_WIDTH/3;
+    		this.bounds.height += ENEMY_BOSS_WIDTH/3;
     	}	
     }
     
@@ -75,30 +73,28 @@ public class Enemy extends DynamicGameObject {
     	updateVelocity(); 
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         
+        if(position.x >= 50)
+        	position.x = 50;
+        else if(position.x <= -10)
+        	position.x = -10;
+        if(position.y >= 30)
+        	position.y = 30;
+        else if(position.y <= -10)
+        	position.y = -10;
+        
         if(life <= 0)
         {
         	state = ENEMY_STATE_DEAD;
-        	
-        	if(type == ENEMY_TYPE_BOSS)
-        	{
-        		//DO SOMETHING?
-        	}
         }
     }
     
     public void updateOnline(float deltaTime) {    
     	bounds.lowerLeft.set(position).sub(bounds.width / 2, bounds.height / 2);
     	stateTime += deltaTime;
-    	//updateVelocity(); 
-        //position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+    	
         if(life <= 0)
         {
         	state = ENEMY_STATE_DEAD;
-        	
-        	if(type == ENEMY_TYPE_BOSS)
-        	{
-        		//DO SOMETHING?
-        	}
         }
     }
     

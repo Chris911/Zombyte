@@ -2,6 +2,8 @@ package com.game.zombyte;
 
 import java.util.List;
 import javax.microedition.khronos.opengles.GL10;
+
+import android.test.IsolatedContext;
 import android.widget.Toast;
 
 import com.bag.lib.Game;
@@ -160,7 +162,7 @@ public class GameScreen extends GLScreen {
 	
 	// Update when state is READY
 	private void updateReady() {
-		// First touch 
+
 		Assets.intro.stop();
 		Assets.gamemusic.play();
 	    if(game.getInput().getTouchEvents().size() > 0) {
@@ -238,8 +240,13 @@ public class GameScreen extends GLScreen {
 	    if(game.getInput().getTouchEvents().size() > 0 && nextRoundTime >= 2.0f) {
 	        state = GAME_RUNNING;
 	        world.state = World.WORLD_STATE_RUNNING;
+	        world.round++;
 			world.player.position.set(World.WORLD_WIDTH/2,World.WORLD_HEIGHT/2);
 	        nextRoundTime = 0;
+	        moveTouchPoint.set(SCREEN_WIDTH/2,SCREEN_HEIGHT/2);
+	        actionTouchPoint.set(SCREEN_WIDTH/2,SCREEN_HEIGHT/2);
+	        actionStickIsMoving = false;
+	        moveStickIsMoving = false;
 	    }
 	}
 	
@@ -405,6 +412,13 @@ public class GameScreen extends GLScreen {
 	    batcher.beginBatch(Assets.fontTex);
 	    Assets.font.drawText(batcher, "SCORE:" + world.score, 25, 465);
 	    Assets.font.drawText(batcher, " x " + world.player.weapon.bulletsRemaining, 700, 450);
+	    Assets.font.drawText(batcher, "ToKill: "+world.numberOfEnemiesToKillForNextRound, 320, 100);
+	    Assets.font.drawText(batcher, "Killed: "+world.numberOfEnemiesKilled, 320, 80);
+	    Assets.font.drawText(batcher, "PreSpw: "+world.numberOfEnemiesPreSpawend, 320, 60);
+	    Assets.font.drawText(batcher, "ToSpaw: "+world.numberOfEnemiesToSpawn, 320, 40);
+
+
+
 	    batcher.endBatch();
 	     
 //	    final float hubWeaponX = 675;
@@ -468,7 +482,6 @@ public class GameScreen extends GLScreen {
     	if(moveStickIsMoving){
     		world.player.velocity.x = moveJoystick.getStickBaseDistance().x/10;
     		world.player.velocity.y = moveJoystick.getStickBaseDistance().y/10;
-    		world.player.rotationAngle = moveJoystick.getAngle();
     		moveStickIsMoving = false;
     	}
 
@@ -493,6 +506,7 @@ public class GameScreen extends GLScreen {
     	// a speed delimiter and assign it as the player's velocity
     	if(actionStickIsMoving){
     		world.addBullet(actionJoystick.getAngle());
+    		world.player.rotationAngle = actionJoystick.getAngle();
     		actionStickIsMoving = false;
     	}
     }

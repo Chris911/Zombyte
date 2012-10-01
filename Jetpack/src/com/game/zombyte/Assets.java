@@ -87,7 +87,7 @@ public class Assets {
     public static TextureRegion explosionFr16;
     
     // Joystick
-    public static Texture joystickMap;
+    public static Texture 		joystickMap;
     public static TextureRegion joystickBottom;
     public static TextureRegion joystickTop;
     
@@ -100,7 +100,7 @@ public class Assets {
     public static Font 			font;   
     
     // LevelObjects
-    public static TextureRegion		tree;
+    public static TextureRegion	tree;
     public static Animation		explosionAnimation;
     
     // Sounds

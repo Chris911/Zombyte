@@ -11,11 +11,11 @@ public class Player extends DynamicGameObject {
 
     public static final int PLAYER_STATE_IDLE 		= 0;
     public static final int PLAYER_STATE_MOVING 	= 1;
-    //public static final int PLAYER_STATE_RUNNING 	= 2;
     public static final int PLAYER_STATE_HIT_WALL 	= 3;
     public static final int PLAYER_STATE_DEAD 		= 4;
-    public static final int PLAYER_STATE_HIT 		= 5;
     public static final int PLAYER_STATE_HIDDEN		= 6;
+    public static final int PLAYER_STATE_BLINKING	= 7;
+
 
     public int state;
     
@@ -27,9 +27,8 @@ public class Player extends DynamicGameObject {
     // Speed of the player (walking / running)
     private float speed;
     
-    public boolean isImmuneToDamage;
-    public boolean isTakingDamage;
-    public boolean	isHiddenForTooLong;
+    public boolean canTakeDamage;
+    public boolean isHiddenForTooLong;
     
     // Current weapon
     public Weapon weapon;
@@ -49,8 +48,7 @@ public class Player extends DynamicGameObject {
 		this.state = PLAYER_STATE_IDLE;
 		this.life = 6;
 		this.speed = PLAYER_BASE_SPEED;
-		this.isImmuneToDamage = false;
-		this.isTakingDamage = false;
+		this.canTakeDamage = true;
 		this.weapon = new Weapon(Weapon.WEAPON_PISTOL);
 		this.rotationAngle = 0;
 		this.pistol = new Weapon(Weapon.WEAPON_PISTOL);
@@ -64,22 +62,16 @@ public class Player extends DynamicGameObject {
 		
     	stateTime += deltaTime;
     	
-		if (isTakingDamage){
-			life --;
-			isTakingDamage = false;
-			isImmuneToDamage = true;
-		}
-    	
     	// Check if the player is currently immune to damage
-		if(isImmuneToDamage) 
+		if(!canTakeDamage) 
 		{
 			speed = PLAYER_MAX_SPEED;
 			inDamageStateTime += deltaTime;
 			if(inDamageStateTime >= PLAYER_DAMAGE_TIME)
 			{
 				inDamageStateTime = 0; 
-				isImmuneToDamage = false;
 				speed = PLAYER_BASE_SPEED;
+				canTakeDamage = true;
 			}
 		}
     	
@@ -92,14 +84,12 @@ public class Player extends DynamicGameObject {
 		{
 
 		}
-		else if(this.state == PLAYER_STATE_HIT_WALL)
+		else if(this.state == PLAYER_STATE_BLINKING)
 		{
-			
-		}
-		else if(state == PLAYER_STATE_HIT)
-		{	
-			if(!isImmuneToDamage)
-				isTakingDamage = true;
+			if(canTakeDamage){
+				life --;
+				canTakeDamage = false;
+			}
 		}
 		
 		// Modify position

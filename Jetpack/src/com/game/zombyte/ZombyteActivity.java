@@ -15,7 +15,7 @@ public class ZombyteActivity extends GLGame {
 	
     public Screen getStartScreen() {
         //return new MainMenuScreen(this);
-    	this.gameContext = this.getBaseContext();
+    	gameContext = this.getBaseContext();
         return new MainMenuScreen(this);
     }
     
