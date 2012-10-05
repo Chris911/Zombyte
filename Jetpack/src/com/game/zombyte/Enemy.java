@@ -13,7 +13,7 @@ public class Enemy extends DynamicGameObject {
 
 	public static final int ENEMY_STATE_RETARDED	= 9000;
 	
-    public static final float ENEMY_MOVE_VELOCITY 	= 3.2f;
+    public static final float ENEMY_MOVE_VELOCITY 	= 2.7f;
     public static final float ENEMY_BASIC_WIDTH 	= 1.0f;
     public static final float ENEMY_BASIC_HEIGHT 	= 1.0f;
     public static final float ENEMY_BOSS_WIDTH 		= 4.0f;
@@ -24,6 +24,7 @@ public class Enemy extends DynamicGameObject {
     public int type;
     public int state;
     public int life;
+    public int damage;
     
     private float 	speed;
     private int   	difficulty;
@@ -53,15 +54,17 @@ public class Enemy extends DynamicGameObject {
     {
     	if(type == ENEMY_TYPE_ZOMBIE)
     	{
+    		this.damage = 1;
     		this.score = ENEMY_SCORE;
-    		this.speed = ENEMY_MOVE_VELOCITY + (difficulty + randDiff)/8;
+    		this.speed = ENEMY_MOVE_VELOCITY + (difficulty + randDiff)/9;
 	        
     	} 
     	else if (type == ENEMY_TYPE_BOSS)
     	{
-    		this.score = (int) (50 * (difficulty * 2));
-    		this.life = (int) (30 + (difficulty * 25));
-    		this.speed = 2.1f + (difficulty + rndInt(2, 20))/7; 
+    		this.damage = 2;
+    		this.score = 50 ;
+    		this.life = (int) (30 + (difficulty * 4));
+    		this.speed = 2.1f + (difficulty + rndInt(2, 20))/6; 
     		this.bounds.width += ENEMY_BOSS_WIDTH/3;
     		this.bounds.height += ENEMY_BOSS_WIDTH/3;
     	}	

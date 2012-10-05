@@ -7,11 +7,12 @@ import com.bag.lib.math.Circle;
 public class LevelObject extends GameObject{
 
 	public static final int GAMEOBJECT_TYPE_TREE 	= 0;
+	public static final int GAMEOBJECT_TYPE_ROCK 	= 5;
+
 	public static final int STATE_IDLE		 		= 1;
 	public static final int STATE_COLLIDED 			= 2;
 	
 	public static final int TREE_SIZE 				= 8;
-
 	
 	public int state;
 	public int type;
@@ -21,7 +22,7 @@ public class LevelObject extends GameObject{
 	public Circle c;
 	
 	public LevelObject(float x, float y, int type, int size) {
-		super(x, y, size, size);
+		super(x, y, size, size*0.5f);
 		this.type = type;
 		this.state = STATE_IDLE;
 		this.size = size;
@@ -30,12 +31,14 @@ public class LevelObject extends GameObject{
 		
 		if(type == GAMEOBJECT_TYPE_TREE){
 			this.asset = Assets.tree;
+		}else if(type == GAMEOBJECT_TYPE_ROCK){
+			this.asset = Assets.rock;
 		}
 	}
 	
 	public void update()
 	{
-		if(state == STATE_COLLIDED){
+		if(state == STATE_COLLIDED && type == GAMEOBJECT_TYPE_TREE){
 			this.alphaLevel = 0.6f;
 		} else {
 			this.alphaLevel = 1.0f;

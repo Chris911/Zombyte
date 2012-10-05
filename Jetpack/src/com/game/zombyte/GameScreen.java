@@ -129,9 +129,9 @@ public class GameScreen extends GLScreen {
         nextWeaponTime = 0;
 
         moveJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
-        moveJoystick.setBasePosition(new Vector2(100,75));
+        moveJoystick.setBasePosition(new Vector2(100,95));
         actionJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
-        actionJoystick.setBasePosition(new Vector2(700,75));
+        actionJoystick.setBasePosition(new Vector2(700,95));
     }
 
 	@Override
@@ -220,6 +220,8 @@ public class GameScreen extends GLScreen {
 	    	handlePlayerActionJoystickEvents();
 	    
 	    elapsedTime += deltaTime;
+	    
+	    // Update de the world's state
 	    world.update(deltaTime, velocity);
 	    
 	    if(world.state == World.WORLD_STATE_NEXT_LEVEL)
@@ -480,8 +482,8 @@ public class GameScreen extends GLScreen {
     	// If X or Y stick position has moved, get the distance which acts as
     	// a speed delimiter and assign it as the player's velocity
     	if(moveStickIsMoving){
-    		world.player.velocity.x = moveJoystick.getStickBaseDistance().x/10;
-    		world.player.velocity.y = moveJoystick.getStickBaseDistance().y/10;
+    		world.player.velocity.x = moveJoystick.getStickBaseDistance().x/12;
+    		world.player.velocity.y = moveJoystick.getStickBaseDistance().y/12;
     		moveStickIsMoving = false;
     	}
 

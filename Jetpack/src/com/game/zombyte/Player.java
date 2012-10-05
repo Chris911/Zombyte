@@ -1,11 +1,11 @@
 package com.game.zombyte;
 import com.bag.lib.DynamicGameObject;
+import com.bag.lib.math.Vector2;
 public class Player extends DynamicGameObject {
 
     public static final float PLAYER_WIDTH 			= 1.4f;
     public static final float PLAYER_HEIGHT 		= 1.4f;
-    public static final float PLAYER_FLOOR_POSITION = 0.5f + PLAYER_HEIGHT/2;
-    public static final float PLAYER_DAMAGE_TIME	= 0.7f;
+    public static final float PLAYER_DAMAGE_TIME	= 1.4f;
     public static final float PLAYER_BASE_SPEED		= 1.2f;
     public static final float PLAYER_MAX_SPEED		= 1.6f;
 
@@ -20,7 +20,7 @@ public class Player extends DynamicGameObject {
     public int state;
     
     public int previousState;
-    
+    public Vector2 lastPos;
     // Number of life remaining
     public int life;
     
@@ -43,18 +43,19 @@ public class Player extends DynamicGameObject {
     private float inDamageStateTime;
     
 	public Player(float x, float y) {
-		super(x, y, PLAYER_WIDTH, PLAYER_HEIGHT);
+		super(x, y, PLAYER_WIDTH/2, PLAYER_HEIGHT);
 		
 		this.state = PLAYER_STATE_IDLE;
 		this.life = 6;
 		this.speed = PLAYER_BASE_SPEED;
 		this.canTakeDamage = true;
 		this.weapon = new Weapon(Weapon.WEAPON_PISTOL);
-		this.rotationAngle = 0;
+		this.rotationAngle = 90;
 		this.pistol = new Weapon(Weapon.WEAPON_PISTOL);
 		this.inDamageStateTime = 0;
 		this.isHiddenForTooLong = false;
 		this.stateTime = 0;
+		this.lastPos = new Vector2(0,0);
 	}
 	
 	public void update(float deltaTime) {
@@ -94,6 +95,7 @@ public class Player extends DynamicGameObject {
 		
 		// Modify position
 		position.add(velocity.x * deltaTime * speed, velocity.y * deltaTime * speed);
+		lastPos = position;
 		
 		// Out of World's bounds
 		if(position.x > World.WORLD_WIDTH - PLAYER_WIDTH/2) {

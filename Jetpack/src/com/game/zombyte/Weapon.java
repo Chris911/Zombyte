@@ -31,8 +31,8 @@ public class Weapon {
 		else if(type == WEAPON_SHOTGUN)
 		{
 			this.bulletsRemaining = 25;
-			this.damage = 25;
-			this.fireRate = 2.0f;
+			this.damage = 12;
+			this.fireRate = 2.2f;
 			this.bulletSpeed = 14;
 		}
 		else if(type == WEAPON_RIFLE)

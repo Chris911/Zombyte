@@ -31,6 +31,8 @@ public class World {
     public static final int WORLD_STATE_NEXT_LEVEL 	= 1;
     public static final int WORLD_STATE_GAME_OVER 	= 2;
     
+    public static final int WORLD_BASE_ENEMIES_NB 	= 16;
+    
     public final Player player;
     public final List<Bullet> bulletArray;
     public final List<Enemy> EnemyArray;
@@ -46,14 +48,16 @@ public class World {
     public float gameTime;
     
     public int state;
+    
     public int score;
     public int difficulty = 2; 
     public int round = 1;
 	public int enemyCounter = 0;
     public int numberOfEnemiesKilled = 0;
-    public int numberOfEnemiesToKillForNextRound = 20;
+    public int numberOfEnemiesToKillForNextRound = WORLD_BASE_ENEMIES_NB;
     public int numberOfEnemiesPreSpawend = 0;
     public int numberOfEnemiesToSpawn = 0;
+    public boolean lastRoundWasBoss = false;
     
     public World(WorldListener listener) {
         this.bulletArray = new ArrayList<Bullet>();
@@ -103,6 +107,7 @@ public class World {
 	 ***************************************/
 	public void update(float deltaTime, float speed) {
 		gameTime += deltaTime;
+		
 		updatePlayer(deltaTime, speed);
 		updateBullet(deltaTime);
 		updateEnemies(deltaTime);
@@ -116,10 +121,8 @@ public class World {
 	}
 
 	private void updatePlayer(float deltaTime, float speed) {
-	    player.update(deltaTime);
-	    if(player.state == Player.PLAYER_STATE_HIT_WALL) {
-	    	player.state = player.previousState;
-	    }
+	    checkPlayerEnemyCollisions();
+		player.update(deltaTime);
 	}
 	
 	private void updateBullet(float deltaTime) {
@@ -240,7 +243,7 @@ public class World {
 	 ***************************************/
 	private void checkCollisions() {
 		checkEnemyBulletCollisions();
-		checkPlayerEnemyCollisions();
+		//checkPlayerEnemyCollisions();
 		//checkEnemyEnemyCollisions();
 	    checkPowerUpCollisions();
 	    checkLevelPlayerCollisions();
@@ -254,9 +257,10 @@ public class World {
 		        Enemy enemy = EnemyArray.get(i);
 
 		        if (OverlapTester.overlapRectangles(enemy.bounds, player.bounds)) {
-		        	player.state = Player.PLAYER_STATE_BLINKING;
-		        	if(player.canTakeDamage)
+		        	if(player.canTakeDamage){
 		        		listener.playPlayerHit();
+		        	}
+		        	player.state = Player.PLAYER_STATE_BLINKING;
 		        }
 		    }
 		}   
@@ -351,8 +355,11 @@ public class World {
 	    synchronized (levelObjectsArray) {
 	    	for (int i = 0; i < len; i++) {
 		        LevelObject lev = levelObjectsArray.get(i);
-		        if (OverlapTester.overlapCircleRectangle(lev.c, player.bounds))
+		        if (OverlapTester.overlapRectangles(lev.bounds, player.bounds))
 		        {
+		        	if(lev.type == LevelObject.GAMEOBJECT_TYPE_ROCK){
+		        		LevelModifier.collidePlayerRock(player, lev);
+		        	}
 		        	lev.state = LevelObject.STATE_COLLIDED;
 		        	player.state = Player.PLAYER_STATE_HIDDEN;
 		        }
@@ -382,16 +389,24 @@ public class World {
 			
 			numberOfEnemiesPreSpawend = 10 + difficulty;
 			
+			// Boss round
 			if(round%5 == 0) {
-				
-				numberOfEnemiesPreSpawend = 3;
-		    	for(int i=0; i <= numberOfEnemiesPreSpawend; i++)
+				numberOfEnemiesToKillForNextRound = 4;
+				numberOfEnemiesPreSpawend = numberOfEnemiesToKillForNextRound;
+		    	for(int i=0; i < numberOfEnemiesPreSpawend; i++)
 		    	{
 		    		addBoss();
 		    	}
-		        numberOfEnemiesToKillForNextRound += difficulty;
-		        
-			} else {
+		    	lastRoundWasBoss = true;
+		    	
+			} 
+			// Regular round
+			else {
+				if(lastRoundWasBoss){
+					numberOfEnemiesToKillForNextRound = WORLD_BASE_ENEMIES_NB + difficulty;
+					lastRoundWasBoss = false;
+				}
+				
 				numberOfEnemiesPreSpawend = 10 + difficulty;
 		    	for(int i=0; i < numberOfEnemiesPreSpawend; i++)
 		    	{
@@ -402,10 +417,9 @@ public class World {
 			}
 	    	
 	        numberOfEnemiesKilled = 0;
-	        //numberOfEnemiesToKillForNextRound += difficulty*1.5f;
 			difficulty ++;
+			player.life ++;
 			score += 100 * (difficulty/2);
-			//round++;
 			this.state = WORLD_STATE_NEXT_LEVEL;
 
 		}

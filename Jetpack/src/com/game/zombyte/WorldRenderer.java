@@ -148,17 +148,14 @@ public class WorldRenderer {
 		            	TextureRegion keyFrame = Assets.zombieMoveAnimation.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
 		            	batcher.drawSprite(enemy.position.x, enemy.position.y, 1.4f, 1.4f,(enemy.randomAngleX - 90)*180/3.146f, keyFrame);
 	            	}
-	            	
-	            	
 	            } 
 	            else if ( enemy.type == Enemy.ENEMY_TYPE_BOSS ) 
 	            {
-	            	//TextureRegion keyFrame = Assets.enemyMove.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
+	            	TextureRegion keyFrame = Assets.zombieMoveAnimation.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
 	            	batcher.drawSprite(enemy.position.x, enemy.position.y, enemy.bounds.width, enemy.bounds.height,
-	            			(enemy.rotationAngle - 90)*180/3.146f, Assets.zombieIdle);
+	            			(enemy.rotationAngle - 90)*180/3.146f, keyFrame);
 	            }
 	        }
-	       
 	        batcher.endBatch();
     	}
     	catch(Exception e) { }

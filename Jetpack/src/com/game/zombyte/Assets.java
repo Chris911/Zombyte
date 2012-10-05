@@ -100,6 +100,7 @@ public class Assets {
     public static Font 			font;   
     
     // LevelObjects
+    public static TextureRegion	rock;
     public static TextureRegion	tree;
     public static Animation		explosionAnimation;
     
@@ -203,6 +204,7 @@ public class Assets {
         font = new Font(fontTex, 0, 0, 16, 16, 20);
         
         // LevelObjects
+        rock = new TextureRegion(spritesMap, 256, 0, 128, 128);
         tree = new TextureRegion(spritesMap, 128, 0, 128, 128);
     	explosionAnimation  = new Animation(0.07f, explosionFr1,explosionFr2,explosionFr3,explosionFr4,
 								    			   explosionFr5,explosionFr6,explosionFr7,explosionFr8,
