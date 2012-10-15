@@ -49,7 +49,13 @@ public class server extends Thread {
 
 	// Connection & initialisation
 	public void initConnection() {
-		start();
+		// Bug report : start crashes everything when server is down or not connected
+		try{
+			start();
+		}
+		catch(Exception e){
+			System.out.println("Connection failure");
+		}
 	}
 
 	@Override
@@ -62,7 +68,7 @@ public class server extends Thread {
 		parser = new JSONParser();
 
 		try {
-			echoSocket = new Socket("kepler.step.polymtl.ca", 8012);
+			echoSocket = new Socket("kepler.step.polymtl.ca", 8022);
 			out = new PrintWriter(echoSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 		} catch (UnknownHostException e) {

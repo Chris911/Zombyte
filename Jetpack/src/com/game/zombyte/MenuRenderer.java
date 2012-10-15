@@ -8,14 +8,14 @@ import com.bag.lib.Game;
 import com.bag.lib.Screen;
 import com.bag.lib.gl.SpriteBatcher;
 
-public class AnimationHandler {
+public class MenuRenderer {
 
 	private float sceneAlpha = 1.0f;
 	private float sceneAngle = 0.0f;
 	private Game  game;
 	private ArrayList<UIButton> buttons;
 	
-	public AnimationHandler(Game g, ArrayList<UIButton> b)
+	public MenuRenderer(Game g, ArrayList<UIButton> b)
 	{
 		this.game = g;
 		this.buttons = b;

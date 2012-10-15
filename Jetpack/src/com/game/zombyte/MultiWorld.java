@@ -18,7 +18,11 @@ public class MultiWorld {
 	// Interface, mostly used to access sound effects
     public interface MultiWorldListener {
           //public void sound();
-		  int getTime();
+		int getTime();
+		void playBulletHit();
+		void playRocketHit();
+		void playPlayerHit();
+		void powerUpHit();
     }
 
     // World's size
@@ -29,6 +33,8 @@ public class MultiWorld {
     public static final int WORLD_STATE_RUNNING 	= 0;
     public static final int WORLD_STATE_NEXT_LEVEL 	= 1;
     public static final int WORLD_STATE_GAME_OVER 	= 2;
+    public static final int WORLD_STATE_FAILURE 	= 5;
+
     
     public final Player player;
     public final Player player2;
@@ -76,9 +82,17 @@ public class MultiWorld {
         LevelModifier.addTreesToMap(this);
         
         // Network time
-        server = new server();
-        server.initConnection();
-
+        try{
+        	server = new server();
+        } catch(Exception e){
+        	this.state = WORLD_STATE_FAILURE;
+        }
+        
+        try{
+            server.initConnection();
+        } catch(Exception e){
+        	this.state = WORLD_STATE_FAILURE;
+        }
         player.life= 20;
         player2.life= 20;
 
@@ -89,55 +103,42 @@ public class MultiWorld {
 		updateBullet(deltaTime);
 		updateExplosions(deltaTime);
 		updateLevelObjects(deltaTime);
-		updateRocketExplosions(deltaTime);
 		checkCollisions();
 		checkPlayerLife();
-		checkGameOver();
+		//checkGameOver();
 	}
 	public boolean enemySpawn = false;
+	
 	private void updatePlayer(float deltaTime, float speed) {
 	   
 		// Get Enemy player Data 
 		try{
 			player2.position.x = Float.parseFloat(server.getPlayerInfo("x"));
 			player2.position.y = Float.parseFloat(server.getPlayerInfo("y"));
-			 
-
-			if(server.getBulletInfo("avail").equals("true")){
-				bulletArray.add(new Bullet(player2.position.x, player2.position.y, Float.parseFloat(server.getBulletInfo("angle")), 20));
-			}
-
+			//Log.d("P2 incoming: ", "x: "+ server.getPlayerInfo("x"));
 		} 
-		catch(Exception e){}
-
+		catch(Exception e){
+			Log.d("ERR: ",":"+e.toString());
+		}
 		
-		// Send Data
 		try{
-			server.setPlayerData(String.valueOf(player.position.x), String.valueOf(player.position.y), "5", "1",String.valueOf(player2.life));
+			if(server.getBulletInfo("avail").equals("true")){
+				bulletArray.add(new Bullet(player2.position.x, player2.position.y, Float.parseFloat(server.getBulletInfo("angle")),20,Bullet.ENEMY_TEAM));
+			}
+		}
+		catch (Exception e){}
+
+		// update our player
+	    player.update(deltaTime);
+		
+		// Send Our Player Data
+		try{
+			server.setPlayerData(String.valueOf(player.position.x), String.valueOf(player.position.y), "5", "1",String.valueOf(player.life));
 			server.sendData();
 		} catch(Exception e){};
 
-	    
-	    
-	    int len = bulletArray.size();
-	    synchronized (bulletArray) {
-	    	for (int i = 0; i < len; i++) {
-		        Bullet bul = bulletArray.get(i);
-
-		        if (OverlapTester.overlapRectangles(bul.bounds, player.bounds)) {
-		        	len = bulletArray.size();
-		        	player.state = Player.PLAYER_STATE_BLINKING;
-		        	
-		        	//We were hit! Oh Noes!!!
-		        	
-		        	Assets.rocketShoot.play(0.5f);
-		        }
-		    }
-		}
-	    player.update(deltaTime);
 	    Log.d("Life","P1"+player.life);
-	    Log.d("Life","P2"+player2.life);
-
+	    //.d("Life","P2"+player2.life);
 	    
 	    if(player.state == Player.PLAYER_STATE_HIT_WALL) {
 	    	player.state = player.previousState;
@@ -155,7 +156,6 @@ public class MultiWorld {
 		}
 	}
 	
-	
 	private void updateLevelObjects(float deltaTime) {
 		synchronized (levelObjectsArray) {
 			for(int i = 0; i < levelObjectsArray.size(); i ++){
@@ -164,65 +164,51 @@ public class MultiWorld {
 		}
 	}
 	
-	
 	private void updateExplosions(float deltaTime) {
 		try{	
 			explosion.update(deltaTime);
 		} catch(Exception e){}
 	}
-//	
-	
-	private void updateRocketExplosions(float deltaTime) {
-//		try{
-//			for (int i = 0; i < rocketExplosionArray.size(); i++) {
-//				RocketExplosion exp = rocketExplosionArray.get(i);
-//				if(exp.state == RocketExplosion.ROCKETEXP_STATE_ACTIVE)
-//				{
-//					exp.update(deltaTime);
-//				}
-//				else
-//				{
-//					rocketExplosionArray.remove(i);
-//				}
-//			}
-//		} catch(Exception e){}
-	}
 	
 	private void checkCollisions() {
-		checkPlayerBulletCollisions();
+		checkOurPlayerBulletCollisions();
+		checkEnemyPlayerBulletCollisions();
 	    checkPowerUpCollisions();
 	    checkLevelPlayerCollisions();
 	}
 	
-//	// Enemy - Player collision
-//	private void checkPlayerEnemyCollisions() {
-//	    int len = EnemyArray.size();
-//	    synchronized (EnemyArray) {
-//	    	for (int i = 0; i < len; i++) {
-//		        Enemy enemy = EnemyArray.get(i);
-//
-//		        if (OverlapTester.overlapRectangles(enemy.bounds, player.bounds)) {
-//		        	len = EnemyArray.size();
-//		        	player.state = Player.PLAYER_STATE_HIT;
-//		            //listener.hit();
-//		        }
-//		    }
-//		}   
-//	}
+	private void checkOurPlayerBulletCollisions() {
+	    int len = bulletArray.size();
+	    synchronized (bulletArray) {
+	    	for (int i = 0; i < len; i++) {
+		        Bullet bul = bulletArray.get(i);
+
+		        if (OverlapTester.overlapRectangles(bul.bounds, player.bounds) && bul.team == Bullet.ENEMY_TEAM) {
+		        	bulletArray.remove(bul);
+		        	len = bulletArray.size();
+		        	//player.state = Player.PLAYER_STATE_BLINKING;
+		        	listener.playPlayerHit();
+		        	//We were hit! Oh Noes!!!
+		        	player.life --;
+		        	
+		        }
+		    }
+		}
+	}
 	
 	// We touched the enemy player with a bullet!
-	private void checkPlayerBulletCollisions() {
+	private void checkEnemyPlayerBulletCollisions() {
 	    int len = bulletArray.size();
 	    synchronized (bulletArray) {
 	    	for (int i = 0; i < len; i++) {
 		        Bullet bul = bulletArray.get(i);
 
 		        if (OverlapTester.overlapRectangles(bul.bounds, player2.bounds)) {
+		        	bulletArray.remove(bul);
 		        	len = bulletArray.size();
 		        	player.state = Player.PLAYER_STATE_BLINKING;
-		        	
 		        	//The enemy was hit!
-		        	player2.life --;
+//		        	player2.life --;
 		        	Assets.powerUp.play(0.5f);
 		        }
 		    }
@@ -269,11 +255,21 @@ public class MultiWorld {
 	private void checkPlayerLife(){
 		
 		try{
-		if(player.life <= 5 || player2.life <= 5){
-			server.setPlayerData("0", "0", "0", "0", "0");
-			state = WORLD_STATE_GAME_OVER;
-			server.sendData();
-		}
+			if (player.life <= 5) {
+				player.position.x = 20;
+				player.position.y = 10;
+				server.setPlayerData("20", "10", "0", "0", "100");
+				player.life = 20;
+			} 
+//			else if (player2.life <= 5) {
+//				player2.position.x = Float.parseFloat(server.getPlayerInfo("x"));
+//				player2.position.y = Float.parseFloat(server.getPlayerInfo("y"));
+//				player.life = 20;
+//			}
+				//server.setPlayerData("0", "0", "0", "0", "0");
+				//state = WORLD_STATE_GAME_OVER;
+				//server.sendData();
+			
 		} catch(Exception e){}
 	}
 	
@@ -286,7 +282,7 @@ public class MultiWorld {
 				//listener.gameOver();
 			}
     	}
-	} catch(Exception e){}
+		} catch(Exception e){}
 	}
 
 	
@@ -294,31 +290,37 @@ public class MultiWorld {
 		synchronized (bulletArray) {	
 			if(lastBulletFiredTime > player.weapon.getFireRate()) {	
 				// Condition to regulate the bullets being fired
-					if(player.weapon.getType() == Weapon.WEAPON_PISTOL ||
-					   player.weapon.getType() == Weapon.WEAPON_RIFLE  || 
-					   player.weapon.getType() == Weapon.WEAPON_ROCKET )
-					{
-						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
-													   player.position.y + (float)(Math.sin(angle/180*3.146)),
-													   angle, player.weapon.getBulletSpeed()));
+				if(player.weapon.getType() == Weapon.WEAPON_PISTOL ||
+				   player.weapon.getType() == Weapon.WEAPON_RIFLE  || 
+				   player.weapon.getType() == Weapon.WEAPON_ROCKET )
+				{
+					bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
+												   player.position.y + (float)(Math.sin(angle/180*3.146)),
+												   angle, player.weapon.getBulletSpeed(), Bullet.MY_TEAM));
 					
+					if(player.weapon.getType() != Weapon.WEAPON_ROCKET)
+						listener.playBulletHit();
+					else{
+						listener.playRocketHit();
 					}
-					else if (player.weapon.getType() == Weapon.WEAPON_SHOTGUN) 
-					{
-						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
-								   player.position.y + (float)(Math.sin(angle/180*3.146)),
-								   angle + 5,
-								   player.weapon.getBulletSpeed()));
-						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos((angle)/180*3.146)), 
-								   player.position.y + (float)(Math.sin(angle/180*3.146)),
-								   angle,
-								   player.weapon.getBulletSpeed()));
-						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle)/180*3.146), 
-								   player.position.y + (float)(Math.sin(angle/180*3.146)),
-								   angle - 5,
-								   player.weapon.getBulletSpeed()));
-						
-					}
+				}
+				else if (player.weapon.getType() == Weapon.WEAPON_SHOTGUN) 
+				{
+					bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
+							   player.position.y + (float)(Math.sin(angle/180*3.146)),
+							   angle + 5,
+							   player.weapon.getBulletSpeed(),Bullet.MY_TEAM));
+					bulletArray.add(new Bullet(player.position.x + (float)(Math.cos((angle)/180*3.146)), 
+							   player.position.y + (float)(Math.sin(angle/180*3.146)),
+							   angle,
+							   player.weapon.getBulletSpeed(),Bullet.MY_TEAM));
+					bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle)/180*3.146), 
+							   player.position.y + (float)(Math.sin(angle/180*3.146)),
+							   angle - 5,
+							   player.weapon.getBulletSpeed(),Bullet.MY_TEAM));
+					listener.playBulletHit();
+					
+				}
 					try{
 					server.setBulletData(String.valueOf(player.position.x), String.valueOf(player.position.y),
 							String.valueOf(angle), "3", "true"); 

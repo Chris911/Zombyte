@@ -19,7 +19,7 @@ public class MainMenuScreen extends GLScreen {
     Camera2D guiCam;
     SpriteBatcher batcher;
     Vector2 touchPoint;
-    AnimationHandler animationHandler;
+    MenuRenderer animationHandler;
     
     float sceneAlpha;
     float sceneAngle;
@@ -62,7 +62,7 @@ public class MainMenuScreen extends GLScreen {
         buttonsAssets.add(tutorialButton);
 
         
-        animationHandler = new AnimationHandler(game, buttonsAssets);
+        animationHandler = new MenuRenderer(game, buttonsAssets);
         changeScreen = false;
         
         Assets.intro.play();

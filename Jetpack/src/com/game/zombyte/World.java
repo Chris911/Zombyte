@@ -495,7 +495,7 @@ public class World {
 					{
 						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
 													   player.position.y + (float)(Math.sin(angle/180*3.146)),
-													   angle, player.weapon.getBulletSpeed()));
+													   angle, player.weapon.getBulletSpeed(), Bullet.MY_TEAM));
 						
 						if(player.weapon.getType() != Weapon.WEAPON_ROCKET)
 							listener.playBulletHit();
@@ -508,15 +508,15 @@ public class World {
 						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle/180*3.146)), 
 								   player.position.y + (float)(Math.sin(angle/180*3.146)),
 								   angle + 5,
-								   player.weapon.getBulletSpeed()));
+								   player.weapon.getBulletSpeed(),Bullet.MY_TEAM));
 						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos((angle)/180*3.146)), 
 								   player.position.y + (float)(Math.sin(angle/180*3.146)),
 								   angle,
-								   player.weapon.getBulletSpeed()));
+								   player.weapon.getBulletSpeed(),Bullet.MY_TEAM));
 						bulletArray.add(new Bullet(player.position.x + (float)(Math.cos(angle)/180*3.146), 
 								   player.position.y + (float)(Math.sin(angle/180*3.146)),
 								   angle - 5,
-								   player.weapon.getBulletSpeed()));
+								   player.weapon.getBulletSpeed(),Bullet.MY_TEAM));
 						listener.playBulletHit();
 						
 					}

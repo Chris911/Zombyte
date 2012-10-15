@@ -10,6 +10,8 @@ import com.bag.lib.gl.Camera2D;
 import com.bag.lib.gl.FPSCounter;
 import com.bag.lib.gl.SpriteBatcher;
 import com.bag.lib.impl.GLScreen;
+import com.bag.lib.math.OverlapTester;
+import com.bag.lib.math.Rectangle;
 import com.bag.lib.math.Vector2;
 import com.game.database.Highscore;
 import com.game.database.HighscoreDataSource;
@@ -23,6 +25,8 @@ public class MultiGameScreen extends GLScreen {
     static final int GAME_PAUSED 	= 2;
     static final int GAME_LEVEL_END = 3;
     static final int GAME_OVER 		= 4;
+    static final int FAILED_TO_LAUNCH = 5;
+
     
     // Dpad's positions
     static final int JOYSTICK_SIZE	= 90;
@@ -63,6 +67,8 @@ public class MultiGameScreen extends GLScreen {
 	boolean 		actionStickIsMoving 	 = false;
 	
 	boolean			shootTouchDown			= false;
+	
+	Rectangle backButton;
     
     public MultiGameScreen(Game game) {
         super(game);
@@ -87,21 +93,21 @@ public class MultiGameScreen extends GLScreen {
 				return (int)elapsedTime;
 			}
 			
-//			public void playBulletHit() {
-//				Assets.basicShoot.play(0.3f);
-//			}
-//			
-//			public void playRocketHit() {
-//				Assets.rocketShoot.play(0.3f);
-//			}
-//			
-//			public void playPlayerHit() {
-//				Assets.playerHit.play(0.05f);
-//			}
-//			
-//			public void powerUpHit() {
-//				Assets.powerUp.play(0.8f);
-//			}
+			public void playBulletHit() {
+				Assets.basicShoot.play(0.3f);
+			}
+			
+			public void playRocketHit() {
+				Assets.rocketShoot.play(0.3f);
+			}
+			
+			public void playPlayerHit() {
+				Assets.playerHit.play(0.05f);
+			}
+			
+			public void powerUpHit() {
+				Assets.powerUp.play(0.8f);
+			}
         };
         
         // Create a world Instance
@@ -125,6 +131,7 @@ public class MultiGameScreen extends GLScreen {
         moveJoystick.setBasePosition(new Vector2(100,75));
         actionJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
         actionJoystick.setBasePosition(new Vector2(700,75));
+        //backButton = new Rectangle(380, 300, 50, 50);
     }
 
 	@Override
@@ -149,6 +156,9 @@ public class MultiGameScreen extends GLScreen {
 	        break;
 	    case GAME_OVER:
 	        updateGameOver(deltaTime);
+	        break;
+	    case FAILED_TO_LAUNCH:
+	        updateFailedToLaunch(deltaTime);
 	        break;
 	    }
 	}
@@ -186,13 +196,15 @@ public class MultiGameScreen extends GLScreen {
 	        	else if(event.x <= SCREEN_WIDTH/2 + 30 && event.x >= SCREEN_WIDTH/2 - 30) {
 	        		shootTouchDown = false;
 	        	}
-
-	        	
 	        }
 	        else if(event.type == TouchEvent.TOUCH_UP){
 	        	world.player.state = Player.PLAYER_STATE_IDLE;
 	        	moveJoystickFirstTouch = true;
 	        	actionJoystickFirstTouch = true;
+	        	
+//	        	if(OverlapTester.pointInRectangle(backButton, event.x, event.y)){
+//	        		game.setScreen(new MainMenuScreen(game));
+//	        	}
 	        	
 	        	if(event.x < SCREEN_WIDTH/2 - 30){ 
 	                moveJoystick.resetStickPosition();
@@ -215,11 +227,14 @@ public class MultiGameScreen extends GLScreen {
 	    elapsedTime += deltaTime;
 	    world.update(deltaTime, velocity);
 	    
-	    if(world.state == World.WORLD_STATE_NEXT_LEVEL)
+	    if(world.state == MultiWorld.WORLD_STATE_NEXT_LEVEL)
 	    	this.state = GAME_LEVEL_END;
 	    
-	    if(world.state == World.WORLD_STATE_GAME_OVER)
+	    if(world.state == MultiWorld.WORLD_STATE_GAME_OVER)
 	    	this.state = GAME_OVER;
+	    
+	    if(world.state == MultiWorld.WORLD_STATE_FAILURE)
+	    	this.state = FAILED_TO_LAUNCH;
 	}
 	
 	private void updatePaused() {
@@ -260,6 +275,32 @@ public class MultiGameScreen extends GLScreen {
 	        	game.setScreen(new MainMenuScreen(game));
 	        }
 	    }
+	}
+	
+	private void updateFailedToLaunch(float deltaTime) {
+//		gameOverTime+= deltaTime;
+//	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+//	    int len = touchEvents.size();
+//	    for(int i = 0; i < len; i++) {      
+//	        TouchEvent event = touchEvents.get(i);
+//	        moveTouchPoint.set(event.x, event.y);
+//	        guiCam.touchToWorld(moveTouchPoint);
+//	        
+//	        if(event.type == TouchEvent.TOUCH_UP && gameOverTime > 2.0f) {
+//	        	if(world.score > 0)
+//	        	{
+//		        	HighscoreDataSource dbHelper = new HighscoreDataSource(ZombyteActivity.gameContext);
+//		        	dbHelper.open();
+//		        	dbHelper.createHighscore(new Highscore("GCA", world.score));
+//		        	dbHelper.close();
+//	        	}
+//
+//	    		Assets.gamemusic.stop();
+//	        	game.setScreen(new MainMenuScreen(game));
+//	        }
+//	    }
+    	game.setScreen(new MainMenuScreen(game));
+
 	}
 
 	@Override

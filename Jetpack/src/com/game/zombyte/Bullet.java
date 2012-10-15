@@ -9,18 +9,30 @@ public class Bullet extends DynamicGameObject {
 	
 	public static final int ACTIVE = 1;
 	public static final int NOT_ACTIVE = 0;
-	
+	public static final int MY_TEAM = 0;
+	public static final int ENEMY_TEAM = 0;
+
 	public int state;
+	public int team;
 	
 	public static final float BASIC_HEIGHT = 1.0f;
 	public static final float BASIC_WIDTH = 1.0f;
 	
-	public Bullet(float x, float y, float rotationAngle, float bulletSpeed) {
+	public Bullet(float x, float y, float rotationAngle, float bulletSpeed, int team) {
 		super(x, y, BASIC_HEIGHT, BASIC_WIDTH);
 		this.rotationAngle = rotationAngle;
 		this.state = ACTIVE;
 		this.bulletSpeed = bulletSpeed;
+		this.team = team;
 	}
+	
+//	public Bullet(float x, float y, float rotationAngle, float bulletSpeed, int team) {
+//		super(x, y, BASIC_HEIGHT, BASIC_WIDTH);
+//		this.rotationAngle = rotationAngle;
+//		this.state = ACTIVE;
+//		this.bulletSpeed = bulletSpeed;
+//		this.team = team;
+//	}
 	
 	public void update(float deltaTime)
 	{

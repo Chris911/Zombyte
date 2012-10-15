@@ -56,6 +56,7 @@ public class GameScreen extends GLScreen {
     float 			startTime;
     float 			elapsedTime;
     FPSCounter 		fpsCounter;
+    Rectangle		pauseButton;
     
 	boolean 		gameOverTouch = false;
 	
@@ -86,6 +87,9 @@ public class GameScreen extends GLScreen {
 
         // Create a sprite batcher capable of holding 5000 sprites
         batcher = new SpriteBatcher(glGraphics, 5000);
+        
+        // Pause rectangle buttons
+        pauseButton = new Rectangle(360, 420, 80, 60);
         
         // Create a worldListener, to trigger events on the world
         worldListener = new WorldListener() {
@@ -193,10 +197,8 @@ public class GameScreen extends GLScreen {
 	        	else if(event.x <= SCREEN_WIDTH/2 + 30 && event.x >= SCREEN_WIDTH/2 - 30) {
 	        		shootTouchDown = false;
 	        	}
-
-	        	
 	        }
-	        else if(event.type == TouchEvent.TOUCH_UP){
+	        else if(event.type == TouchEvent.TOUCH_UP) {
 	        	world.player.state = Player.PLAYER_STATE_IDLE;
 	        	moveJoystickFirstTouch = true;
 	        	actionJoystickFirstTouch = true;
@@ -213,6 +215,9 @@ public class GameScreen extends GLScreen {
 	        		world.player.toggleWeapons();
 	                actionJoystick.resetStickPosition();
 	        	}
+	        	else if(OverlapTester.pointInRectangle(pauseButton, event.x, event.y)){
+	        		this.state = GAME_PAUSED;
+	        	}
 	        } 
 	    }  
 	    
@@ -221,7 +226,7 @@ public class GameScreen extends GLScreen {
 	    
 	    elapsedTime += deltaTime;
 	    
-	    // Update de the world's state
+	    // Update the world's state
 	    world.update(deltaTime, velocity);
 	    
 	    if(world.state == World.WORLD_STATE_NEXT_LEVEL)
@@ -232,7 +237,7 @@ public class GameScreen extends GLScreen {
 	}
 	
 	private void updatePaused() {
-		// game.setScreen(new MainMenuScreen(game));
+		 game.setScreen(new MainMenuScreen(game));
 	}	
 	
 	private void updateNextRound(float deltaTime) {
@@ -414,17 +419,14 @@ public class GameScreen extends GLScreen {
 	    batcher.beginBatch(Assets.fontTex);
 	    Assets.font.drawText(batcher, "SCORE:" + world.score, 25, 465);
 	    Assets.font.drawText(batcher, " x " + world.player.weapon.bulletsRemaining, 700, 450);
-	    Assets.font.drawText(batcher, "ToKill: "+world.numberOfEnemiesToKillForNextRound, 320, 100);
-	    Assets.font.drawText(batcher, "Killed: "+world.numberOfEnemiesKilled, 320, 80);
-	    Assets.font.drawText(batcher, "PreSpw: "+world.numberOfEnemiesPreSpawend, 320, 60);
-	    Assets.font.drawText(batcher, "ToSpaw: "+world.numberOfEnemiesToSpawn, 320, 40);
-
-
+	    //DEBUG TEXT
+//	    Assets.font.drawText(batcher, "ToKill: "+world.numberOfEnemiesToKillForNextRound, 320, 100);
+//	    Assets.font.drawText(batcher, "Killed: "+world.numberOfEnemiesKilled, 320, 80);
+//	    Assets.font.drawText(batcher, "PreSpw: "+world.numberOfEnemiesPreSpawend, 320, 60);
+//	    Assets.font.drawText(batcher, "ToSpaw: "+world.numberOfEnemiesToSpawn, 320, 40);
 
 	    batcher.endBatch();
-	     
-//	    final float hubWeaponX = 675;
-//	    final float hubWeaponY = 460;
+
 	    final float hubWeaponX = 200;
 	    final float hubWeaponY = 200;
 	    final float hubWeaponRatio = 50.0f; 
