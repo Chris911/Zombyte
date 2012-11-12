@@ -12,6 +12,11 @@ public class Weapon {
 	public static int WEAPON_RIFLE   = 2;
 	public static int WEAPON_ROCKET  = 3;
 	
+	public static int WEAPON_AMMO_SHOTGUN = 12;
+	public static int WEAPON_AMMO_ROCKET = 8;
+	public static int WEAPON_AMMO_RIFLE = 50;
+	
+	
 	public Weapon(int type) {
 		super();
 		this.type = type;
@@ -30,24 +35,24 @@ public class Weapon {
 		}
 		else if(type == WEAPON_SHOTGUN)
 		{
-			this.bulletsRemaining = 25;
+			this.bulletsRemaining = WEAPON_AMMO_SHOTGUN;
 			this.damage = 12;
 			this.fireRate = 2.2f;
-			this.bulletSpeed = 14;
+			this.bulletSpeed = 22;
 		}
 		else if(type == WEAPON_RIFLE)
 		{
-			this.bulletsRemaining = 50; 
+			this.bulletsRemaining = WEAPON_AMMO_RIFLE; 
 			this.damage = 10.0f;
 			this.fireRate = 0.1f;
 			this.bulletSpeed = 30;
 		}
 		else if(type == WEAPON_ROCKET)
 		{
-			this.bulletsRemaining = 10;
-			this.damage = 60.0f;
+			this.bulletsRemaining = WEAPON_AMMO_ROCKET;
+			this.damage = 70.0f;
 			this.fireRate = 2.5f;
-			this.bulletSpeed = 35;
+			this.bulletSpeed = 38;
 		}
 	}
 	
@@ -95,6 +100,20 @@ public class Weapon {
 
 	public void setBulletSpeed(float bulletSpeed) {
 		this.bulletSpeed = bulletSpeed;
+	}
+	
+	public static int getBulletsOfType(int type)
+	{
+		if(type == WEAPON_RIFLE){
+			return WEAPON_AMMO_RIFLE;
+		} 
+		else 	if(type == WEAPON_ROCKET){
+			return WEAPON_AMMO_ROCKET;
+		} 
+		else 	if(type == WEAPON_SHOTGUN){
+			return WEAPON_AMMO_SHOTGUN;
+		}
+		return 1;
 	}
 	
 }

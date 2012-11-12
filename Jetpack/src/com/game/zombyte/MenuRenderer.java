@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.util.Log;
+
 import com.bag.lib.Game;
 import com.bag.lib.Screen;
 import com.bag.lib.gl.SpriteBatcher;
@@ -11,9 +13,10 @@ import com.bag.lib.gl.SpriteBatcher;
 public class MenuRenderer {
 
 	private float sceneAlpha = 1.0f;
-	private float sceneAngle = 0.0f;
+	private float sceneSize = 1.0f;
 	private Game  game;
 	private ArrayList<UIButton> buttons;
+	private float transitionTime = 0.0f;
 	
 	public MenuRenderer(Game g, ArrayList<UIButton> b)
 	{
@@ -22,10 +25,16 @@ public class MenuRenderer {
 	}
 	
 	// Takes a Screen to transition to and a Game instance
-	public void transitionToScreenWithRotateAnimation(Screen screen){
-    	sceneAlpha -= 0.05f;
-    	sceneAngle += 5;
-    	if(sceneAlpha <= 0){
+	public void transitionToScreenWithZoomInAnimation(Screen screen, float dt){
+		transitionTime += dt;
+		Log.d("TIME","T:"+transitionTime);
+		sceneAlpha -= 0.03f;
+    	sceneSize += 0.05f;
+    	if(transitionTime >= 1.6f){
+    		MainMenuScreen.releaseScreenLock();
+    		HighscoreScreen.releaseScreenLock();
+    		TutorialScreen.releaseScreenLock();
+    		transitionTime = 0.0f;
     		game.setScreen(screen);
     	}
 	}
@@ -37,7 +46,7 @@ public class MenuRenderer {
         
         // Select the assets batch and draw them
         batcher.beginBatch(Assets.menuItems);
-        batcher.drawSprite(400, 240, 800, 480, sceneAngle, Assets.menuBackground);
+        batcher.drawSprite(400, 240, 800*sceneSize, 480*sceneSize, Assets.menuBackground);
         batcher.endBatch();
         batcher.beginBatch(Assets.mainMenuButtons);
 
@@ -45,9 +54,9 @@ public class MenuRenderer {
         	UIButton but = buttons.get(idx);
         	
         	if(but.state == UIButton.STATE_IDLE){
-                batcher.drawSprite(but.position.x, but.position.y,but.R_width, but.R_height, sceneAngle, but.idleState);
+                batcher.drawSprite(but.position.x, but.position.y,but.R_width*sceneSize, but.R_height*sceneSize, but.idleState);
         	} else if (but.state == UIButton.STATE_PRESSED){
-                batcher.drawSprite(but.position.x, but.position.y,but.R_width, but.R_height, sceneAngle, but.pressedState);
+                batcher.drawSprite(but.position.x, but.position.y,but.R_width*sceneSize, but.R_height*sceneSize, but.pressedState);
         	}
         }
         

@@ -133,9 +133,9 @@ public class GameScreen extends GLScreen {
         nextWeaponTime = 0;
 
         moveJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
-        moveJoystick.setBasePosition(new Vector2(100,95));
+        moveJoystick.setBasePosition(new Vector2(100,105));
         actionJoystick 	= new Joystick(0, 0, JOYSTICK_SIZE);
-        actionJoystick.setBasePosition(new Vector2(700,95));
+        actionJoystick.setBasePosition(new Vector2(700,105));
     }
 
 	@Override
@@ -237,6 +237,18 @@ public class GameScreen extends GLScreen {
 	}
 	
 	private void updatePaused() {
+		
+		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+	    int len = touchEvents.size();
+	    for(int i = 0; i < len; i++) {      
+	        TouchEvent event = touchEvents.get(i);
+	        moveTouchPoint.set(event.x, event.y);
+	        guiCam.touchToWorld(moveTouchPoint);
+	        
+	        if(event.type == TouchEvent.TOUCH_UP) {
+	        	state = GAME_RUNNING;
+	        }
+	    }
 		 game.setScreen(new MainMenuScreen(game));
 	}	
 	
@@ -349,7 +361,7 @@ public class GameScreen extends GLScreen {
 		GL10 gl = glGraphics.getGL();
 		gl.glColor4f(1, 1, 1, 1);
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, "PREPARE FOR ROUND "+world.round, 265, 300);
+	    Assets.font.drawText(batcher, "PREPARE FOR ROUND "+world.round, 262, 290);
 	    Assets.font.drawText(batcher, "CURRENT SCORE:"+world.score, 270, 320);
 	    if(nextRoundTime > 1.5f)
 	    	Assets.font.drawText(batcher, "TOUCH TO START!", 300, 150);

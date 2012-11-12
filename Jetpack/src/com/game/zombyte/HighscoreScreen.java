@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.widget.ImageView;
+
 import com.bag.lib.Game;
 import com.bag.lib.Input.TouchEvent;
 import com.bag.lib.Screen;
@@ -27,6 +29,7 @@ public class HighscoreScreen extends GLScreen {
     float sceneAlpha;
     float sceneAngle;
     boolean changeScreen;
+    public static boolean screenLock = false;
     Screen screen;
     
     String highScoreTop;
@@ -40,6 +43,8 @@ public class HighscoreScreen extends GLScreen {
     UIButton tutorialButton;
     
     List<Highscore> highscores;
+    
+    ImageView image;
 
     public HighscoreScreen(Game game) {
         super(game);
@@ -73,7 +78,7 @@ public class HighscoreScreen extends GLScreen {
         dbHelper.open();
         highscores = dbHelper.getAllHighscores();
         Collections.sort(highscores);
-        dbHelper.close();
+        dbHelper.close();        
         
         // Load previous game settings (sound enabled on/off)
         //Settings.load(game.getFileIO());
@@ -97,9 +102,10 @@ public class HighscoreScreen extends GLScreen {
             touchPoint.set(event.x, event.y);
             guiCam.touchToWorld(touchPoint);
             
-            if(event.type == TouchEvent.TOUCH_DOWN){
+            if(event.type == TouchEvent.TOUCH_DOWN && !screenLock){
                 if(OverlapTester.pointInRectangle(backButton.bounds, touchPoint)) {
                 	backButton.state = UIButton.STATE_PRESSED;
+                	screenLock = true;
                 }	
             }
             
@@ -115,7 +121,7 @@ public class HighscoreScreen extends GLScreen {
         
         // Check if we are changing screen
         if(changeScreen) {
-        	animationHandler.transitionToScreenWithRotateAnimation(screen);
+        	animationHandler.transitionToScreenWithZoomInAnimation(screen,deltaTime);
         }
     }
 
@@ -166,5 +172,9 @@ public class HighscoreScreen extends GLScreen {
 
     @Override
     public void dispose() {        
+    }
+    
+    public static void releaseScreenLock (){
+    	screenLock = false;
     }
 }

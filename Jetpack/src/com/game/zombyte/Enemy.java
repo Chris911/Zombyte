@@ -56,7 +56,7 @@ public class Enemy extends DynamicGameObject {
     	{
     		this.damage = 1;
     		this.score = ENEMY_SCORE;
-    		this.speed = ENEMY_MOVE_VELOCITY + (difficulty + randDiff)/9;
+    		this.speed = ENEMY_MOVE_VELOCITY + (difficulty + randDiff)/11;
 	        
     	} 
     	else if (type == ENEMY_TYPE_BOSS)

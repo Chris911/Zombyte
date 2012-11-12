@@ -10,7 +10,7 @@ public class Bullet extends DynamicGameObject {
 	public static final int ACTIVE = 1;
 	public static final int NOT_ACTIVE = 0;
 	public static final int MY_TEAM = 0;
-	public static final int ENEMY_TEAM = 0;
+	public static final int ENEMY_TEAM = 1;
 
 	public int state;
 	public int team;

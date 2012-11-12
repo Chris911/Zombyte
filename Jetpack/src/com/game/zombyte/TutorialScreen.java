@@ -24,6 +24,7 @@ public class TutorialScreen extends GLScreen {
     float sceneAlpha;
     float sceneAngle;
     boolean changeScreen;
+    public static boolean screenLock = false;
     Screen screen;
     
     String story1;
@@ -109,10 +110,11 @@ public class TutorialScreen extends GLScreen {
             touchPoint.set(event.x, event.y);
             guiCam.touchToWorld(touchPoint);
             
-            if(event.type == TouchEvent.TOUCH_DOWN){
+            if(event.type == TouchEvent.TOUCH_DOWN && !screenLock){
             	if(onScreenTime > 2.0f) {
 	                if(OverlapTester.pointInRectangle(backButton.bounds, touchPoint)) {
 	                	backButton.state = UIButton.STATE_PRESSED;
+	                	screenLock = true;
 	                }	
             	}
             }
@@ -154,7 +156,7 @@ public class TutorialScreen extends GLScreen {
         
         // Check if we are changing screen
         if(changeScreen) {
-        	animationHandler.transitionToScreenWithRotateAnimation(screen);
+        	animationHandler.transitionToScreenWithZoomInAnimation(screen,deltaTime);
         }
     }
 
@@ -198,5 +200,9 @@ public class TutorialScreen extends GLScreen {
 
     @Override
     public void dispose() {        
+    }
+    
+    public static void releaseScreenLock (){
+    	screenLock = false;
     }
 }

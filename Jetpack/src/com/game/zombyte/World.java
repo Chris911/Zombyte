@@ -121,7 +121,6 @@ public class World {
 	}
 
 	private void updatePlayer(float deltaTime, float speed) {
-	    checkPlayerEnemyCollisions();
 		player.update(deltaTime);
 	}
 	
@@ -242,8 +241,8 @@ public class World {
 	 * 
 	 ***************************************/
 	private void checkCollisions() {
+		checkPlayerEnemyCollisions();
 		checkEnemyBulletCollisions();
-		//checkPlayerEnemyCollisions();
 		//checkEnemyEnemyCollisions();
 	    checkPowerUpCollisions();
 	    checkLevelPlayerCollisions();
@@ -257,10 +256,12 @@ public class World {
 		        Enemy enemy = EnemyArray.get(i);
 
 		        if (OverlapTester.overlapRectangles(enemy.bounds, player.bounds)) {
-		        	if(player.canTakeDamage){
+		        	// Player just got hit
+		        	if(!player.isImmuneToDamage){
+			        	player.life --;
 		        		listener.playPlayerHit();
+			        	player.isImmuneToDamage = true;
 		        	}
-		        	player.state = Player.PLAYER_STATE_BLINKING;
 		        }
 		    }
 		}   
@@ -334,12 +335,12 @@ public class World {
 		        		else
 		        			score += 500;
 		        	}
-		        	else
+		        	else if (pup.type != PowerUp.POWERUP_TYPE_LIFE)
 		        	{
 		        		if(player.weapon.getType() != pup.type)
 		        			player.weapon.setType(pup.type);
 		        		else
-		        			player.weapon.bulletsRemaining += 10;
+		        			player.weapon.bulletsRemaining += Weapon.getBulletsOfType(pup.type);
 		        	}	
 		        	PowerUpArray.remove(pup);
 		        	len = PowerUpArray.size();
@@ -391,7 +392,7 @@ public class World {
 			
 			// Boss round
 			if(round%5 == 0) {
-				numberOfEnemiesToKillForNextRound = 4;
+				numberOfEnemiesToKillForNextRound = 4 + difficulty/3;
 				numberOfEnemiesPreSpawend = numberOfEnemiesToKillForNextRound;
 		    	for(int i=0; i < numberOfEnemiesPreSpawend; i++)
 		    	{
@@ -441,22 +442,23 @@ public class World {
 	// Add an enemy to the world
 	private void addEnemy(){
 		int pos  = rand.nextInt(4);
+		int posRand  = rand.nextInt(7);
 		
 		if(pos == 0)
 		{
-			EnemyArray.add(new Enemy(enemyCounter%40, -10, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
+			EnemyArray.add(new Enemy(enemyCounter%40, -10+posRand, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
 		}
 		else if(pos == 1)
 		{
-			EnemyArray.add(new Enemy(-10, enemyCounter%22, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
+			EnemyArray.add(new Enemy(-10+posRand, enemyCounter%22, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
 		}
 		else if(pos == 2)
 		{
-			EnemyArray.add(new Enemy(enemyCounter%40 , WORLD_HEIGHT + 10, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
+			EnemyArray.add(new Enemy(enemyCounter%40 , WORLD_HEIGHT + 10-posRand, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
 		}
 		else
 		{
-			EnemyArray.add(new Enemy(WORLD_WIDTH + 10, enemyCounter%22, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
+			EnemyArray.add(new Enemy(WORLD_WIDTH + 10-posRand, enemyCounter%22, Enemy.ENEMY_TYPE_ZOMBIE, difficulty));
 		}
 		enemyCounter += 8;
 	}
@@ -464,22 +466,23 @@ public class World {
 	// Add an enemy to the world
 	private void addBoss(){
 		int pos  = rand.nextInt(4);
-		
+		int posRand  = rand.nextInt(7);
+
 		if(pos == 0)
 		{
-			EnemyArray.add(new Enemy(enemyCounter%40, -20, Enemy.ENEMY_TYPE_BOSS, difficulty+1));
+			EnemyArray.add(new Enemy(enemyCounter%40, -20+posRand, Enemy.ENEMY_TYPE_BOSS, difficulty+1));
 		}
 		else if(pos == 1)
 		{
-			EnemyArray.add(new Enemy(-2, enemyCounter%22, Enemy.ENEMY_TYPE_BOSS, difficulty+1));
+			EnemyArray.add(new Enemy(-2+posRand, enemyCounter%22, Enemy.ENEMY_TYPE_BOSS, difficulty+1));
 		}
 		else if(pos == 2)
 		{
-			EnemyArray.add(new Enemy(enemyCounter%40 , WORLD_HEIGHT + 27, Enemy.ENEMY_TYPE_BOSS, difficulty+1));
+			EnemyArray.add(new Enemy(enemyCounter%40 , WORLD_HEIGHT + 27-posRand, Enemy.ENEMY_TYPE_BOSS, difficulty+1));
 		}
 		else
 		{
-			EnemyArray.add(new Enemy(WORLD_WIDTH + 13, enemyCounter%22, Enemy.ENEMY_TYPE_BOSS, difficulty+1));
+			EnemyArray.add(new Enemy(WORLD_WIDTH + 13+posRand, enemyCounter%22, Enemy.ENEMY_TYPE_BOSS, difficulty+1));
 		}
 		enemyCounter += 8;
 	}

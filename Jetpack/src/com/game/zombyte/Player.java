@@ -6,8 +6,8 @@ public class Player extends DynamicGameObject {
     public static final float PLAYER_WIDTH 			= 1.4f;
     public static final float PLAYER_HEIGHT 		= 1.4f;
     public static final float PLAYER_DAMAGE_TIME	= 1.4f;
-    public static final float PLAYER_BASE_SPEED		= 1.2f;
-    public static final float PLAYER_MAX_SPEED		= 1.6f;
+    public static final float PLAYER_BASE_SPEED		= 1.1f;
+    public static final float PLAYER_MAX_SPEED		= 1.4f;
 
     public static final int PLAYER_STATE_IDLE 		= 0;
     public static final int PLAYER_STATE_MOVING 	= 1;
@@ -28,6 +28,8 @@ public class Player extends DynamicGameObject {
     private float speed;
     
     public boolean canTakeDamage;
+    public boolean isImmuneToDamage = false;;
+    public boolean wasJustHit = false;;
     public boolean isHiddenForTooLong;
     
     // Current weapon
@@ -64,15 +66,26 @@ public class Player extends DynamicGameObject {
     	stateTime += deltaTime;
     	
     	// Check if the player is currently immune to damage
-		if(!canTakeDamage) 
-		{
-			speed = PLAYER_MAX_SPEED;
+//		if(!canTakeDamage) 
+//		{
+//			speed = PLAYER_MAX_SPEED;
+//			inDamageStateTime += deltaTime;
+//			if(inDamageStateTime >= PLAYER_DAMAGE_TIME)
+//			{
+//				inDamageStateTime = 0; 
+//				speed = PLAYER_BASE_SPEED;
+//				canTakeDamage = true;
+//			}
+//		}
+		
+		if(isImmuneToDamage) {
 			inDamageStateTime += deltaTime;
-			if(inDamageStateTime >= PLAYER_DAMAGE_TIME)
-			{
-				inDamageStateTime = 0; 
-				speed = PLAYER_BASE_SPEED;
-				canTakeDamage = true;
+			this.speed = PLAYER_MAX_SPEED;
+			if(inDamageStateTime >= PLAYER_DAMAGE_TIME) {
+				inDamageStateTime = 0;
+				isImmuneToDamage = false;
+				this.speed = PLAYER_BASE_SPEED;
+
 			}
 		}
     	
@@ -124,4 +137,5 @@ public class Player extends DynamicGameObject {
 			}
 		} catch(Exception e){}
 	}
+
 }
