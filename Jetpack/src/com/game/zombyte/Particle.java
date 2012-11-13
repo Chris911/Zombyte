@@ -6,7 +6,7 @@ public class Particle {
 	public static final int STATE_DEAD = 1;		// particle is dead
 
 	public static final int MAX_DIMENSION		= 5;	// the maximum width or height
-	public static final int MAX_SPEED			= 10;	// maximum speed (per update)
+	public static final int MAX_SPEED			= 6;	// maximum speed (per update)
 
 	public int state;			// particle is alive or dead
 	private float width;		// width of the particle
@@ -26,8 +26,8 @@ public class Particle {
 		this.alpha = 1.0f;
 		
 		if (xv * xv + yv * yv > MAX_SPEED * MAX_SPEED) {
-			xv *= 0.7;
-			yv *= 0.7;
+			xv *= 0.4;
+			yv *= 0.4;
 		}
 	}
 	
@@ -36,7 +36,7 @@ public class Particle {
 			this.x += this.xv*deltaTime;
 			this.y += this.yv*deltaTime;
 
-			alpha -= 0.1; 
+			alpha -= 0.08; 
 			
 			if (this.alpha <= 0) {	// reached the end if its life
 				this.state = STATE_DEAD;

@@ -105,13 +105,13 @@ public class Weapon {
 	public static int getBulletsOfType(int type)
 	{
 		if(type == WEAPON_RIFLE){
-			return WEAPON_AMMO_RIFLE;
+			return WEAPON_AMMO_RIFLE/2;
 		} 
 		else 	if(type == WEAPON_ROCKET){
-			return WEAPON_AMMO_ROCKET;
+			return WEAPON_AMMO_ROCKET/2;
 		} 
 		else 	if(type == WEAPON_SHOTGUN){
-			return WEAPON_AMMO_SHOTGUN;
+			return WEAPON_AMMO_SHOTGUN/2;
 		}
 		return 1;
 	}

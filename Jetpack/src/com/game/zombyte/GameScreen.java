@@ -253,10 +253,10 @@ public class GameScreen extends GLScreen {
 	}	
 	
 	private void updateNextRound(float deltaTime) {
-		// First touch 
+		
 		nextRoundTime+= deltaTime;
 		
-	    if(game.getInput().getTouchEvents().size() > 0 && nextRoundTime >= 2.0f) {
+	    if(game.getInput().getTouchEvents().size() > 0 && nextRoundTime >= 1.5f) {
 	        state = GAME_RUNNING;
 	        world.state = World.WORLD_STATE_RUNNING;
 	        world.round++;
@@ -271,6 +271,8 @@ public class GameScreen extends GLScreen {
 	
 	private void updateGameOver(float deltaTime) {
 		gameOverTime+= deltaTime;
+	    world.update(deltaTime, velocity);
+
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {      
@@ -342,7 +344,8 @@ public class GameScreen extends GLScreen {
 		GL10 gl = glGraphics.getGL();
 		gl.glColor4f(1, 1, 1, 1);
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, "PRESS TO START!", 300, 300);
+	    Assets.font.drawText(batcher, "PREPARE FOR ROUND "+world.round, 262, 320);
+	    Assets.font.drawText(batcher, "TOUCH TO START!", 300, 160);
 	    batcher.endBatch();
 	}
 	
@@ -360,8 +363,9 @@ public class GameScreen extends GLScreen {
 		
 		GL10 gl = glGraphics.getGL();
 		gl.glColor4f(1, 1, 1, 1);
+		
 	    batcher.beginBatch(Assets.fontTex);
-	    Assets.font.drawText(batcher, "PREPARE FOR ROUND "+world.round, 262, 290);
+	    Assets.font.drawText(batcher, "PREPARE FOR ROUND "+(world.round+1), 262, 290);
 	    Assets.font.drawText(batcher, "CURRENT SCORE:"+world.score, 270, 320);
 	    if(nextRoundTime > 1.5f)
 	    	Assets.font.drawText(batcher, "TOUCH TO START!", 300, 150);
@@ -377,6 +381,10 @@ public class GameScreen extends GLScreen {
 	    Assets.font.drawText(batcher, "GAME OVER", 320, 300);
 	    Assets.font.drawText(batcher, "FINAL SCORE:"+world.score, 290, 200);
 	    batcher.endBatch();
+	    
+//		for(int i = 0; i < 2; i++){
+//			renderer.render();
+//		}
 	}
 	
 	private void drawUI()
@@ -436,6 +444,9 @@ public class GameScreen extends GLScreen {
 //	    Assets.font.drawText(batcher, "Killed: "+world.numberOfEnemiesKilled, 320, 80);
 //	    Assets.font.drawText(batcher, "PreSpw: "+world.numberOfEnemiesPreSpawend, 320, 60);
 //	    Assets.font.drawText(batcher, "ToSpaw: "+world.numberOfEnemiesToSpawn, 320, 40);
+	    Assets.font.drawText(batcher, "Multi: "+world.scoreMultiplier, 320, 60);
+	    Assets.font.drawText(batcher, "Combo: "+world.killCombo, 320, 40);
+
 
 	    batcher.endBatch();
 

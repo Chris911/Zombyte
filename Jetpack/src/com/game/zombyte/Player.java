@@ -5,7 +5,7 @@ public class Player extends DynamicGameObject {
 
     public static final float PLAYER_WIDTH 			= 1.4f;
     public static final float PLAYER_HEIGHT 		= 1.4f;
-    public static final float PLAYER_DAMAGE_TIME	= 1.4f;
+    public static final float PLAYER_DAMAGE_TIME	= 1.0f;
     public static final float PLAYER_BASE_SPEED		= 1.1f;
     public static final float PLAYER_MAX_SPEED		= 1.4f;
 
@@ -61,7 +61,7 @@ public class Player extends DynamicGameObject {
 	}
 	
 	public void update(float deltaTime) {
-    	bounds.lowerLeft.set(position).sub(bounds.width / 2, bounds.height / 2);
+    	bounds.lowerLeft.set(position).sub(bounds.width, bounds.height);
 		
     	stateTime += deltaTime;
     	
@@ -81,6 +81,7 @@ public class Player extends DynamicGameObject {
 		if(isImmuneToDamage) {
 			inDamageStateTime += deltaTime;
 			this.speed = PLAYER_MAX_SPEED;
+			
 			if(inDamageStateTime >= PLAYER_DAMAGE_TIME) {
 				inDamageStateTime = 0;
 				isImmuneToDamage = false;

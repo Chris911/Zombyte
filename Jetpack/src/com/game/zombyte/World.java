@@ -53,6 +53,8 @@ public class World {
     public int difficulty = 2; 
     public int round = 1;
 	public int enemyCounter = 0;
+    public int scoreMultiplier = 1;
+    public int killCombo = 0;
     public int numberOfEnemiesKilled = 0;
     public int numberOfEnemiesToKillForNextRound = WORLD_BASE_ENEMIES_NB;
     public int numberOfEnemiesPreSpawend = 0;
@@ -98,7 +100,6 @@ public class World {
 		}
     	numberOfEnemiesToSpawn = numberOfEnemiesToKillForNextRound - numberOfEnemiesPreSpawend;
     }
-	 
     
 	/***************************************
 	 * 
@@ -115,6 +116,8 @@ public class World {
 		updateExplosions(deltaTime);
 		updateLevelObjects(deltaTime);
 		updateRocketExplosions(deltaTime);
+		updateKillsCombo();
+		
 		checkCollisions();
 		checkNextRound();
 		checkGameOver();
@@ -170,19 +173,21 @@ public class World {
 	        	EnemyArray.remove(enemy);
 	        	
 	        	numberOfEnemiesKilled ++;
+	            killCombo++;
+
 	        	if(numberOfEnemiesToSpawn > 0){
 	        		addEnemy();
 	        		numberOfEnemiesToSpawn--;
 	        	}
 	        	
-	        	score += enemy.score*2;
+	        	score += enemy.score*2*scoreMultiplier;
 	        	i = EnemyArray.size();	
 	        	int genPowerUp = rand.nextInt(100);
 	        	if(genPowerUp > 95)
 	        	{
 	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_SHOTGUN);
 	        	}
-	        	else if(genPowerUp > 85 && genPowerUp < 90)
+	        	else if(genPowerUp > 87 && genPowerUp < 90)
 	        	{
 	        		addPowerUp(xPos, yPos, PowerUp.POWERUP_TYPE_ROCKET);
 	        	}
@@ -234,6 +239,12 @@ public class World {
 		} catch(Exception e){}
 	}
 	
+	public void updateKillsCombo(){
+		if(killCombo !=0 && killCombo == 10 && scoreMultiplier < 4){
+			scoreMultiplier ++;
+			killCombo = 0;
+		}
+	}
 	
 	/***************************************
 	 * 
@@ -259,6 +270,8 @@ public class World {
 		        	// Player just got hit
 		        	if(!player.isImmuneToDamage){
 			        	player.life --;
+			        	killCombo = 0;
+			        	scoreMultiplier = 1;
 		        		listener.playPlayerHit();
 			        	player.isImmuneToDamage = true;
 		        	}
@@ -370,7 +383,6 @@ public class World {
 		}   
 	}
 	
-	
 	/***************************************
 	 * 
 	 * 	GAME STATE CHECKING
@@ -429,9 +441,14 @@ public class World {
 	private void checkGameOver() {  	  	
     	if (player.life <=  0) {
             state = WORLD_STATE_GAME_OVER;
+            player.velocity.set(0, 0);
+	    	explosionArray.add(new Explosion(15, (int)player.position.x, (int)player.position.y, 0.5f));
+	    	for (int i = 0; i < EnemyArray.size(); i++) {
+				Enemy e = EnemyArray.get(i);
+				e.state = Enemy.ENEMY_STATE_RETARDED;
+			}
         }
 	}
-	
 
 	/***************************************
 	 * 
