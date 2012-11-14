@@ -249,7 +249,6 @@ public class GameScreen extends GLScreen {
 	        	state = GAME_RUNNING;
 	        }
 	    }
-		 game.setScreen(new MainMenuScreen(game));
 	}	
 	
 	private void updateNextRound(float deltaTime) {
@@ -356,7 +355,12 @@ public class GameScreen extends GLScreen {
 	}
 	
 	private void presentPaused() { 
-		// Draw here
+		GL10 gl = glGraphics.getGL();
+		gl.glColor4f(1, 1, 1, 1);
+	    batcher.beginBatch(Assets.fontTex);
+	    Assets.font.drawText(batcher, "TOUCH TO RESUME", 280, 320);
+	    Assets.font.drawText(batcher, "Current score:"+world.score, 270, 160);
+	    batcher.endBatch();
 	}
 	
 	private void presentLevelEnd() {
@@ -479,11 +483,14 @@ public class GameScreen extends GLScreen {
 
     @Override
     public void pause() {
-    	
+    	Assets.gamemusic.pause();
+    	this.state = GAME_PAUSED;
     }
 
     @Override
-    public void resume() {        
+    public void resume() { 
+    	Assets.gamemusic.play();
+
     }
 
     @Override

@@ -33,8 +33,11 @@ public class Enemy extends DynamicGameObject {
     public int 		randomAngleX;
     public int 		randomAngleY;
     public int 		randDiff;
+    public int 		randTime;
+
     
     public float stateTime;
+    private float lifeTime;
 	
 	public Enemy(float x, float y, int type, int difficulty) {
 		super(x, y, ENEMY_BASIC_WIDTH, ENEMY_BASIC_HEIGHT); 
@@ -45,8 +48,10 @@ public class Enemy extends DynamicGameObject {
 		this.difficulty = difficulty;
 		this.type = type;
 		this.stateTime = 0.0f;
+		this.lifeTime = 0.0f;
 		this.randomAngleX = rndInt(0,360);
 		this.randDiff = rndInt(1, 5);
+		this.randTime = rndInt(5,10);
 		initialize();
 	}
 	
@@ -73,9 +78,11 @@ public class Enemy extends DynamicGameObject {
     public void update(float deltaTime) {    
     	bounds.lowerLeft.set(position).sub(bounds.width / 2, bounds.height / 2);
     	stateTime += deltaTime;
+    	lifeTime += deltaTime;
     	updateVelocity(); 
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         
+        // Check bounds
         if(position.x >= 50)
         	position.x = 50;
         else if(position.x <= -10)
@@ -85,6 +92,13 @@ public class Enemy extends DynamicGameObject {
         else if(position.y <= -10)
         	position.y = -10;
         
+        // Raise the speed if alive for a long time
+        if(lifeTime >= randTime){
+        	this.speed += 0.9f;
+        	lifeTime = 0;
+        }
+        
+        // Check life
         if(life <= 0)
         {
         	state = ENEMY_STATE_DEAD;

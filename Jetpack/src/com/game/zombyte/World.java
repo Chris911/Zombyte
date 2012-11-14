@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import android.content.Context;
+import android.os.Vibrator;
+
 import com.bag.lib.math.OverlapTester;
 
 /*
@@ -61,6 +64,8 @@ public class World {
     public int numberOfEnemiesToSpawn = 0;
     public boolean lastRoundWasBoss = false;
     
+    private Vibrator vib;
+    
     public World(WorldListener listener) {
         this.bulletArray = new ArrayList<Bullet>();
         this.EnemyArray = new ArrayList<Enemy>();
@@ -69,6 +74,8 @@ public class World {
         this.explosionArray = new ArrayList<Explosion>();
         this.rocketExplosionArray = new ArrayList<RocketExplosion>();
         
+        vib = (Vibrator)ZombyteActivity.gameContext.getSystemService(Context.VIBRATOR_SERVICE);
+        
     	player = new Player(WORLD_WIDTH/2, 10);
         
     	this.listener = listener;
@@ -76,12 +83,12 @@ public class World {
         rand = new Random();
        
         this.state = WORLD_STATE_RUNNING;
+        
         lastBulletFiredTime = 0.0f;
         score = 0;
         gameTime = 0;
         
         initEnemies();
-        LevelModifier.addTreesToMap(this);
     }
     
 	/***************************************
@@ -153,7 +160,6 @@ public class World {
 			}
 		}
 	}
-	
 	
 	private void updateEnemies(float deltaTime) {
 	    int len = EnemyArray.size();
@@ -274,6 +280,7 @@ public class World {
 			        	scoreMultiplier = 1;
 		        		listener.playPlayerHit();
 			        	player.isImmuneToDamage = true;
+			        	vib.vibrate(200);
 		        	}
 		        }
 		    }
@@ -431,7 +438,10 @@ public class World {
 	    	
 	        numberOfEnemiesKilled = 0;
 			difficulty ++;
-			player.life ++;
+			
+			if(player.life<6)
+				player.life ++;
+			
 			score += 100 * (difficulty/2);
 			this.state = WORLD_STATE_NEXT_LEVEL;
 

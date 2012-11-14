@@ -85,29 +85,32 @@ public class WorldRenderer {
     }
     
     private void renderPlayer() {
+    	try{
     	batcher.beginBatch(Assets.players);
     	
     	Player player = world.player;
     	
     	// Assign camera position to follow the player.  Don't overlap out of bounds
-		if(player.position.x < World.WORLD_WIDTH * 0.75 && player.position.x > World.WORLD_WIDTH * 0.25)
-			cam.position.x = player.position.x;
-		if(player.position.y < World.WORLD_HEIGHT * 0.75 && player.position.y > World.WORLD_HEIGHT * 0.25)
-			cam.position.y = player.position.y;
+		if(world.player.position.x < World.WORLD_WIDTH * 0.75 && world.player.position.x > World.WORLD_WIDTH * 0.25)
+			cam.position.x = world.player.position.x;
+		if(world.player.position.y < World.WORLD_HEIGHT * 0.75 && world.player.position.y > World.WORLD_HEIGHT * 0.25)
+			cam.position.y = world.player.position.y;
        
     	// Draw the player sprite
 		if(player.state == Player.PLAYER_STATE_IDLE)
 		{
-			batcher.drawSprite(player.position.x, player.position.y , Player.PLAYER_WIDTH, 
-					Player.PLAYER_HEIGHT, (player.rotationAngle - 90), Assets.playerIdle);
+			batcher.drawSprite(world.player.position.x, world.player.position.y , Player.PLAYER_WIDTH, 
+					Player.PLAYER_HEIGHT, (world.player.rotationAngle - 90), Assets.playerIdle);
 		}
 		else if(player.state == Player.PLAYER_STATE_MOVING)
 		{
-			TextureRegion keyFrame = Assets.playerAnimation.getKeyFrame(player.stateTime, Animation.ANIMATION_LOOPING);
+			TextureRegion keyFrame = Assets.playerAnimation.getKeyFrame(world.player.stateTime, Animation.ANIMATION_LOOPING);
         	batcher.drawSprite(player.position.x, player.position.y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, player.rotationAngle-90, keyFrame);
 		}
 
         batcher.endBatch();
+    	} catch (Exception e){
+    	}
     }
     
     private void renderExplosions() {

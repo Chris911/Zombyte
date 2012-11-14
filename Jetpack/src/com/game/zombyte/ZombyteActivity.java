@@ -50,14 +50,13 @@ public class ZombyteActivity extends GLGame {
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Assets.intro.stop();
-            Assets.gamemusic.stop();
-        	moveTaskToBack(true);
+            
+        	//moveTaskToBack(true);
             return true;
+            
         } else if (keyCode == KeyEvent.KEYCODE_HOME) {
-            Assets.intro.stop();
-            Assets.gamemusic.stop();
-        	moveTaskToBack(true);
+
+        	//moveTaskToBack(true);
             return true;
         }
 
