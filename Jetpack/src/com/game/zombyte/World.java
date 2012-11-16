@@ -328,6 +328,8 @@ public class World {
 				        	bulletArray.remove(bul);
 				            alen = bulletArray.size();
 				            
+				            // Speed goes up
+				            enemy.speed += 0.65f;
 				            enemy.life -= player.weapon.getDamage(); 
 				            score += enemy.score;
 				            

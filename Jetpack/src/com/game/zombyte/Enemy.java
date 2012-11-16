@@ -26,16 +26,15 @@ public class Enemy extends DynamicGameObject {
     public int life;
     public int damage;
     
-    private float 	speed;
+    public float 	speed;
     private int   	difficulty;
     public float 	rotationAngle;
     public int   	score;
-    public int 		randomAngleX;
+    public int 		randomAngle;
     public int 		randomAngleY;
     public int 		randDiff;
     public int 		randTime;
 
-    
     public float stateTime;
     private float lifeTime;
 	
@@ -49,9 +48,9 @@ public class Enemy extends DynamicGameObject {
 		this.type = type;
 		this.stateTime = 0.0f;
 		this.lifeTime = 0.0f;
-		this.randomAngleX = rndInt(0,360);
-		this.randDiff = rndInt(1, 5);
-		this.randTime = rndInt(5,10);
+		this.randomAngle = rndInt(0,360);
+		this.randDiff = rndInt(1, 4);
+		this.randTime = rndInt(6,11);
 		initialize();
 	}
 	
@@ -61,7 +60,7 @@ public class Enemy extends DynamicGameObject {
     	{
     		this.damage = 1;
     		this.score = ENEMY_SCORE;
-    		this.speed = ENEMY_MOVE_VELOCITY + (difficulty + randDiff)/10;
+    		this.speed = ENEMY_MOVE_VELOCITY + (difficulty + randDiff)/11;
 	        
     	} 
     	else if (type == ENEMY_TYPE_BOSS)
@@ -79,6 +78,7 @@ public class Enemy extends DynamicGameObject {
     	bounds.lowerLeft.set(position).sub(bounds.width / 2, bounds.height / 2);
     	stateTime += deltaTime;
     	lifeTime += deltaTime;
+    	
     	updateVelocity(); 
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         
@@ -94,7 +94,7 @@ public class Enemy extends DynamicGameObject {
         
         // Raise the speed if alive for a long time
         if(lifeTime >= randTime){
-        	this.speed += 0.9f;
+        	this.speed += 1.1f;
         	lifeTime = 0;
         }
         
@@ -122,9 +122,9 @@ public class Enemy extends DynamicGameObject {
     		velocity.y = (float) (speed*Math.sin(rotationAngle));
     	}
     	else{
-        	velocity.x = (float) (speed*Math.cos(randomAngleX));
-        	velocity.y = (float) (speed*Math.sin(randomAngleX));
-        	rotationAngle = randomAngleX;
+        	velocity.x = (float) (speed*Math.cos(randomAngle));
+        	velocity.y = (float) (speed*Math.sin(randomAngle));
+        	rotationAngle = randomAngle;
     	}
     }
 	static int rndInt(int min, int max) {

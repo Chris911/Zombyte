@@ -153,7 +153,7 @@ public class WorldRenderer {
 	            	}
 	            	else {
 		            	TextureRegion keyFrame = Assets.zombieMoveAnimation.getKeyFrame(enemy.stateTime, Animation.ANIMATION_LOOPING);
-		            	batcher.drawSprite(enemy.position.x, enemy.position.y, 1.4f, 1.4f,(enemy.randomAngleX - 90)*180/3.146f, keyFrame);
+		            	batcher.drawSprite(enemy.position.x, enemy.position.y, 1.4f, 1.4f,(enemy.randomAngle - 90)*180/3.146f, keyFrame);
 	            	}
 	            } 
 	            else if ( enemy.type == Enemy.ENEMY_TYPE_BOSS ) 
