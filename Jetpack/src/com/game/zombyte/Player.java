@@ -1,4 +1,5 @@
 package com.game.zombyte;
+
 import com.bag.lib.DynamicGameObject;
 import com.bag.lib.math.Vector2;
 public class Player extends DynamicGameObject {
@@ -16,11 +17,11 @@ public class Player extends DynamicGameObject {
     public static final int PLAYER_STATE_HIDDEN		= 6;
     public static final int PLAYER_STATE_BLINKING	= 7;
 
-
     public int state;
     
     public int previousState;
     public Vector2 lastPos;
+    
     // Number of life remaining
     public int life;
     
@@ -61,23 +62,11 @@ public class Player extends DynamicGameObject {
 	}
 	
 	public void update(float deltaTime) {
-    	bounds.lowerLeft.set(position).sub(bounds.width, bounds.height);
+    	bounds.lowerLeft.set(position).sub(bounds.width/2, bounds.height/2);
 		
     	stateTime += deltaTime;
     	
     	// Check if the player is currently immune to damage
-//		if(!canTakeDamage) 
-//		{
-//			speed = PLAYER_MAX_SPEED;
-//			inDamageStateTime += deltaTime;
-//			if(inDamageStateTime >= PLAYER_DAMAGE_TIME)
-//			{
-//				inDamageStateTime = 0; 
-//				speed = PLAYER_BASE_SPEED;
-//				canTakeDamage = true;
-//			}
-//		}
-		
 		if(isImmuneToDamage) {
 			inDamageStateTime += deltaTime;
 			this.speed = PLAYER_MAX_SPEED;

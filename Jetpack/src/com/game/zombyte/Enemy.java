@@ -75,7 +75,7 @@ public class Enemy extends DynamicGameObject {
     }
     
     public void update(float deltaTime) {    
-    	bounds.lowerLeft.set(position).sub(bounds.width / 2, bounds.height / 2);
+    	bounds.lowerLeft.set(position).sub(bounds.width/2, bounds.height/2);
     	stateTime += deltaTime;
     	lifeTime += deltaTime;
     	

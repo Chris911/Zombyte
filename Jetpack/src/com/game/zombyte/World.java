@@ -329,7 +329,7 @@ public class World {
 				            alen = bulletArray.size();
 				            
 				            // Speed goes up
-				            enemy.speed += 0.65f;
+				            enemy.speed += 0.4f;
 				            enemy.life -= player.weapon.getDamage(); 
 				            score += enemy.score;
 				            
@@ -352,10 +352,11 @@ public class World {
 		        {
 		        	if(pup.type == PowerUp.POWERUP_TYPE_LIFE)
 		        	{
-		        		if(player.life <= 6)
 		        			player.life+=2;
-		        		else
-		        			score += 500;
+		        			score += 250*scoreMultiplier;
+			        		if(player.life > 6)
+			        			player.life = 6;
+		        		
 		        	}
 		        	else if (pup.type != PowerUp.POWERUP_TYPE_LIFE)
 		        	{
