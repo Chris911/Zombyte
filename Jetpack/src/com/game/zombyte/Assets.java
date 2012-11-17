@@ -109,6 +109,7 @@ public class Assets {
 	public static Sound rocketShoot;
 	public static Sound playerHit;
 	public static Sound powerUp;
+	public static Sound nukeExplosion;
 	
 	public static Music intro;
 	public static Music gamemusic;
@@ -216,6 +217,7 @@ public class Assets {
         rocketShoot = game.getAudio().newSound("explo.ogg");
         playerHit = game.getAudio().newSound("rocketshot.ogg");
         powerUp = game.getAudio().newSound("powerup.ogg");
+        nukeExplosion = game.getAudio().newSound("NukeExplosion.ogg");
         
         intro = game.getAudio().newMusic("intro.ogg");
         intro.setLooping(false);

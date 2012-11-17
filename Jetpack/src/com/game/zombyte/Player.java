@@ -38,6 +38,10 @@ public class Player extends DynamicGameObject {
     public Weapon pistol;
     public Weapon tempWeapon;
 
+    // Special Weapons
+    // TO-DO: Collection of special weapons instead
+    public Nuke nuke;
+    
     // Direction angle
     public float rotationAngle;
     public float stateTime;
@@ -59,6 +63,7 @@ public class Player extends DynamicGameObject {
 		this.isHiddenForTooLong = false;
 		this.stateTime = 0;
 		this.lastPos = new Vector2(0,0);
+		this.nuke = new Nuke();
 	}
 	
 	public void update(float deltaTime) {
