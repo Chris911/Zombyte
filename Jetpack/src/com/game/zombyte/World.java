@@ -6,6 +6,7 @@ import java.util.Random;
 
 import android.content.Context;
 import android.os.Vibrator;
+import android.util.Log;
 
 import com.bag.lib.math.OverlapTester;
 
@@ -23,6 +24,7 @@ public class World {
 			void playRocketHit();
 			void playPlayerHit();
 			void powerUpHit();
+			void playNukeExplosion();
     }
 
     // World's size
@@ -35,6 +37,8 @@ public class World {
     public static final int WORLD_STATE_GAME_OVER 	= 2;
     
     public static final int WORLD_BASE_ENEMIES_NB 	= 16;
+    
+    public boolean waitingForNukeToFinish = false;
     
     public final Player player;
     public final List<Bullet> bulletArray;
@@ -64,7 +68,7 @@ public class World {
     public int numberOfEnemiesToSpawn = 0;
     public boolean lastRoundWasBoss = false;
     
-    private Vibrator vib;
+    public Vibrator vib;
     
     public World(WorldListener listener) {
         this.bulletArray = new ArrayList<Bullet>();
@@ -125,6 +129,7 @@ public class World {
 		updateRocketExplosions(deltaTime);
 		updateKillsCombo();
 		
+		checkDeviceShaking();
 		checkCollisions();
 		checkNextRound();
 		checkGameOver();
@@ -402,51 +407,53 @@ public class World {
 	{
 		if(numberOfEnemiesKilled == numberOfEnemiesToKillForNextRound )
 		{
-			listener.powerUpHit();
-			EnemyArray.clear();
-			explosionArray.clear();
-			PowerUpArray.clear();
-			bulletArray.clear();
-			rocketExplosionArray.clear();
-			
-			numberOfEnemiesPreSpawend = 10 + difficulty;
-			
-			// Boss round
-			if(round%5 == 0) {
-				numberOfEnemiesToKillForNextRound = 4 + difficulty/3;
-				numberOfEnemiesPreSpawend = numberOfEnemiesToKillForNextRound;
-		    	for(int i=0; i < numberOfEnemiesPreSpawend; i++)
-		    	{
-		    		addBoss();
-		    	}
-		    	lastRoundWasBoss = true;
-		    	
-			} 
-			// Regular round
-			else {
-				if(lastRoundWasBoss){
-					numberOfEnemiesToKillForNextRound = WORLD_BASE_ENEMIES_NB + difficulty;
-					lastRoundWasBoss = false;
-				}
+			if(!waitingForNukeToFinish)
+			{
+				listener.powerUpHit();
+				EnemyArray.clear();
+				explosionArray.clear();
+				PowerUpArray.clear();
+				bulletArray.clear();
+				rocketExplosionArray.clear();
 				
 				numberOfEnemiesPreSpawend = 10 + difficulty;
-		    	for(int i=0; i < numberOfEnemiesPreSpawend; i++)
-		    	{
-		    		addEnemy();
-		    	}
-		        numberOfEnemiesToKillForNextRound += difficulty;
-		        numberOfEnemiesToSpawn = numberOfEnemiesToKillForNextRound - numberOfEnemiesPreSpawend;
+				
+				// Boss round
+				if(round%5 == 0) {
+					numberOfEnemiesToKillForNextRound = 4 + difficulty/3;
+					numberOfEnemiesPreSpawend = numberOfEnemiesToKillForNextRound;
+			    	for(int i=0; i < numberOfEnemiesPreSpawend; i++)
+			    	{
+			    		addBoss();
+			    	}
+			    	lastRoundWasBoss = true;
+			    	
+				} 
+				// Regular round
+				else {
+					if(lastRoundWasBoss){
+						numberOfEnemiesToKillForNextRound = WORLD_BASE_ENEMIES_NB + difficulty;
+						lastRoundWasBoss = false;
+					}
+					
+					numberOfEnemiesPreSpawend = 10 + difficulty;
+			    	for(int i=0; i < numberOfEnemiesPreSpawend; i++)
+			    	{
+			    		addEnemy();
+			    	}
+			        numberOfEnemiesToKillForNextRound += difficulty;
+			        numberOfEnemiesToSpawn = numberOfEnemiesToKillForNextRound - numberOfEnemiesPreSpawend;
+				}
+		    	
+		        numberOfEnemiesKilled = 0;
+				difficulty ++;
+				
+				if(player.life<6)
+					player.life ++;
+				
+				score += 100 * (difficulty/2);
+				this.state = WORLD_STATE_NEXT_LEVEL;
 			}
-	    	
-	        numberOfEnemiesKilled = 0;
-			difficulty ++;
-			
-			if(player.life<6)
-				player.life ++;
-			
-			score += 100 * (difficulty/2);
-			this.state = WORLD_STATE_NEXT_LEVEL;
-
 		}
 	}
 	
@@ -567,6 +574,16 @@ public class World {
 		if(PowerUpArray.size() < 3)
 		{
 			PowerUpArray.add(new PowerUp(xPos, yPos, type));
+		}
+	}
+	
+	
+	private void checkDeviceShaking()
+	{
+		Log.d("Accel", Float.toString(ZombyteActivity.getCurrentAccel()));
+		if(ZombyteActivity.getCurrentAccel() > 20)
+		{
+			player.nuke.activate(this);
 		}
 	}
 }

@@ -113,6 +113,10 @@ public class GameScreen extends GLScreen {
 			public void powerUpHit() {
 				Assets.powerUp.play(0.8f);
 			}
+			
+			public void playNukeExplosion() {
+				Assets.nukeExplosion.play(0.8f);
+			}
         };
         
         // Create a world Instance
