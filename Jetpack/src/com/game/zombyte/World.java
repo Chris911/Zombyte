@@ -9,6 +9,7 @@ import android.os.Vibrator;
 import android.util.Log;
 
 import com.bag.lib.math.OverlapTester;
+import com.game.utilities.ComboBox;
 
 /*
  * Master class holding all game objects and regulating their interactions
@@ -47,6 +48,7 @@ public class World {
     public final List<LevelObject> levelObjectsArray;
     public final List<Explosion> explosionArray;
     public final List<RocketExplosion> rocketExplosionArray;
+    public final ComboBox combo;
     
     public final WorldListener listener;
     public final Random rand;
@@ -60,8 +62,8 @@ public class World {
     public int difficulty = 2; 
     public int round = 1;
 	public int enemyCounter = 0;
-    public int scoreMultiplier = 1;
-    public int killCombo = 0;
+    //public int scoreMultiplier = 1;
+    //public int killCombo = 0;
     public int numberOfEnemiesKilled = 0;
     public int numberOfEnemiesToKillForNextRound = WORLD_BASE_ENEMIES_NB;
     public int numberOfEnemiesPreSpawend = 0;
@@ -78,6 +80,7 @@ public class World {
         this.explosionArray = new ArrayList<Explosion>();
         this.rocketExplosionArray = new ArrayList<RocketExplosion>();
         
+        this.combo = new ComboBox();
         vib = (Vibrator)ZombyteActivity.gameContext.getSystemService(Context.VIBRATOR_SERVICE);
         
     	player = new Player(WORLD_WIDTH/2, 10);
@@ -127,7 +130,7 @@ public class World {
 		updateExplosions(deltaTime);
 		updateLevelObjects(deltaTime);
 		updateRocketExplosions(deltaTime);
-		updateKillsCombo();
+		combo.update(deltaTime);
 		
 		checkDeviceShaking();
 		checkCollisions();
@@ -184,14 +187,14 @@ public class World {
 	        	EnemyArray.remove(enemy);
 	        	
 	        	numberOfEnemiesKilled ++;
-	            killCombo++;
+	        	combo.enemyKilled();
 
 	        	if(numberOfEnemiesToSpawn > 0){
 	        		addEnemy();
 	        		numberOfEnemiesToSpawn--;
 	        	}
 	        	
-	        	score += enemy.score*2*scoreMultiplier;
+	        	score += enemy.score*2*combo.scoreMultiplier;
 	        	i = EnemyArray.size();	
 	        	int genPowerUp = rand.nextInt(100);
 	        	if(genPowerUp > 95)
@@ -250,12 +253,12 @@ public class World {
 		} catch(Exception e){}
 	}
 	
-	public void updateKillsCombo(){
-		if(killCombo !=0 && killCombo == 10 && scoreMultiplier < 4){
-			scoreMultiplier ++;
-			killCombo = 0;
-		}
-	}
+//	public void updateKillsCombo(){
+//		if(killCombo !=0 && killCombo == 10 && scoreMultiplier < 4){
+//			scoreMultiplier ++;
+//			killCombo = 0;
+//		}
+//	}
 	
 	/***************************************
 	 * 
@@ -281,9 +284,8 @@ public class World {
 		        	// Player just got hit
 		        	if(!player.isImmuneToDamage){
 			        	player.life --;
-			        	killCombo = 0;
-			        	scoreMultiplier = 1;
-		        		listener.playPlayerHit();
+			        	combo.playerHit();
+			        	listener.playPlayerHit();
 			        	player.isImmuneToDamage = true;
 			        	vib.vibrate(200);
 		        	}
@@ -358,7 +360,7 @@ public class World {
 		        	if(pup.type == PowerUp.POWERUP_TYPE_LIFE)
 		        	{
 		        			player.life+=2;
-		        			score += 250*scoreMultiplier;
+		        			score += 250*combo.scoreMultiplier;
 			        		if(player.life > 6)
 			        			player.life = 6;
 		        		
@@ -452,7 +454,7 @@ public class World {
 				if(player.life<6)
 					player.life ++;
 				
-				score += 100 * (difficulty/2);
+				score += 50 * (difficulty/2);
 				this.state = WORLD_STATE_NEXT_LEVEL;
 			}
 		}

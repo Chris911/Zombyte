@@ -75,9 +75,9 @@ public class TutorialScreen extends GLScreen {
         animationHandler = new MenuRenderer(game, buttonsAssets);
         changeScreen = false;
         
-        story1 = "You are against  of zombies...";
-        story2 = "To survive, u left behind";
-        story3 = "A friend in this dark world";
+        story1 = "";
+        story2 = "";
+        story3 = "";
 
         textToDisplay1 = "";
         textToDisplay2 = "";

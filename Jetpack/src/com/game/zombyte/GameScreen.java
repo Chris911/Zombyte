@@ -389,10 +389,6 @@ public class GameScreen extends GLScreen {
 	    Assets.font.drawText(batcher, "GAME OVER", 320, 300);
 	    Assets.font.drawText(batcher, "FINAL SCORE:"+world.score, 290, 200);
 	    batcher.endBatch();
-	    
-//		for(int i = 0; i < 2; i++){
-//			renderer.render();
-//		}
 	}
 	
 	private void drawUI()
@@ -452,9 +448,8 @@ public class GameScreen extends GLScreen {
 //	    Assets.font.drawText(batcher, "Killed: "+world.numberOfEnemiesKilled, 320, 80);
 //	    Assets.font.drawText(batcher, "PreSpw: "+world.numberOfEnemiesPreSpawend, 320, 60);
 //	    Assets.font.drawText(batcher, "ToSpaw: "+world.numberOfEnemiesToSpawn, 320, 40);
-	    Assets.font.drawText(batcher, "Multi: "+world.scoreMultiplier, 320, 60);
-	    Assets.font.drawText(batcher, "Combo: "+world.killCombo, 320, 40);
-
+	    Assets.font.drawText(batcher, "Multi: "+world.combo.scoreMultiplier, 320, 60);
+	    Assets.font.drawText(batcher, "Combo: "+world.combo.killCombo, 320, 40);
 
 	    batcher.endBatch();
 
