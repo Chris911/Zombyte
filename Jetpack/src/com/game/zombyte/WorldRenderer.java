@@ -34,24 +34,6 @@ public class WorldRenderer {
     }
     
     public void renderBackground() {
-    
-//       batcher.beginBatch(Assets.tileMapItems); 
-//       TextureRegion asset = null;
-//       // Tiles map rendering!
-//       for(int i = 0; i < World.WORLD_WIDTH; i++){
-//        	for(int j = 0; j < World.WORLD_HEIGHT; j++){
-//        		
-//        		if(world.level[i][j] == 1)
-//        			asset = Assets.redTile;       
-//        		else if(world.level[i][j] == 2)
-//        			asset = Assets.blueTile;     
-//        		
-//        		batcher.drawSprite(i, j , 1.0f, 1.0f, asset);
-//        	}
-//       }
-//        
-//        batcher.endBatch();
-
     	if( world.round < 6 || world.round > 11) {
     		batcher.beginBatch(Assets.mapItems1);
     		batcher.drawSprite(World.WORLD_WIDTH/2, World.WORLD_HEIGHT/2, World.WORLD_WIDTH, World.WORLD_HEIGHT, Assets.MapBackground1);

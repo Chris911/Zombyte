@@ -19,6 +19,8 @@ import com.bag.lib.math.Vector2;
 import com.game.database.Highscore;
 import com.game.database.HighscoreDataSource;
 import com.game.database.HighscoreDatabaseHelper;
+import com.game.store.Account;
+import com.game.utilities.Settings;
 import com.game.zombyte.World.WorldListener;
 
 @SuppressWarnings("unused")
@@ -286,6 +288,11 @@ public class GameScreen extends GLScreen {
 	        if(event.type == TouchEvent.TOUCH_UP && gameOverTime > 2.0f) {
 	        	if(world.score > 0)
 	        	{
+	        		// Save the player's achievements!
+	        		Account.addMoney(50);
+	        		Account.addTokens(8);
+	        		Settings.save(game.getFileIO());
+	        		
 		        	HighscoreDataSource dbHelper = new HighscoreDataSource(ZombyteActivity.gameContext);
 		        	dbHelper.open();
 		        	dbHelper.createHighscore(new Highscore("GCA", world.score));

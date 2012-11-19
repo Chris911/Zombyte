@@ -14,6 +14,8 @@ import com.bag.lib.impl.GLGame;
 import com.bag.lib.impl.GLScreen;
 import com.bag.lib.math.OverlapTester;
 import com.bag.lib.math.Vector2;
+import com.game.store.Account;
+import com.game.utilities.Settings;
 
 public class MainMenuScreen extends GLScreen {
     private Camera2D guiCam;
@@ -67,7 +69,7 @@ public class MainMenuScreen extends GLScreen {
         
         Assets.intro.play();
         // Load previous game settings (sound enabled on/off)
-        //Settings.load(game.getFileIO());
+        Settings.load(game.getFileIO());
         
     }       
     
@@ -97,9 +99,6 @@ public class MainMenuScreen extends GLScreen {
                 	tutorialButton.state = UIButton.STATE_PRESSED;
                 	screenLock = true;
                 }	
-//                else if(OverlapTester.pointInRectangle(coopPlayButton.bounds, touchPoint)) {
-//                	coopPlayButton.state = UIButton.STATE_PRESSED;
-//                }
                 else if(OverlapTester.pointInRectangle(highScoresButton.bounds, touchPoint)) {
                 	highScoresButton.state = UIButton.STATE_PRESSED;
                 	screenLock = true;
@@ -117,10 +116,6 @@ public class MainMenuScreen extends GLScreen {
                 	changeScreen = true;
                 	screen = new TutorialScreen(game); 
                 	tutorialButton.state = UIButton.STATE_IDLE;
-//                } else if(coopPlayButton.state == UIButton.STATE_PRESSED) {
-//                	changeScreen = true;
-//                	screen = new MultiGameScreen(game); 
-//                	coopPlayButton.state = UIButton.STATE_IDLE;
                 } else if(highScoresButton.state == UIButton.STATE_PRESSED) {
                 	changeScreen = true;
                 	screen = new HighscoreScreen(game); 
@@ -152,6 +147,8 @@ public class MainMenuScreen extends GLScreen {
 	    menuRenderer.renderAnimations(gl, batcher);
         
 	    batcher.beginBatch(Assets.fontTex);
+	    Assets.font.drawText(batcher, "Money:"+Account.getMoney(), 500,40); 
+	    Assets.font.drawText(batcher, "Tokens:"+Account.getTokens(), 500,25); 
 	    Assets.font.drawText(batcher, "Grade-F Productions", 500,10); 
 	    batcher.endBatch();
 	    
