@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.util.Log;
-
 import com.bag.lib.Game;
 import com.bag.lib.Screen;
 import com.bag.lib.gl.SpriteBatcher;
@@ -27,7 +25,6 @@ public class MenuRenderer {
 	// Takes a Screen to transition to and a Game instance
 	public void transitionToScreenWithZoomInAnimation(Screen screen, float dt){
 		transitionTime += dt;
-		Log.d("TIME","T:"+transitionTime);
 		sceneAlpha -= 0.03f;
     	sceneSize += 0.05f;
     	if(transitionTime >= 1.6f){

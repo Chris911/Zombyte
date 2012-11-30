@@ -273,17 +273,17 @@ public class MultiWorld {
 		} catch(Exception e){}
 	}
 
-	private void checkGameOver() {  
-		try{
-			String gameOver = server.getPlayerInfo("avail");
-			if(gameOver.equals("0")){
-				if (player.life <=  0 || player2.life <= 0) {
-					state = WORLD_STATE_GAME_OVER;
-					//listener.gameOver();
-				}
-			}
-		} catch(Exception e){}
-	}
+//	private void checkGameOver() {  
+//		try{
+//			String gameOver = server.getPlayerInfo("avail");
+//			if(gameOver.equals("0")){
+//				if (player.life <=  0 || player2.life <= 0) {
+//					state = WORLD_STATE_GAME_OVER;
+//					//listener.gameOver();
+//				}
+//			}
+//		} catch(Exception e){}
+//	}
 
 
 	public void addBullet(float angle){

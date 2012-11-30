@@ -15,6 +15,7 @@ import com.bag.lib.impl.GLScreen;
 import com.bag.lib.math.OverlapTester;
 import com.bag.lib.math.Vector2;
 import com.game.store.Account;
+import com.game.store.StoreScreen;
 import com.game.utilities.Settings;
 
 public class MainMenuScreen extends GLScreen {
@@ -96,8 +97,10 @@ public class MainMenuScreen extends GLScreen {
                 	screenLock = true;
                 }	
                 else if(OverlapTester.pointInRectangle(tutorialButton.bounds, touchPoint)) {
-                	tutorialButton.state = UIButton.STATE_PRESSED;
-                	screenLock = true;
+//                	tutorialButton.state = UIButton.STATE_PRESSED;
+//                	screenLock = true;
+                	//ZombyteActivity.startNewActivity();
+                	
                 }	
                 else if(OverlapTester.pointInRectangle(highScoresButton.bounds, touchPoint)) {
                 	highScoresButton.state = UIButton.STATE_PRESSED;
@@ -114,8 +117,9 @@ public class MainMenuScreen extends GLScreen {
                 	singlePlayButton.state = UIButton.STATE_IDLE;
                 } else if(tutorialButton.state == UIButton.STATE_PRESSED) {
                 	changeScreen = true;
-                	screen = new TutorialScreen(game); 
+                	screen = new StoreScreen(game); 
                 	tutorialButton.state = UIButton.STATE_IDLE;
+                	
                 } else if(highScoresButton.state == UIButton.STATE_PRESSED) {
                 	changeScreen = true;
                 	screen = new HighscoreScreen(game); 

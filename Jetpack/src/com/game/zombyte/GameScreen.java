@@ -261,7 +261,8 @@ public class GameScreen extends GLScreen {
 		
 		nextRoundTime+= deltaTime;
 		
-	    if(game.getInput().getTouchEvents().size() > 0 && nextRoundTime >= 1.5f) {
+		// Allow restarting game after 1.0 second
+	    if(game.getInput().getTouchEvents().size() > 0 && nextRoundTime >= 1.0f) {
 	        state = GAME_RUNNING;
 	        world.state = World.WORLD_STATE_RUNNING;
 	        world.round++;
@@ -382,7 +383,7 @@ public class GameScreen extends GLScreen {
 	    batcher.beginBatch(Assets.fontTex);
 	    Assets.font.drawText(batcher, "PREPARE FOR ROUND "+(world.round+1), 262, 290);
 	    Assets.font.drawText(batcher, "CURRENT SCORE:"+world.score, 270, 320);
-	    if(nextRoundTime > 1.5f)
+	    if(nextRoundTime > 1.0f)
 	    	Assets.font.drawText(batcher, "TOUCH TO START!", 300, 150);
 
 	    batcher.endBatch();

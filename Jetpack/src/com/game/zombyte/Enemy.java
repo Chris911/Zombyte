@@ -49,8 +49,8 @@ public class Enemy extends DynamicGameObject {
 		this.stateTime = 0.0f;
 		this.lifeTime = 0.0f;
 		this.randomAngle = rndInt(0,360);
-		this.randDiff = rndInt(1, 4);
-		this.randTime = rndInt(6,11);
+		this.randDiff = rndInt(1, 3);
+		this.randTime = rndInt(4,10);
 		initialize();
 	}
 	
@@ -60,7 +60,7 @@ public class Enemy extends DynamicGameObject {
     	{
     		this.damage = 1;
     		this.score = ENEMY_SCORE;
-    		this.speed = ENEMY_MOVE_VELOCITY + (difficulty + randDiff)/12;
+    		this.speed = ENEMY_MOVE_VELOCITY + (difficulty + randDiff)/13;
 	        
     	} 
     	else if (type == ENEMY_TYPE_BOSS)
@@ -94,7 +94,7 @@ public class Enemy extends DynamicGameObject {
         
         // Raise the speed if alive for a long time
         if(lifeTime >= randTime){
-        	this.speed += 1.1f;
+        	this.speed += randDiff/2;
         	lifeTime = 0;
         }
         

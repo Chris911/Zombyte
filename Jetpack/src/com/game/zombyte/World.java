@@ -336,7 +336,7 @@ public class World {
 				            alen = bulletArray.size();
 				            
 				            // Speed goes up
-				            enemy.speed += 0.4f;
+				            enemy.speed += 0.2f;
 				            enemy.life -= player.weapon.getDamage(); 
 				            score += enemy.score;
 				            
@@ -388,9 +388,6 @@ public class World {
 		        LevelObject lev = levelObjectsArray.get(i);
 		        if (OverlapTester.overlapRectangles(lev.bounds, player.bounds))
 		        {
-		        	if(lev.type == LevelObject.GAMEOBJECT_TYPE_ROCK){
-		        		LevelModifier.collidePlayerRock(player, lev);
-		        	}
 		        	lev.state = LevelObject.STATE_COLLIDED;
 		        	player.state = Player.PLAYER_STATE_HIDDEN;
 		        }

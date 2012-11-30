@@ -20,31 +20,4 @@ public class LevelModifier {
 
 	}
 	
-	public static void collidePlayerRock(Player p, LevelObject l)
-	{
-		float pright = p.position.x;
-		float pleft = p.position.x;
-		
-		float ppos = Math.abs(p.position.y);
-		//float pbot = p.position.y;
-
-		float lright = l.position.x - l.bounds.width/2;
-		float lleft = l.position.x + l.bounds.width/2;
-	
-		float ltop = Math.abs(l.position.y - l.bounds.height/2);
-		float lbot = Math.abs(l.position.y + l.bounds.height/2);
-
-		
-//		if(pright <= lleft)
-//			p.position.x = lleft;
-//		else if(pleft >= lright)
-//			p.position.x = lright;
-		
-		if(ppos <= ltop && ppos > lbot)
-			p.position.y = p.lastPos.y;
-		else if(ppos == lbot && ppos < ltop)
-			p.position.y = p.lastPos.y;
-		
-	}
-	
 }

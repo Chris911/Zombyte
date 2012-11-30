@@ -425,9 +425,9 @@ public class MultiGameScreen extends GLScreen {
 
 	    batcher.endBatch();
 
-	    final float hubWeaponX = 200;
-	    final float hubWeaponY = 200;
-	    final float hubWeaponRatio = 50.0f; 
+//	    final float hubWeaponX = 200;
+//	    final float hubWeaponY = 200;
+//	    final float hubWeaponRatio = 50.0f; 
 	    batcher.beginBatch(Assets.spritesMap);
 	    if(world.player.weapon.getType() == Weapon.WEAPON_PISTOL)
 	    {
